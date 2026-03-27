@@ -110,8 +110,8 @@ import MonacoEditor from "@/components/MonacoEditor/MonacoEditor.vue";
 import MarkdownEditor from "@/components/markdown/MarkdownEditor.vue";
 import {inferMonacoLanguageByFilename} from "@/modules/monaco";
 import ReleaseAssetTree from "./ReleaseAssetTree.vue";
-import {openReleaseAssetAdd} from "@/pages/project/project-home/func/ReleaseAssetEdit.tsx";
-import {openReleaseAssetContextMenu} from "@/pages/project/project-home/func/ReleaseAssetContextMenu.tsx";
+import {openReleaseAssetAdd} from "@/pages/project/table/func/ReleaseAssetEdit.tsx";
+import {openReleaseAssetContextMenu} from "@/pages/project/table/func/ReleaseAssetContextMenu.tsx";
 
 const props = defineProps({
   projectId: {

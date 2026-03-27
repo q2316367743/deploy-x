@@ -18,8 +18,24 @@ export const router = createRouter({
         {
           name: '项目首页',
           path: 'home',
-          component: () => import('@/pages/project/project-home/index.vue')
-        },
+          component: () => import('@/pages/project/home/index.vue')
+        }, {
+          name: '项目一张表',
+          path: 'table',
+          component: () => import('@/pages/project/table/project-table.vue')
+        }, {
+          name: '版本管理',
+          path: 'version',
+          component: () => import('@/pages/project/version/project-version.vue')
+        }, {
+          name: '实例管理',
+          path: 'instance',
+          component: () => import('@/pages/project/instance/project-instance.vue')
+        }, {
+          name: '项目设置',
+          path: 'setting',
+          component: () => import('@/pages/project/setting/project-setting.vue')
+        }
       ]
     }
   ]

@@ -4,8 +4,15 @@ import {useSql} from "@/lib/sql.ts";
 export async function listReleaseVersionService(projectId: string) {
   return useSql().query<ReleaseVersion>('release_version')
     .eq('project_id', projectId)
-    .orderByAsc('publish_time')
+    .orderByDesc('publish_time')
+    .lastSql("limit 10")
     .list();
+}
+
+export function countReleaseVersion(projectId: string) {
+  return useSql().query<ReleaseVersion>('release_version')
+    .eq('project_id', projectId)
+    .count();
 }
 
 export async function getReleaseVersionService(id: string, projectId: string) {

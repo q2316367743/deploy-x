@@ -1,20 +1,31 @@
 import type {ReleaseDeployBase, ReleaseDeployCore} from "@/entity";
-import {DatePicker, DialogPlugin, Form, FormItem, Input} from "tdesign-vue-next";
+import {DatePicker, DialogPlugin, Form, FormItem, Input, Link} from "tdesign-vue-next";
 import {addReleaseDeployService} from "@/service";
 import MessageUtil from "@/util/model/MessageUtil.ts";
 
 interface ReleaseDeployAddProp extends ReleaseDeployBase {
+  instanceName: string;
+  versionName: string;
   onUpdate: () => void
 }
 
 export function openReleaseDeployAdd(prop: ReleaseDeployAddProp) {
   const data = ref<ReleaseDeployCore>({
-    ...prop,
+    project_id: prop.project_id,
+    version_id: prop.version_id,
+    instance_id: prop.instance_id,
     deploy_time: Date.now(),
     deploy_user: ''
   });
+  // `在 ${prop.instanceName} 上部署 ${prop.versionName}`
   const dp = DialogPlugin({
-    header: `在 ${prop.instance_id} 上部署 ${prop.version_id}`,
+    header: () => <div>
+      <span>在「</span>
+      <Link theme={'primary'}>{prop.instanceName}</Link>
+      <span>」上部署「</span>
+      <Link theme={'primary'}>{prop.versionName}</Link>
+      <span>」</span>
+    </div>,
     confirmBtn: '部署',
     closeOnEscKeydown: false,
     closeOnOverlayClick: false,

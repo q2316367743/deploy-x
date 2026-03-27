@@ -5,6 +5,11 @@ export async function listReleaseInstanceService(projectId: string) {
   return useSql().query<ReleaseInstance>('release_instance').eq('project_id', projectId).list();
 }
 
+export async function countReleaseInstance(projectId: string) {
+  return useSql().query<ReleaseInstance>('release_instance')
+    .eq('project_id', projectId).count();
+}
+
 export async function getReleaseInstanceService(id: string, projectId: string) {
   return useSql().query<ReleaseInstance>('release_instance').eq('id', id).eq('project_id', projectId).one();
 }

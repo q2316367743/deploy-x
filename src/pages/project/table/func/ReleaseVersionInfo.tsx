@@ -2,7 +2,7 @@ import {getReleaseVersionService,listReleaseAssetMeta} from "@/service";
 import type {ReleaseVersion, ReleaseAssetMeta} from "@/entity";
 import MessageUtil from "@/util/model/MessageUtil.ts";
 import {Descriptions, DescriptionsItem, DialogPlugin, TabPanel, Tabs} from "tdesign-vue-next";
-import ReleaseAsset from "@/pages/project/project-home/components/ReleaseAsset.vue";
+import ReleaseAsset from "@/pages/project/table/components/ReleaseAsset.vue";
 import {getReleaseVersionLog, saveReleaseVersionLog} from "@/service";
 import MarkdownEditor from "@/components/markdown/MarkdownEditor.vue";
 import {logDebug} from "@/lib/log.ts";

@@ -3,7 +3,7 @@ import type {ReleaseInstance, ReleaseAssetMeta} from "@/entity";
 import MessageUtil from "@/util/model/MessageUtil.ts";
 import {listReleaseAssetMeta} from "@/service";
 import {Descriptions, DescriptionsItem, DialogPlugin, TabPanel, Tabs} from "tdesign-vue-next";
-import ReleaseAsset from "@/pages/project/project-home/components/ReleaseAsset.vue";
+import ReleaseAsset from "@/pages/project/table/components/ReleaseAsset.vue";
 
 export async function openReleaseInstanceInfo(projectId: string, instanceId: string) {
   // 获取实例信息

@@ -8,8 +8,8 @@ import {
   listReleaseVersionLog
 } from "@/service";
 import {DialogPlugin, TabPanel, Tabs} from "tdesign-vue-next";
-import VersionTimeline from "@/pages/project/project-home/components/VersionTimeline.vue";
-import AssetPreviewPanel from "@/pages/project/project-home/components/AssetPreviewPanel.vue";
+import VersionTimeline from "@/pages/project/table/components/VersionTimeline.vue";
+import AssetPreviewPanel from "@/pages/project/table/components/AssetPreviewPanel.vue";
 
 interface ReleaseDeployInfoProp {
   deploy: ReleaseDeploy;

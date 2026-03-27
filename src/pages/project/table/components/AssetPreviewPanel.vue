@@ -19,8 +19,8 @@
 
 <script lang="ts" setup>
 import type {ReleaseAssetMeta} from "@/entity";
-import AssetTree from "@/pages/project/project-home/components/AssetTree.vue";
-import AssetPreview from "@/pages/project/project-home/components/AssetPreview.vue";
+import AssetTree from "@/pages/project/table/components/AssetTree.vue";
+import AssetPreview from "@/pages/project/table/components/AssetPreview.vue";
 
 interface Props {
   assets: Array<ReleaseAssetMeta>;

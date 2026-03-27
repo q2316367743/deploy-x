@@ -3,7 +3,8 @@
     <t-aside class="app-aside" :width="asideWidth">
       <t-menu v-model="value" :collapsed>
         <template #logo>
-          <div class="flex justify-left items-center" :style="{marginLeft: collapsed ? undefined : '16px'}" @click="goBack">
+          <div class="flex justify-left items-center" :style="{marginLeft: collapsed ? undefined : '16px'}"
+               @click="goBack">
             <t-avatar image="/logo.png"/>
             <div v-if="!collapsed" class="ml-8px">{{ select?.name }}</div>
           </div>
@@ -21,6 +22,30 @@
           </template>
           首页
         </t-menu-item>
+        <t-menu-item :value="tablePath" :to="tablePath">
+          <template #icon>
+            <table1-icon/>
+          </template>
+          一张表
+        </t-menu-item>
+        <t-menu-item :value="versionPath" :to="versionPath">
+          <template #icon>
+            <git-branch-icon/>
+          </template>
+          版本管理
+        </t-menu-item>
+        <t-menu-item :value="instancePath" :to="instancePath">
+          <template #icon>
+            <data-base-icon/>
+          </template>
+          实例管理
+        </t-menu-item>
+        <t-menu-item :value="settingPath" :to="settingPath">
+          <template #icon>
+            <setting-icon/>
+          </template>
+          设置
+        </t-menu-item>
       </t-menu>
     </t-aside>
     <t-content class="h-100vh overflow-hidden app-content">
@@ -34,7 +59,8 @@
 </template>
 <script lang="ts" setup>
 import {
-  HomeIcon,
+  DataBaseIcon, GitBranchIcon,
+  HomeIcon, SettingIcon, Table1Icon,
   ViewListIcon
 } from "tdesign-icons-vue-next";
 import {collapsed, toggleCollapsed} from "@/global/Constants.ts";
@@ -48,6 +74,10 @@ const router = useRouter();
 const projectId = route.params.id;
 
 const homePath = `/release/${projectId}/home`;
+const tablePath = `/release/${projectId}/table`;
+const versionPath = `/release/${projectId}/version`;
+const instancePath = `/release/${projectId}/instance`;
+const settingPath = `/release/${projectId}/setting`;
 
 const select = ref<ReleaseProject>();
 
