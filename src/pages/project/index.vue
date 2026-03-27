@@ -3,7 +3,7 @@
     <t-aside class="app-aside" :width="asideWidth">
       <t-menu v-model="value" :collapsed>
         <template #logo>
-          <div class="flex justify-left items-center" :style="{marginLeft: collapsed ? undefined : '16px'}">
+          <div class="flex justify-left items-center" :style="{marginLeft: collapsed ? undefined : '16px'}" @click="goBack">
             <t-avatar image="/logo.png"/>
             <div v-if="!collapsed" class="ml-8px">{{ select?.name }}</div>
           </div>
@@ -56,6 +56,8 @@ const value = ref(homePath);
 const asideWidth = computed(() => {
   return collapsed.value ? '64px' : '232px';
 })
+
+const goBack = () => router.push("/home");
 
 onMounted(async () => {
   try {

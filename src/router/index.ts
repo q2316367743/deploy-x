@@ -6,7 +6,8 @@ export const router = createRouter({
   routes: [
     {
       name: "首页",
-      path: '/',
+      path: '/home',
+      alias: "/",
       component: () => import('@/pages/home/index.vue'),
     },
     {
