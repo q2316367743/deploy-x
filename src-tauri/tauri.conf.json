@@ -1,0 +1,79 @@
+{
+  "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
+  "productName": "DeployX",
+  "version": "1.0.0",
+  "identifier": "xyz.esion.deploy-x",
+  "build": {
+    "frontendDist": "../dist",
+    "devUrl": "http://localhost:5125",
+    "beforeDevCommand": "pnpm dev",
+    "beforeBuildCommand": "pnpm build"
+  },
+  "app": {
+    "windows": [
+      {
+        "label": "main",
+        "title": "DeployX",
+        "width": 1200,
+        "height": 800,
+        "minWidth": 1200,
+        "minHeight": 800
+      }
+    ],
+    "security": {
+      "assetProtocol": {
+        "enable": true,
+        "scope": [
+          "$APPDATA/**/*"
+        ]
+      },
+      "csp": null
+    },
+    "withGlobalTauri": true
+  },
+  "bundle": {
+    "active": true,
+    "targets": [
+      "app",
+      "appimage",
+      "deb",
+      "dmg",
+      "nsis",
+      "rpm"
+    ],
+    "icon": [
+      "icons/32x32.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "createUpdaterArtifacts": true,
+    "resources": [
+      "lib/**/*"
+    ],
+    "category": "Entertainment",
+    "macOS": {
+      "entitlements": "./Entitlements.plist",
+      "files": {
+        "embedded.provisionprofile": "./deploy-x.provisionprofile"
+      }
+    },
+    "windows": {
+      "wix": null,
+      "nsis": {
+        "installMode": "currentUser"
+      }
+    }
+  },
+  "plugins": {
+    "updater": {
+      "dangerousInsecureTransportProtocol": true,
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEEwQzhFODk3NkM3NjI5MDUKUldRRktYWnNsK2pJb05aV3BkekJ5cGY5RlNROUo1UGZxdE5URWdqVGZUL1JwNzlzNHkxRFFhdWsK",
+      "endpoints": [
+        "https://github.com/q2316367743/deploy-x/releases/latest/download/latest.json"
+      ],
+      "windows": {
+        "installMode": "passive"
+      }
+    }
+  }
+}

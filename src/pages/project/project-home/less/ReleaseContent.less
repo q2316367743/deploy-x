@@ -1,0 +1,256 @@
+.release-content {
+  width: calc(100% - 16px);
+  height: calc(100% - 16px);
+  overflow: auto;
+  background: var(--td-bg-color-page);
+  padding: 8px;
+
+  .release-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: var(--fluent-card-bg);
+    border-radius: var(--fluent-radius-card);
+    box-shadow: var(--fluent-card-shadow);
+    border: 1px solid var(--fluent-card-border);
+    backdrop-filter: var(--fluent-acrylic-blur);
+    transition: box-shadow var(--fluent-transition-normal);
+
+    &::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: var(--td-scroll-track-color);
+      border-radius: var(--td-radius-small);
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: var(--td-scrollbar-color);
+      border-radius: var(--td-radius-small);
+      transition: background var(--fluent-transition-fast);
+
+      &:hover {
+        background: var(--td-scrollbar-hover-color);
+      }
+    }
+
+    &:hover {
+      box-shadow: var(--fluent-card-shadow-hover);
+    }
+
+    thead {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+
+      tr {
+        backdrop-filter: var(--fluent-acrylic-blur);
+
+        th {
+          padding: 12px 16px;
+          text-align: center;
+          border-right: 1px solid var(--fluent-border-subtle);
+          border-bottom: 1px solid var(--fluent-border-subtle);
+          font-weight: 600;
+
+          &:last-child {
+            border-right: none;
+          }
+
+          &.corner-cell {
+            width: 140px;
+            min-width: 140px;
+            max-width: 140px;
+            position: sticky;
+            left: 0;
+            z-index: 20;
+            border-right: 1px solid var(--fluent-border-subtle);
+
+            .header-label {
+              font-size: 13px;
+              color: var(--td-text-color-primary);
+            }
+          }
+
+          &.instance-cell {
+            min-width: 100px;
+            cursor: pointer;
+            user-select: none;
+            transition: background var(--fluent-transition-fast);
+
+            &:hover {
+              background: var(--fluent-item-hover);
+            }
+
+            .instance-name {
+              font-size: 14px;
+              color: var(--td-text-color-primary);
+            }
+
+            .instance-desc {
+              font-size: 12px;
+              color: var(--td-text-color-placeholder);
+              max-width: 100px;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+            }
+          }
+
+          &.action-cell {
+            width: 48px;
+            min-width: 48px;
+            padding: 8px;
+          }
+        }
+      }
+    }
+
+    tbody {
+      tr {
+        transition: background var(--fluent-transition-fast);
+
+        &:hover {
+          background: var(--fluent-item-hover);
+        }
+
+        &.row-hover {
+          background: var(--fluent-item-hover);
+        }
+
+        td {
+          padding: 12px 16px;
+          text-align: center;
+          border-right: 1px solid var(--fluent-border-subtle);
+          border-bottom: 1px solid var(--fluent-border-subtle);
+
+          &:last-child {
+            border-right: none;
+          }
+
+          &.corner-cell {
+            width: 140px;
+            min-width: 140px;
+            max-width: 140px;
+            position: sticky;
+            left: 0;
+            z-index: 5;
+            cursor: pointer;
+            user-select: none;
+            transition: background var(--fluent-transition-fast);
+
+            &:hover {
+              background: var(--fluent-item-hover);
+            }
+
+            .version-info {
+              display: flex;
+              flex-direction: column;
+              align-items: flex-start;
+              gap: 4px;
+
+              .version-number {
+                color: var(--td-text-color-primary);
+                display: flex;
+                align-items: center;
+                width: 100%;
+
+                .version-title {
+                  font-size: 14px;
+                  font-weight: 600;
+                }
+
+                .version-user {
+                  margin-left: auto;
+                }
+              }
+
+              .version-meta {
+                display: flex;
+                gap: 8px;
+                font-size: 11px;
+                color: var(--td-text-color-placeholder);
+
+                .version-time {
+                  display: flex;
+                  align-items: center;
+                  gap: 4px;
+                }
+
+              }
+            }
+          }
+
+          .deploy-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: var(--td-radius-round);
+            font-size: 12px;
+            font-weight: 500;
+            transition: all var(--fluent-transition-fast);
+
+            &.deployed {
+              background: var(--td-success-color-1);
+              color: var(--td-success-color-6);
+              border: 1px solid var(--td-success-color-3);
+              cursor: pointer;
+              user-select: none;
+
+              &:hover {
+                background: var(--td-success-color-2);
+                box-shadow: var(--fluent-elevation-1);
+              }
+            }
+
+            &.deploy-action {
+              background: var(--td-brand-color);
+              color: var(--td-text-color-anti);
+              border: 1px solid var(--td-brand-color);
+              cursor: pointer;
+              opacity: 0;
+              visibility: hidden;
+
+              &:hover {
+                background: var(--td-brand-color-hover);
+                box-shadow: var(--fluent-elevation-1);
+              }
+            }
+
+            span {
+              white-space: nowrap;
+            }
+          }
+
+          &:hover .deploy-action {
+            opacity: 1;
+            visibility: visible;
+          }
+        }
+
+        .action-cell {
+          width: 48px;
+          min-width: 48px;
+        }
+      }
+    }
+
+    tfoot {
+      tr {
+        td {
+          padding: 8px 12px;
+          border-right: 1px solid var(--fluent-border-subtle);
+          position: sticky;
+          left: 0;
+
+          &:last-child {
+            border-right: none;
+          }
+        }
+      }
+    }
+  }
+}

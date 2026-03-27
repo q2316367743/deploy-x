@@ -1,0 +1,236 @@
+import {DialogPlugin, FormItem, Input, Paragraph, TagInput} from "tdesign-vue-next";
+import XhFileSelect from "@/components/xiaohei/XhFileSelect.vue";
+
+export default {
+  confirm(
+    content: string,
+    title: string,
+    config?: Partial<{
+      confirmButtonText: string;
+      cancelButtonText: string;
+    }>
+  ): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      const p = DialogPlugin({
+        default: content,
+        header: title,
+        draggable: true,
+        placement: "center",
+        confirmBtn: {
+          default: config?.confirmButtonText || ""
+        },
+        cancelBtn: {
+          default: config?.cancelButtonText || ""
+        },
+        onConfirm: () => {
+          p.destroy();
+          resolve();
+        },
+        onCancel: () => {
+          p.destroy();
+          reject("cancel");
+        },
+        onClose: () => {
+          p.destroy();
+          reject("close");
+        }
+      });
+    });
+  },
+
+  alert(
+    content: string,
+    title?: string,
+    config?: {
+      confirmButtonText?: string;
+      cancelButtonText?: string;
+    }
+  ) {
+    const {confirmButtonText = "确认", cancelButtonText = "取消"} = config || {};
+    return new Promise<void>((resolve) => {
+      const res = DialogPlugin({
+        default: () => <Paragraph>{content}</Paragraph>,
+        top: "auto",
+        header: title,
+        draggable: true,
+        confirmBtn: {
+          default: confirmButtonText
+        },
+        cancelBtn: {
+          default: cancelButtonText
+        },
+        onConfirm: () => {
+          resolve();
+          res.destroy();
+        },
+        onCancel() {
+          res.destroy();
+        },
+        onClose() {
+          res.destroy();
+        }
+      });
+    });
+  },
+
+  prompt(
+    content: string,
+    title?: string,
+    config?: {
+      confirmButtonText?: string;
+      cancelButtonText?: string;
+      inputPattern?: RegExp;
+      inputPlaceholder?: string;
+      inputErrorMessage?: string;
+      inputType?: "number" | "search" | "hidden" | "submit" | "text" | "url" | "tel" | "password";
+      inputValue?: string;
+      onClose?: () => void;
+      maxlength?: number;
+    }
+  ): Promise<string> {
+    const {
+      inputValue = "",
+      inputPlaceholder,
+      inputType,
+      confirmButtonText = "确认",
+      cancelButtonText = "取消",
+      maxlength,
+      onClose
+    } = config || {};
+    return new Promise<string>((resolve, reject) => {
+      const value = ref(inputValue);
+
+      function onKeydown(value: string | number) {
+        resolve(`${value}`);
+        res.destroy();
+      }
+
+      const res = DialogPlugin({
+        default: () => (
+          <div>
+            {content && <Paragraph>{content}</Paragraph>}
+            <Input
+              v-model={value.value}
+              autofocus={true}
+              clearable={true}
+              maxlength={maxlength}
+              onEnter={onKeydown}
+              placeholder={inputPlaceholder}
+              type={inputType}
+            ></Input>
+          </div>
+        ),
+        header: title,
+        draggable: true,
+        placement: "center",
+        closeOnEscKeydown: false,
+        confirmBtn: {
+          default: confirmButtonText
+        },
+        cancelBtn: {
+          default: cancelButtonText
+        },
+        onConfirm: () => {
+          resolve(value.value);
+          res.destroy();
+        },
+        onCancel() {
+          res.destroy();
+          reject("cancel");
+        },
+        onClose() {
+          res.destroy();
+          onClose?.();
+          console.log("onClose");
+          reject("cancel");
+        }
+      });
+    });
+  },
+
+  tagPrompt(content: string, title: string, config?: {
+    initValue: Array<string>,
+    confirmButtonText?: string;
+    cancelButtonText?: string;
+  }): Promise<Array<string>> {
+    return new Promise<Array<string>>((resolve) => {
+      const {
+        initValue = [],
+        confirmButtonText = "确认",
+        cancelButtonText = "取消",
+      } = config || {};
+
+      const value = ref<Array<string>>(initValue);
+      const dp = DialogPlugin({
+        header: title,
+        confirmBtn: confirmButtonText,
+        cancelBtn: cancelButtonText,
+        default: () => <FormItem labelAlign={'top'} help={content}>
+          <TagInput v-model={value.value}/>
+        </FormItem>,
+        onConfirm: () => {
+          dp.destroy();
+          resolve(value.value)
+        },
+      })
+    });
+  },
+
+  executablePathPrompt(content: string | undefined, title: string, config?: {
+    inputValue: string,
+    confirmButtonText?: string;
+    cancelButtonText?: string;
+  }): Promise<string> {
+    return new Promise<string>((resolve) => {
+      const {
+        inputValue = '',
+        confirmButtonText = "确认",
+        cancelButtonText = "取消",
+      } = config || {};
+
+      const value = ref<string>(inputValue);
+      const dp = DialogPlugin({
+        header: title,
+        confirmBtn: confirmButtonText,
+        cancelBtn: cancelButtonText,
+        default: () => <FormItem labelAlign={'top'} help={content}>
+          <XhFileSelect v-model={value.value}/>
+        </FormItem>,
+        onConfirm: () => {
+          dp.destroy();
+          resolve(value.value)
+        },
+      })
+    });
+  },
+
+
+  folder(content: string | undefined, title: string, config?: {
+    inputValue: string,
+    confirmButtonText?: string;
+    cancelButtonText?: string;
+  }): Promise<string> {
+    return new Promise<string>((resolve) => {
+      const {
+        inputValue = '',
+        confirmButtonText = "确认",
+        cancelButtonText = "取消",
+      } = config || {};
+
+      const value = ref<string>(inputValue);
+      const dp = DialogPlugin({
+        header: title,
+        confirmBtn: confirmButtonText,
+        cancelBtn: cancelButtonText,
+        default: () => <div>
+          {content && <div>{content}</div>}
+          <XhFileSelect v-model={value.value} directory label={'选择文件夹'}/>
+        </div>,
+        onConfirm: () => {
+          dp.destroy();
+          resolve(value.value)
+        },
+      })
+    });
+  }
+};

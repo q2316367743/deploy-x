@@ -1,0 +1,56 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "description": "enables the default permissions",
+  "windows": [
+    "main"
+  ],
+  "permissions": [
+    "clipboard-manager:allow-write-text",
+    "core:default",
+    "core:event:allow-listen",
+    "core:path:allow-dirname",
+    "core:app:allow-set-app-theme",
+    "core:window:allow-set-theme",
+    "core:window:allow-set-fullscreen",
+    "core:window:allow-is-fullscreen",
+    "core:webview:allow-set-webview-position",
+    "core:webview:allow-create-webview",
+    "core:webview:allow-webview-show",
+    "core:webview:allow-webview-close",
+    "core:webview:allow-set-webview-size",
+    "core:webview:allow-create-webview-window",
+    "core:window:allow-hide",
+    "core:window:allow-show",
+    "core:window:allow-set-focus",
+    "dialog:default",
+    "dialog:allow-open",
+    "dialog:allow-save",
+    "log:default",
+    "opener:default",
+    "opener:allow-open-url",
+    "opener:allow-reveal-item-in-dir",
+    {
+      "identifier": "opener:allow-open-path",
+      "allow": [
+        {
+          "path": "/**/*"
+        }
+      ]
+    },
+    "os:default",
+    "sql:default",
+    "sql:allow-load",
+    "sql:allow-execute",
+    "sql:allow-select",
+    "store:default",
+    "store:allow-get",
+    "store:allow-set",
+    "store:allow-save",
+    "store:allow-load",
+    "store:allow-delete",
+    "store:allow-entries",
+    "updater:default",
+    "upload:default"
+  ]
+}

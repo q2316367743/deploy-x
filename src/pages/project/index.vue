@@ -1,0 +1,81 @@
+<template>
+  <t-layout class="abs-0 overflow-hidden app-container">
+    <t-aside class="app-aside" :width="asideWidth">
+      <t-menu v-model="value" :collapsed>
+        <template #logo>
+          <div class="flex justify-left items-center" :style="{marginLeft: collapsed ? undefined : '16px'}">
+            <t-avatar image="/logo.png"/>
+            <div v-if="!collapsed" class="ml-8px">{{ select?.name }}</div>
+          </div>
+        </template>
+        <template #operations>
+          <t-button theme="primary" shape="square" variant="text" @click="toggleCollapsed()">
+            <template #icon>
+              <view-list-icon/>
+            </template>
+          </t-button>
+        </template>
+        <t-menu-item :value="homePath" :to="homePath">
+          <template #icon>
+            <home-icon/>
+          </template>
+          首页
+        </t-menu-item>
+      </t-menu>
+    </t-aside>
+    <t-content class="h-100vh overflow-hidden app-content">
+      <router-view v-slot="{ Component, route }">
+        <keep-alive :include="[]">
+          <component :is="Component" :key="route.fullPath"/>
+        </keep-alive>
+      </router-view>
+    </t-content>
+  </t-layout>
+</template>
+<script lang="ts" setup>
+import {
+  HomeIcon,
+  ViewListIcon
+} from "tdesign-icons-vue-next";
+import {collapsed, toggleCollapsed} from "@/global/Constants.ts";
+import type {ReleaseProject} from "@/entity";
+import {getReleaseProject} from "@/service";
+import MessageUtil from "@/util/model/MessageUtil.ts";
+
+const route = useRoute();
+const router = useRouter();
+
+const projectId = route.params.id;
+
+const homePath = `/release/${projectId}/home`;
+
+const select = ref<ReleaseProject>();
+
+const value = ref(homePath);
+
+const asideWidth = computed(() => {
+  return collapsed.value ? '64px' : '232px';
+})
+
+onMounted(async () => {
+  try {
+    select.value = await getReleaseProject(projectId as string);
+  } catch (e) {
+    MessageUtil.error("获取项目失败", e);
+    router.back();
+  }
+})
+
+</script>
+<style scoped lang="less">
+.app-container {
+  .app-aside {
+    border-right: 1px solid var(--td-border-level-1-color);
+    box-shadow: var(--td-shadow-1);
+    overflow-x: hidden;
+    overflow-y: auto;
+    flex-shrink: 0;
+  }
+
+}
+</style>
