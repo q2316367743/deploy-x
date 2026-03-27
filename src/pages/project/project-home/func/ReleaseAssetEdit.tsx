@@ -26,6 +26,8 @@ export async function openReleaseAssetAdd(props: ReleaseAssetAddProp) {
   const dp = DialogPlugin({
     header: `新增 ${fileType}`,
     confirmBtn: '新增',
+    closeOnEscKeydown: false,
+    closeOnOverlayClick: false,
     default: () => (
       <Form data={data.value}>
         <FormItem label={'文件名'}>

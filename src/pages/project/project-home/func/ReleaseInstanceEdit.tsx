@@ -20,6 +20,8 @@ export function openReleaseInstanceAdd(projectId: string, onUpdate: () => void) 
   const dp = DialogPlugin({
     header: '新增实例',
     confirmBtn: '新增',
+    closeOnEscKeydown: false,
+    closeOnOverlayClick: false,
     default: () => (<Form data={data.value}>
       <FormItem label={'实例名称'} labelAlign={'top'}>
         <Input placeholder={'请输入实例名称'} v-model={data.value.name}/>

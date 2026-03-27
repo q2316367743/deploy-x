@@ -1,6 +1,6 @@
 <template>
   <div class="markdown-editor">
-    <div ref="divRef" style="height: 600px"/>
+    <div ref="divRef" style="height: 100%"/>
   </div>
 </template>
 <script lang="ts" setup>
@@ -77,5 +77,7 @@ onMounted(() => {
 })
 </script>
 <style scoped lang="less">
-
+.markdown-editor {
+  height: calc(100% - 2px);
+}
 </style>

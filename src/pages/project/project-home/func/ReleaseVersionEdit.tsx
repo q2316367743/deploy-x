@@ -21,6 +21,8 @@ export function openReleaseVersionAdd(projectId: string, onUpdate: () => void) {
   const dp = DialogPlugin({
     header: '新增版本',
     confirmBtn: '新增',
+    closeOnEscKeydown: false,
+    closeOnOverlayClick: false,
     default: () => (<Form data={data.value}>
       <FormItem label={'版本号'} labelAlign={'top'}>
         <Input placeholder={'请输入版本号'} v-model={data.value.version}/>

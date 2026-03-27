@@ -23,6 +23,8 @@ export async function openReleaseInstanceInfo(projectId: string, instanceId: str
     footer: false,
     placement: "center",
     width: '80vw',
+    closeOnEscKeydown: false,
+    closeOnOverlayClick: false,
     dialogClassName: "release-instance-info",
     default: () => (<Tabs defaultValue={1}>
       <TabPanel label={'基本信息'} value={1}>

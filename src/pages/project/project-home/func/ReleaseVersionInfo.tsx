@@ -35,6 +35,8 @@ export async function openReleaseVersionInfo(projectId: string, versionId: strin
     footer: false,
     placement: "center",
     width: '80vw',
+    closeOnEscKeydown: false,
+    closeOnOverlayClick: false,
     dialogClassName: "release-version-info",
     default: () => (<Tabs defaultValue={1}>
       <TabPanel label={'基本信息'} value={1}>

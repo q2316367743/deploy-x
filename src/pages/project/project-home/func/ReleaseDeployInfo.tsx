@@ -60,6 +60,8 @@ export async function openReleaseDeployInfo(prop: ReleaseDeployInfoProp) {
     footer: false,
     placement: "center",
     width: '80vw',
+    closeOnEscKeydown: false,
+    closeOnOverlayClick: false,
     dialogClassName: "release-deploy-info",
     default: () => (
       <div class={'deploy-info'}>
