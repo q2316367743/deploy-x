@@ -60,9 +60,9 @@
           }
 
           &.corner-cell {
-            width: 140px;
-            min-width: 140px;
-            max-width: 140px;
+            width: 120px;
+            min-width: 120px;
+            max-width: 120px;
             position: sticky;
             left: 0;
             z-index: 20;
@@ -75,7 +75,7 @@
           }
 
           &.instance-cell {
-            min-width: 100px;
+            min-width: 200px;
             cursor: pointer;
             user-select: none;
             transition: background var(--fluent-transition-fast);
@@ -131,9 +131,9 @@
           }
 
           &.corner-cell {
-            width: 140px;
-            min-width: 140px;
-            max-width: 140px;
+            width: 120px;
+            min-width: 120px;
+            max-width: 120px;
             position: sticky;
             left: 0;
             z-index: 5;
@@ -150,6 +150,7 @@
               flex-direction: column;
               align-items: flex-start;
               gap: 4px;
+              width: 120px;
 
               .version-number {
                 color: var(--td-text-color-primary);
