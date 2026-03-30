@@ -1,12 +1,15 @@
 import type {ReleaseVersion, ReleaseVersionCore, ReleaseVersionLog} from "@/entity";
 import {useSql} from "@/lib/sql.ts";
+import dayjs from "dayjs";
 
-export async function listReleaseVersionService(projectId: string) {
-  return useSql().query<ReleaseVersion>('release_version')
+export async function listReleaseVersionService(projectId: string, limit?: number) {
+  const query = useSql().query<ReleaseVersion>('release_version')
     .eq('project_id', projectId)
-    .orderByDesc('publish_time')
-    .lastSql("limit 10")
-    .list();
+    .orderByDesc('publish_time');
+  if (limit) {
+    query.lastSql(`limit ${limit}`);
+  }
+  return query.list();
 }
 
 export function countReleaseVersion(projectId: string) {
@@ -16,13 +19,14 @@ export function countReleaseVersion(projectId: string) {
 }
 
 export async function getReleaseVersionService(id: string, projectId: string) {
-  return useSql().query<ReleaseVersion>('release_version').eq('id', id).eq('project_id', projectId).one();
+  return useSql().query<ReleaseVersion>('release_version').eq('id', id).eq('project_id', projectId).get();
 }
 
 export async function addReleaseVersionService(projectId: string, version: Partial<ReleaseVersionCore>) {
   const {id} = await useSql().mapper<ReleaseVersion>('release_version').insert({
     ...version,
     project_id: projectId,
+    publish_time: dayjs(version.publish_time).toDate().getTime(),
     created_at: Date.now(),
     updated_at: Date.now()
   });

@@ -160,7 +160,7 @@ const listInstance = async () => {
   instances.value = await listReleaseInstanceService(projectId);
 };
 const listVersion = async () => {
-  versions.value = await listReleaseVersionService(projectId);
+  versions.value = await listReleaseVersionService(projectId, 10);
 };
 const listDeploy = async () => {
   deployItems.value = await listReleaseDeployService(projectId, versions.value.map(e => e.id));

@@ -1,11 +1,11 @@
-import {getReleaseVersionService,listReleaseAssetMeta} from "@/service";
+import {getReleaseVersionService, listReleaseAssetMeta} from "@/service";
 import type {ReleaseVersion, ReleaseAssetMeta} from "@/entity";
 import MessageUtil from "@/util/model/MessageUtil.ts";
 import {Descriptions, DescriptionsItem, DialogPlugin, TabPanel, Tabs} from "tdesign-vue-next";
 import ReleaseAsset from "@/pages/project/table/components/ReleaseAsset.vue";
 import {getReleaseVersionLog, saveReleaseVersionLog} from "@/service";
-import MarkdownEditor from "@/components/markdown/MarkdownEditor.vue";
 import {logDebug} from "@/lib/log.ts";
+import MarkdownPreview from "@/components/markdown/MarkdownPreview.vue";
 
 export async function openReleaseVersionInfo(projectId: string, versionId: string) {
   const version = ref<ReleaseVersion | null>();
@@ -54,10 +54,10 @@ export async function openReleaseVersionInfo(projectId: string, versionId: strin
         </Descriptions>
       </TabPanel>
       <TabPanel label={'日志'} value={2}>
-        <MarkdownEditor v-model={content.value}/>
+        <MarkdownPreview content={content.value}/>
       </TabPanel>
       <TabPanel label={'物料'} value={3}>
-        <ReleaseAsset projectId={projectId} scope={'version'} scopeId={versionId}/>
+        <ReleaseAsset projectId={projectId} scope={'version'} scopeId={versionId} readOnly={true}/>
       </TabPanel>
     </Tabs>)
   })

@@ -38,7 +38,7 @@ export async function openReleaseInstanceInfo(projectId: string, instanceId: str
         </Descriptions>
       </TabPanel>
       <TabPanel label={'物料'}>
-        <ReleaseAsset projectId={projectId} scope={'instance'} scopeId={instanceId}/>
+        <ReleaseAsset projectId={projectId} scope={'instance'} scopeId={instanceId} readOnly={true}/>
       </TabPanel>
     </Tabs>)
   })

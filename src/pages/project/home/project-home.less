@@ -91,41 +91,9 @@
 .page-main {
   margin: 0 auto;
   padding: 8px;
-}
-
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  display: flex;
+  flex-direction: column;
   gap: 8px;
-  margin-bottom: 8px;
-}
-
-.stat-card {
-  background: var(--td-bg-color-container);
-  border: 1px solid var(--td-component-stroke);
-  border-radius: 8px;
-  padding: 16px;
-}
-
-.stat-label {
-  font-size: 12px;
-  color: var(--td-text-color-secondary);
-  margin-bottom: 4px;
-}
-
-.stat-value {
-  font-size: 24px;
-  font-weight: 600;
-  color: var(--td-text-color-primary);
-  font-family: 'JetBrains Mono', monospace;
-
-  &.accent-green {
-    color: var(--td-success-color);
-  }
-
-  &.accent-blue {
-    color: var(--td-brand-color);
-  }
 }
 
 .matrix-container {
@@ -150,13 +118,13 @@
   position: sticky;
   z-index: 10;
   padding: 0;
-  width: 200px;
 
   &.version-header {
     left: 0;
     z-index: 20;
-    min-width: 200px;
-    max-width: 200px;
+    width: 150px;
+    min-width: 150px;
+    max-width: 150px;
   }
 
   &.instance-header {
@@ -250,23 +218,28 @@
 .version-cell {
   cursor: pointer;
   transition: background 0.15s ease;
-  max-width: 200px;
+  width: 150px;
+  min-width: 150px;
+  max-width: 150px;
 }
 
 .version-info {
   padding: 12px 16px;
+  overflow: hidden;
 }
 
 .version-badge {
   display: inline-flex;
   align-items: center;
   gap: 8px;
+  overflow: hidden;
 }
 
 .version-dot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
+  flex-shrink: 0;
 
   &.latest {
     background: var(--td-success-color);
@@ -286,6 +259,9 @@
   font-weight: 500;
   color: var(--td-text-color-primary);
   font-family: 'JetBrains Mono', monospace;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .version-meta {

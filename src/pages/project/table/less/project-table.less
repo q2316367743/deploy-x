@@ -32,8 +32,9 @@
   &.version-header {
     left: 0;
     z-index: 20;
-    min-width: 200px;
-    max-width: 200px;
+    width: 150px;
+    min-width: 150px;
+    max-width: 150px;
   }
 
   &.instance-header {
@@ -127,23 +128,28 @@
 .version-cell {
   cursor: pointer;
   transition: background 0.15s ease;
-  max-width: 200px;
+  width: 150px;
+  min-width: 150px;
+  max-width: 150px;
 }
 
 .version-info {
   padding: 12px 16px;
+  overflow: hidden;
 }
 
 .version-badge {
   display: inline-flex;
   align-items: center;
   gap: 8px;
+  overflow: hidden;
 }
 
 .version-dot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
+  flex-shrink: 0;
 
   &.latest {
     background: var(--td-success-color);
@@ -163,6 +169,9 @@
   font-weight: 500;
   color: var(--td-text-color-primary);
   font-family: 'JetBrains Mono', monospace;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .version-meta {

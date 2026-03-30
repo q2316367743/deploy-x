@@ -3,7 +3,7 @@
     <t-aside class="asset-sidebar">
       <div class="sidebar-header">
         <span class="sidebar-title">附件文件</span>
-        <t-dropdown trigger="click">
+        <t-dropdown v-if="!readOnly" trigger="click">
           <t-button theme="primary" variant="text" size="small" shape="square">
             <template #icon>
               <add-icon/>
@@ -125,6 +125,11 @@ const props = defineProps({
   scopeId: {
     type: String,
     required: true,
+  },
+  readOnly: {
+    type: Boolean,
+    required: false,
+    default: false
   }
 });
 
@@ -211,6 +216,7 @@ const onSelect = (value: string) => {
 };
 
 const handleContextMenu = async ({node, e}: { node: AssetTreeNode, e: PointerEvent }) => {
+  if (props.readOnly) return;
   const asset = items.value.find(item => item.id === node.value);
   if (!asset) return;
 
