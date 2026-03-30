@@ -1,25 +1,25 @@
 <template>
-  <div class="pv-aside">
-    <div class="pva-header">
-      <t-button theme="primary" block @click="handleAdd">创建版本</t-button>
+  <div class="pi-aside">
+    <div class="pia-header">
+      <t-button theme="primary" block @click="handleAdd()">创建实例</t-button>
     </div>
-    <div class="pva-body">
-      <div v-for="version in versions" :class="['pva-item', {active: modelValue === version.id}]" :key="version.id"
-           @click="handleSelect(version)">
-        <div class="pva-item-title">{{ version.version }}</div>
+    <div class="pia-body">
+      <div v-for="instance in instances" :class="['pia-item', {active: modelValue === instance.id}]" :key="instance.id"
+           @click="handleSelect(instance)">
+        <div class="pia-item-title">{{ instance.name }}</div>
         <div class="flex justify-between">
-          <div class="pva-item-time">{{ formatDate(version.publish_time) }}</div>
-          <t-tag variant="outline" theme="primary" class="pva-item-user">{{ version.publish_user }}</t-tag>
+          <t-tag  variant="outline" theme="primary" class="pia-item-user">{{
+              instance.current_version_id || '暂未部署'
+            }}</t-tag>
         </div>
       </div>
     </div>
   </div>
 </template>
 <script lang="ts" setup>
-import type {ReleaseVersion} from "@/entity";
-import {listReleaseVersionService} from "@/service";
-import {formatDate} from "@/util/lang/FormatUtil.ts"
-import {openReleaseVersionAdd} from "@/pages/project/components/ReleaseVersionEdit.tsx";
+import type {ReleaseInstance} from "@/entity";
+import {listReleaseInstanceService} from "@/service";
+import {openReleaseInstanceAdd} from "@/pages/project/components/ReleaseInstanceEdit.tsx";
 
 const modelValue = defineModel({
   type: String,
@@ -30,22 +30,22 @@ const route = useRoute();
 
 const projectId = route.params.id as string;
 
-const versions = ref<Array<ReleaseVersion>>([]);
+const instances = ref<Array<ReleaseInstance>>([]);
 
 const init = async () => {
-  versions.value = await listReleaseVersionService(projectId);
+  instances.value = await listReleaseInstanceService(projectId);
 };
 
-const handleSelect = (version: ReleaseVersion) => {
-  if (modelValue.value === version.id) {
+const handleSelect = (instance: ReleaseInstance) => {
+  if (modelValue.value === instance.id) {
     modelValue.value = '';
     return;
   }
-  modelValue.value = version.id;
+  modelValue.value = instance.id;
 };
 
 const handleAdd = () => {
-  openReleaseVersionAdd(projectId, init);
+  openReleaseInstanceAdd(projectId, init);
 }
 
 onMounted(() => {
@@ -53,21 +53,21 @@ onMounted(() => {
 })
 </script>
 <style scoped lang="less">
-.pv-aside {
+.pi-aside {
   width: 232px;
   flex-shrink: 0;
   border-right: 1px solid var(--td-border-level-1-color);
 
-  .pva-header {
+  .pia-header {
     padding: 8px 8px 7px;
     border-bottom: 1px solid var(--td-border-level-1-color);
   }
 
-  .pva-body {
+  .pia-body {
     height: calc(100% - 48px);
     overflow: auto;
 
-    .pva-item {
+    .pia-item {
       border-bottom: 1px solid var(--td-border-level-1-color);
       padding: 8px;
       cursor: pointer;
@@ -81,7 +81,7 @@ onMounted(() => {
         background-color: var(--td-bg-color-container-active);
       }
 
-      .pva-item-title {
+      .pia-item-title {
         font-size: 1.1rem;
         font-weight: bold;
         display: flex;
@@ -98,8 +98,8 @@ onMounted(() => {
         }
       }
 
-      .pva-item-time {
-        color: var(--td-text-color-placeholder);
+      .pia-item-user {
+        margin-top: 4px;
       }
     }
   }

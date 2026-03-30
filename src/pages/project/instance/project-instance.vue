@@ -1,8 +1,43 @@
 <template>
-  <app-tool-layout title="实例管理"></app-tool-layout>
+  <app-tool-layout title="实例管理">
+    <div class="project-instance">
+      <pi-aside v-model="instanceId"></pi-aside>
+      <div class="pi-main">
+        <pi-main v-if="instanceId" :instance-id="instanceId"/>
+        <empty-result v-else title="请在左侧选择实例"/>
+      </div>
+    </div>
+  </app-tool-layout>
 </template>
 <script lang="ts" setup>
+import PiAside from "@/pages/project/instance/PiAside/PiAside.vue";
+import PiMain from "@/pages/project/instance/PiMain/PiMain.vue";
+
+const instanceId = ref('');
+const show = ref(true);
+
+watch(instanceId, (n, o) => {
+  if (n && o) {
+    show.value = false;
+    nextTick(() => {
+      show.value = true;
+    })
+  }
+})
 </script>
 <style scoped lang="less">
+.project-instance {
+  margin: 8px;
+  height: calc(100vh - 74px);
+  width: calc(100% - 16px);
+  background-color: var(--td-bg-color-container);
+  border-radius: 8px;
+  box-shadow: var(--td-shadow-1);
+  display: flex;
+  overflow: hidden;
 
+  .pi-main {
+    width: 100%;
+  }
+}
 </style>

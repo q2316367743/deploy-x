@@ -6,7 +6,12 @@ export async function addReleaseDeployService(prop: ReleaseDeployCore) {
     ...prop,
     created_at: Date.now(),
     updated_at: Date.now(),
-  })
+  });
+  // 修改当前版本
+  await useSql().mapper<ReleaseInstance>('release_instance')
+    .updateById(prop.instance_id, {
+      current_version_id: prop.version_id
+    })
 }
 
 /**

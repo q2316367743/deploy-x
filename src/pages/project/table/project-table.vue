@@ -94,10 +94,10 @@ import {openReleaseInstanceInfo} from "./func/ReleaseInstanceInfo.tsx";
 import {openReleaseVersionInfo} from "./func/ReleaseVersionInfo.tsx";
 import {
   openReleaseInstanceAdd, openReleaseInstanceContextmenu,
-} from "./func/ReleaseInstanceEdit.tsx";
+} from "../components/ReleaseInstanceEdit.tsx";
 import {
   openReleaseVersionAdd, openReleaseVersionContextmenu,
-} from "./func/ReleaseVersionEdit.tsx";
+} from "../components/ReleaseVersionEdit.tsx";
 import {openReleaseDeployInfo} from "./func/ReleaseDeployInfo.tsx";
 import {openReleaseDeployAdd} from "./func/ReleaseDeployEdit.tsx";
 import {
