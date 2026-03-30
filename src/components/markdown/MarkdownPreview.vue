@@ -31,6 +31,11 @@ const theme = computed(() => isDark.value ? "dark" : "light")
   color: #252933;
   word-wrap: break-word;
 
+
+  :deep(.md-editor) {
+    background-color: transparent !important;
+  }
+
   :deep(h1), :deep(h2), :deep(h3),
   :deep(h4), :deep(h5), :deep(h6) {
     margin: 24px 0 16px;

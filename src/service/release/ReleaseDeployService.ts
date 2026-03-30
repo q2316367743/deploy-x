@@ -1,5 +1,13 @@
 import {useSql} from "@/lib/sql.ts";
-import type {ReleaseDeploy, ReleaseDeployCore} from "@/entity";
+import type {ReleaseDeploy, ReleaseDeployCore, ReleaseInstance} from "@/entity";
+
+export async function addReleaseDeployService(prop: ReleaseDeployCore) {
+  await useSql().mapper<ReleaseDeploy>('release_deploy').insert({
+    ...prop,
+    created_at: Date.now(),
+    updated_at: Date.now(),
+  })
+}
 
 /**
  * 获取发版列表
@@ -20,11 +28,30 @@ export function countReleaseDeploy(projectId: string) {
     .count();
 }
 
+export interface ReleaseDeployInstanceVersion extends ReleaseInstance {
 
-export async function addReleaseDeployService(prop: ReleaseDeployCore) {
-  await useSql().mapper<ReleaseDeploy>('release_deploy').insert({
-    ...prop,
-    created_at: Date.now(),
-    updated_at: Date.now(),
-  })
+  /**
+   * 部署时间
+   */
+  deploy_time: number;
+
+  /**
+   * 部署用户
+   */
+  deploy_user: string;
+
+}
+
+/**
+ * 获取指定版本的部署实例列表
+ * @param projectId
+ * @param versionId
+ */
+export async function listReleaseDeployByVersionId(projectId: string, versionId: string) {
+  return useSql().select<Array<ReleaseDeployInstanceVersion>>(`
+      select ri.*, rd.deploy_time, rd.deploy_user
+      from release_deploy rd
+               left join release_instance ri on rd.instance_id = ri.id
+      where rd.project_id = '${projectId}'
+        and rd.version_id = '${versionId}'`);
 }
