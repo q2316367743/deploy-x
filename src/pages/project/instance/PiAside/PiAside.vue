@@ -8,17 +8,17 @@
            @click="handleSelect(instance)">
         <div class="pia-item-title">{{ instance.name }}</div>
         <div class="flex justify-between">
-          <t-tag  variant="outline" theme="primary" class="pia-item-user">{{
-              instance.current_version_id || '暂未部署'
-            }}</t-tag>
+          <t-tag v-if="instance.current_version_id" variant="outline" theme="primary" class="pia-item-version">
+            {{ instance.version }}
+          </t-tag>
+          <t-tag v-else variant="outline" theme="warning" class="pia-item-version">暂未部署</t-tag>
         </div>
       </div>
     </div>
   </div>
 </template>
 <script lang="ts" setup>
-import type {ReleaseInstance} from "@/entity";
-import {listReleaseInstanceService} from "@/service";
+import {listReleaseInstanceWithVersion, type ReleaseInstanceWithVersion} from "@/service";
 import {openReleaseInstanceAdd} from "@/pages/project/components/ReleaseInstanceEdit.tsx";
 
 const modelValue = defineModel({
@@ -30,13 +30,13 @@ const route = useRoute();
 
 const projectId = route.params.id as string;
 
-const instances = ref<Array<ReleaseInstance>>([]);
+const instances = ref<Array<ReleaseInstanceWithVersion>>([]);
 
 const init = async () => {
-  instances.value = await listReleaseInstanceService(projectId);
+  instances.value = await listReleaseInstanceWithVersion(projectId);
 };
 
-const handleSelect = (instance: ReleaseInstance) => {
+const handleSelect = (instance: ReleaseInstanceWithVersion) => {
   if (modelValue.value === instance.id) {
     modelValue.value = '';
     return;
@@ -98,7 +98,7 @@ onMounted(() => {
         }
       }
 
-      .pia-item-user {
+      .pia-item-version {
         margin-top: 4px;
       }
     }

@@ -3,7 +3,7 @@
     <div class="project-instance">
       <pi-aside v-model="instanceId"></pi-aside>
       <div class="pi-main">
-        <pi-main v-if="instanceId" :instance-id="instanceId"/>
+        <pi-main v-if="instanceId && show" :instance-id="instanceId"/>
         <empty-result v-else title="请在左侧选择实例"/>
       </div>
     </div>

@@ -31,13 +31,28 @@ export async function listReleaseInstanceService(projectId: string) {
   return useSql().query<ReleaseInstance>('release_instance').eq('project_id', projectId).list();
 }
 
+export interface ReleaseInstanceWithVersion extends ReleaseInstance {
+  version: string;
+  publish_time: number;
+  publish_user: string;
+}
+
+export async function listReleaseInstanceWithVersion(projectId: string) {
+  return useSql().select<Array<ReleaseInstanceWithVersion>>(`
+      select ri.*, rv.version, rv.publish_time, rv.publish_user
+      from release_instance ri
+               left join release_version rv on ri.current_version_id = rv.id
+      where ri.project_id = '${projectId}'
+  `);
+}
+
 export async function countReleaseInstance(projectId: string) {
   return useSql().query<ReleaseInstance>('release_instance')
     .eq('project_id', projectId).count();
 }
 
 export async function getReleaseInstanceService(id: string, projectId: string) {
-  return useSql().query<ReleaseInstance>('release_instance').eq('id', id).eq('project_id', projectId).one();
+  return useSql().query<ReleaseInstance>('release_instance').eq('id', id).eq('project_id', projectId).get();
 }
 
 export interface ReleaseInstanceVersion {
@@ -74,7 +89,6 @@ export async function groupReleaseInstanceVersion(projectId: string) {
                                    INNER JOIN
                                release_version rv ON rd.version_id = rv.id) rv ON rv.instance_id = ri.id AND rv.rn = 1
       where ri.project_id = ${projectId}
-
   `);
 }
 

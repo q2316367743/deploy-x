@@ -3,7 +3,7 @@
     <t-aside class="asset-sidebar">
       <div class="sidebar-header">
         <span class="sidebar-title">附件文件</span>
-        <t-dropdown v-if="!readOnly" trigger="click">
+        <t-dropdown v-if="!readOnly" trigger="click" placement="bottom">
           <t-button theme="primary" variant="text" size="small" shape="square">
             <template #icon>
               <add-icon/>

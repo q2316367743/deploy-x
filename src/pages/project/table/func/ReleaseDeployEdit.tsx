@@ -34,7 +34,8 @@ export function openReleaseDeployAdd(prop: ReleaseDeployAddProp) {
         <Input v-model={data.value.deploy_user} clearable placeholder="请输入部署用户"/>
       </FormItem>
       <FormItem label={'部署时间'} labelAlign={"top"}>
-        <DatePicker v-model={data.value.deploy_time} clearable placeholder="请输入部署时间"/>
+        <DatePicker v-model={data.value.deploy_time} placeholder="请输入部署时间" enableTimePicker={true}
+                    format={"YYYY-MM-DD HH:mm"}/>
       </FormItem>
     </Form>),
     onConfirm() {

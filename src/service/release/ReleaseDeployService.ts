@@ -1,9 +1,11 @@
 import {useSql} from "@/lib/sql.ts";
 import type {ReleaseDeploy, ReleaseDeployCore, ReleaseInstance} from "@/entity";
+import dayjs from "dayjs";
 
 export async function addReleaseDeployService(prop: ReleaseDeployCore) {
   await useSql().mapper<ReleaseDeploy>('release_deploy').insert({
     ...prop,
+    deploy_time: dayjs(version.publish_time).toDate().getTime(),
     created_at: Date.now(),
     updated_at: Date.now(),
   });

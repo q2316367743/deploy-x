@@ -65,3 +65,19 @@ export async function listReleaseVersionDeploy(props: ReleaseVersionDeployProp) 
     .orderByAsc('publish_time')
     .list();
 }
+
+export interface ReleaseVersionDeploy extends ReleaseVersion {
+  deploy_time: number;
+  deploy_user: string
+}
+
+export function listReleaseVersionByInstanceId(instanceId: string, projectId: string) {
+  return useSql().select<Array<ReleaseVersionDeploy>>(`
+      select rv.*, rd.deploy_time, rd.deploy_user
+      from release_deploy rd
+               left join release_version rv on rd.version_id = rv.id
+      where rd.instance_id = '${instanceId}'
+        and rd.project_id = '${projectId}'
+      order by rv.publish_time desc
+  `);
+}
