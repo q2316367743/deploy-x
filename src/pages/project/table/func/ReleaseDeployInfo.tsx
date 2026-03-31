@@ -1,15 +1,14 @@
-import type {ReleaseDeploy, ReleaseVersion, ReleaseVersionLog, ReleaseAssetMeta, ReleaseInstance} from "@/entity";
+import type {ReleaseDeploy, ReleaseVersion, ReleaseAssetMeta, ReleaseInstance} from "@/entity";
 import {group, map} from "@/util";
 import MessageUtil from "@/util/model/MessageUtil.ts";
 import {
   listReleaseAssetMeta,
   listReleaseAssetMetas,
   listReleaseVersionDeploy,
-  listReleaseVersionLog
 } from "@/service";
 import {TabPanel, Tabs} from "tdesign-vue-next";
-import VersionTimeline from "@/pages/project/table/components/VersionTimeline.vue";
 import AssetPreviewPanel from "@/pages/project/table/components/AssetPreviewPanel.vue";
+import VersionLogInfo from "@/pages/project/components/VersionLogInfo.vue";
 
 interface ReleaseDeployInfoProp {
   deploy: ReleaseDeploy;
@@ -44,12 +43,10 @@ export async function openReleaseDeployInfo(prop: ReleaseDeployInfoProp) {
     deployTimeEnd: endTime
   });
   const versionIds = allVersions.map(e => e.id);
-  const versionLogMap = ref(new Map<string, ReleaseVersionLog>());
   const assetMetaVersionMap = ref(new Map<string, Array<ReleaseAssetMeta>>());
   const assetMetaInstances = ref(new Array<ReleaseAssetMeta>());
 
   if (allVersions.length > 0) {
-    versionLogMap.value = map(await listReleaseVersionLog(versionIds), 'id');
     assetMetaVersionMap.value = group(await listReleaseAssetMetas(deploy.project_id, 'version', versionIds), 'scope_id');
   }
 
@@ -76,7 +73,7 @@ export async function openReleaseDeployInfo(prop: ReleaseDeployInfoProp) {
         <div class="deploy-content">
           <Tabs defaultValue={1}>
             <TabPanel label={'更新日志'} value={1}>
-              <VersionTimeline versions={allVersions} logMap={versionLogMap.value}/>
+              <VersionLogInfo versionIds={versionIds}/>
             </TabPanel>
             <TabPanel label={'更新物料'} value={2} destroyOnHide>
               <AssetPreviewPanel

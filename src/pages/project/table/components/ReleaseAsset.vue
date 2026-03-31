@@ -84,6 +84,7 @@
             v-else
             v-model="editorContent"
             :language="editorLanguage"
+            :readonly="readOnly"
             height="100%"
           />
         </div>

@@ -33,7 +33,7 @@ export async function addReleaseVersionService(projectId: string, version: Parti
   await useSql().mapper<ReleaseVersionLog>('release_version_log').insertSelf({
     project_id: projectId,
     id,
-    content: '',
+    content: '[]',
   })
 }
 
