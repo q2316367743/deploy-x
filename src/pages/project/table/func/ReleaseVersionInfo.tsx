@@ -1,7 +1,7 @@
 import {getReleaseVersionService, listReleaseAssetMeta} from "@/service";
 import type {ReleaseVersion, ReleaseAssetMeta} from "@/entity";
 import MessageUtil from "@/util/model/MessageUtil.ts";
-import {Descriptions, DescriptionsItem, DialogPlugin, TabPanel, Tabs} from "tdesign-vue-next";
+import {Descriptions, DescriptionsItem, TabPanel, Tabs} from "tdesign-vue-next";
 import ReleaseAsset from "@/pages/project/table/components/ReleaseAsset.vue";
 import {getReleaseVersionLog, saveReleaseVersionLog} from "@/service";
 import {logDebug} from "@/lib/log.ts";
@@ -30,14 +30,11 @@ export async function openReleaseVersionInfo(projectId: string, versionId: strin
     })
     .catch(e => MessageUtil.error("获取版本错误", e));
 
-  DialogPlugin({
+  DrawerPlugin({
     header: false,
     footer: false,
-    placement: "center",
-    width: '80vw',
-    closeOnEscKeydown: false,
-    closeOnOverlayClick: false,
-    dialogClassName: "release-version-info",
+    size: '80vw',
+    drawerClassName: "release-version-info",
     default: () => (<Tabs defaultValue={1}>
       <TabPanel label={'基本信息'} value={1}>
         <Descriptions column={1} layout={'vertical'}>

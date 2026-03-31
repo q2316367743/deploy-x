@@ -7,7 +7,7 @@ import {
   listReleaseVersionDeploy,
   listReleaseVersionLog
 } from "@/service";
-import {DialogPlugin, TabPanel, Tabs} from "tdesign-vue-next";
+import {TabPanel, Tabs} from "tdesign-vue-next";
 import VersionTimeline from "@/pages/project/table/components/VersionTimeline.vue";
 import AssetPreviewPanel from "@/pages/project/table/components/AssetPreviewPanel.vue";
 
@@ -55,14 +55,11 @@ export async function openReleaseDeployInfo(prop: ReleaseDeployInfoProp) {
 
   assetMetaInstances.value = await listReleaseAssetMeta(deploy.project_id, 'instance', instance.id);
 
-  DialogPlugin({
+  DrawerPlugin({
     header: false,
     footer: false,
-    placement: "center",
-    width: '80vw',
-    closeOnEscKeydown: false,
-    closeOnOverlayClick: false,
-    dialogClassName: "release-deploy-info",
+    size: '1080px',
+    drawerClassName: "release-deploy-info",
     default: () => (
       <div class={'deploy-info'}>
         <div class="deploy-header">
@@ -87,7 +84,7 @@ export async function openReleaseDeployInfo(prop: ReleaseDeployInfoProp) {
                 versionAssets={new Map(
                   Array.from(assetMetaVersionMap.value.entries()).map(([versionId, assets]) => [
                     versionId,
-                    { version: versionMap.get(versionId)?.version ?? versionId, assets }
+                    {version: versionMap.get(versionId)?.version ?? versionId, assets}
                   ])
                 )}
               />

@@ -1,7 +1,7 @@
 <template>
   <t-layout class="release-asset-container">
     <t-aside class="asset-sidebar">
-      <div class="sidebar-header">
+      <div v-if="!readOnly" class="sidebar-header">
         <span class="sidebar-title">附件文件</span>
         <t-dropdown v-if="!readOnly" trigger="click" placement="bottom">
           <t-button theme="primary" variant="text" size="small" shape="square">
@@ -42,7 +42,7 @@
     </t-aside>
     <t-content class="asset-content">
       <div v-if="selectedAsset" class="editor-wrapper">
-        <div class="editor-header">
+        <div v-if="!readOnly" class="editor-header">
           <div class="header-left">
             <t-input
               v-model="selectedAsset.file_name"
@@ -90,7 +90,7 @@
       </div>
       <div v-else class="empty-state">
         <t-icon name="file" size="48px"/>
-        <p>选择一个文件开始编辑</p>
+        <p>选择一个文件开始{{ readOnly ? '查看' : '编辑'}}</p>
       </div>
     </t-content>
   </t-layout>
@@ -207,6 +207,11 @@ const treeMeta = computed(() => {
 });
 
 const onSelect = (value: string) => {
+  if (selectedId.value === value) {
+    selectedAsset.value = undefined;
+    selectedId.value = '';
+    return;
+  }
   const asset = items.value.find(e => e.id === value);
   if (asset) {
     selectedAsset.value = asset;

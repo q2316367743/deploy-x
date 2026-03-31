@@ -2,7 +2,7 @@ import {getReleaseInstanceService} from "@/service";
 import type {ReleaseInstance, ReleaseAssetMeta} from "@/entity";
 import MessageUtil from "@/util/model/MessageUtil.ts";
 import {listReleaseAssetMeta} from "@/service";
-import {Descriptions, DescriptionsItem, DialogPlugin, TabPanel, Tabs} from "tdesign-vue-next";
+import {Descriptions, DescriptionsItem, TabPanel, Tabs} from "tdesign-vue-next";
 import ReleaseAsset from "@/pages/project/table/components/ReleaseAsset.vue";
 
 export async function openReleaseInstanceInfo(projectId: string, instanceId: string) {
@@ -18,14 +18,11 @@ export async function openReleaseInstanceInfo(projectId: string, instanceId: str
     .then(res => metas.value = res)
     .catch(e => MessageUtil.error("获取附件错误", e));
 
-  DialogPlugin({
+  DrawerPlugin({
     header: false,
     footer: false,
-    placement: "center",
-    width: '80vw',
-    closeOnEscKeydown: false,
-    closeOnOverlayClick: false,
-    dialogClassName: "release-instance-info",
+    size: '1080px',
+    drawerClassName: "release-instance-info",
     default: () => (<Tabs defaultValue={1}>
       <TabPanel label={'基本信息'} value={1}>
         <Descriptions column={1} layout={'vertical'}>

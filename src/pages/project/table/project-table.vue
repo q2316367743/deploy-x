@@ -18,7 +18,27 @@
       </t-space>
     </template>
     <main class="page-main">
-      <div class="matrix-container">
+      <div class="table-wrapper">
+        <div class="legend-bar">
+          <span class="legend-label">图例：</span>
+          <div class="legend-item">
+            <div class="legend-dot current"></div>
+            <span>当前部署版本</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-dot upgrade"></div>
+            <span>可升级版本（点击部署）</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-dot old"></div>
+            <span>已经过的旧版本</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-dot empty"></div>
+            <span>未到达版本</span>
+          </div>
+        </div>
+
         <div class="matrix-scroll">
           <table class="matrix-table">
             <thead>
@@ -38,6 +58,9 @@
                     <span class="instance-name">{{ instance.name }}</span>
                   </div>
                   <div v-if="instance.desc" class="instance-desc">{{ instance.desc }}</div>
+                  <div class="instance-current-ver">
+                    当前 {{ getInstanceCurrentVersion(instance.id) }}
+                  </div>
                 </div>
               </th>
             </tr>
@@ -55,6 +78,7 @@
                   <div class="version-badge">
                     <span class="version-dot" :class="getVersionStatus(vIndex)"></span>
                     <span class="version-number">{{ version.version }}</span>
+                    <span v-if="vIndex === 0" class="latest-badge">最新</span>
                   </div>
                   <div class="version-meta">
                     <span class="version-time">{{ formatDate(version.publish_time) }}</span>
@@ -62,29 +86,28 @@
                 </div>
               </td>
               <td v-for="instance in instances" :key="`${instance.id}-${version.id}`"
-                  class="matrix-td"
-                  :class="getCellClass(instance.id, version.id)">
-                <t-button v-if="deployMap.has(`${instance.id}-${version.id}`)"
-                          theme="success" variant="outline"
-                          @click="openReleaseDeployInfo({deploy: deployMap.get(`${instance.id}-${version.id}`)!, instance, versions, deployItems})">
-                  <template #icon>
-                    <check-icon/>
-                  </template>
-                  已部署
-                </t-button>
-                <t-button v-else-if="canDeploy(instance.id, version.id)"
-                          theme="success"
-                          class="deploy-action-btn"
-                          @click="addDeploy(instance.id, version.id)">
-                  部署
-                </t-button>
+                  class="matrix-td">
+                <div v-if="deployMap.has(`${instance.id}-${version.id}`)"
+                     class="cell-content cell-current"
+                     @click="openReleaseDeployInfo({deploy: deployMap.get(`${instance.id}-${version.id}`)!, instance, versions, deployItems})">
+                  {{ version.version }}
+                </div>
+                <div v-else-if="canDeploy(instance.id, version.id)"
+                     class="cell-content cell-upgrade"
+                     @click="addDeploy(instance.id, version.id)">
+                  升级
+                </div>
+                <div v-else-if="isOldVersion(instance.id, version.id)"
+                     class="cell-content cell-old">
+                  已过
+                </div>
+                <div v-else class="cell-content cell-empty"></div>
               </td>
             </tr>
             </tbody>
           </table>
         </div>
       </div>
-
     </main>
   </app-tool-layout>
 </template>
@@ -105,7 +128,7 @@ import {
   listReleaseInstanceService,
   listReleaseVersionService
 } from "@/service";
-import {AddIcon, CheckIcon} from "tdesign-icons-vue-next";
+import {AddIcon} from "tdesign-icons-vue-next";
 import {formatDate} from "@/util/lang/FormatUtil.ts";
 import {map} from "@/util";
 import MessageUtil from "@/util/model/MessageUtil.ts";
@@ -128,12 +151,11 @@ const getVersionStatus = (index: number) => {
   return 'old';
 };
 
-const getCellClass = (instanceId: string, versionId: string) => {
-  const isDeployed = deployMap.value.has(`${instanceId}-${versionId}`);
-  if (isDeployed) {
-    return 'cell-current';
-  }
-  return '';
+const getInstanceCurrentVersion = (instanceId: string) => {
+  const deploy = deployItems.value.find(d => d.instance_id === instanceId);
+  if (!deploy) return '-';
+  const version = versions.value.find(v => v.id === deploy.version_id);
+  return version?.version ?? '-';
 };
 
 const canDeploy = (instanceId: string, versionId: string) => {
@@ -143,6 +165,15 @@ const canDeploy = (instanceId: string, versionId: string) => {
     return true;
   }
   return targetVersionIndex < currentVersionIndex;
+};
+
+const isOldVersion = (instanceId: string, versionId: string) => {
+  const currentVersionIndex = versions.value.findIndex(v => deployMap.value.has(`${instanceId}-${v.id}`));
+  const targetVersionIndex = versions.value.findIndex(v => v.id === versionId);
+  if (currentVersionIndex === -1) {
+    return false;
+  }
+  return targetVersionIndex > currentVersionIndex;
 };
 
 const addDeploy = (instanceId: string, versionId: string) => {
@@ -168,9 +199,7 @@ const listDeploy = async () => {
 
 onMounted(async () => {
   try {
-    // 先获取实例和版本列表
     await Promise.all([listInstance(), listVersion()]);
-    // 再获取部署列表
     await listDeploy();
   } catch (e) {
     MessageUtil.error("获取项目失败", e);
