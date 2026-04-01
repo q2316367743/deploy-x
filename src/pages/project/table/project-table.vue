@@ -86,9 +86,13 @@
               </td>
               <td v-for="instance in instances" :key="`${instance.instance_id}-${version.id}`"
                   class="matrix-td">
-                <div v-if="deployMap.has(`${instance.instance_id}-${version.id}`)"
+                <div v-if="isLatestDeployedVersion(instance.instance_id, version.id)"
                      class="cell-content cell-current"
                      @click="openReleaseDeployInfo({deploy: deployMap.get(`${instance.instance_id}-${version.id}`)!, instance, versions, deployItems})">
+                  {{ version.version }}
+                </div>
+                <div v-else-if="deployMap.has(`${instance.instance_id}-${version.id}`)"
+                     class="cell-content cell-old">
                   {{ version.version }}
                 </div>
                 <div v-else-if="canDeploy(instance.instance_id, version.id)"
@@ -150,22 +154,29 @@ const getVersionStatus = (index: number) => {
   return 'old';
 };
 
+const isLatestDeployedVersion = (instanceId: string, versionId: string) => {
+  const deployedVersions = versions.value.filter(v => deployMap.value.has(`${instanceId}-${v.id}`));
+  if (deployedVersions.length === 0) return false;
+  const latestDeployedIndex = Math.min(...deployedVersions.map(v => versions.value.findIndex(ver => ver.id === v.id)));
+  return versions.value[latestDeployedIndex]?.id === versionId;
+};
+
 const canDeploy = (instanceId: string, versionId: string) => {
-  const currentVersionIndex = versions.value.findIndex(v => deployMap.value.has(`${instanceId}-${v.id}`));
+  if (deployMap.value.has(`${instanceId}-${versionId}`)) return false;
+  const deployedVersions = versions.value.filter(v => deployMap.value.has(`${instanceId}-${v.id}`));
+  if (deployedVersions.length === 0) return true;
+  const latestDeployedIndex = Math.min(...deployedVersions.map(v => versions.value.findIndex(ver => ver.id === v.id)));
   const targetVersionIndex = versions.value.findIndex(v => v.id === versionId);
-  if (currentVersionIndex === -1) {
-    return true;
-  }
-  return targetVersionIndex < currentVersionIndex;
+  return targetVersionIndex < latestDeployedIndex;
 };
 
 const isOldVersion = (instanceId: string, versionId: string) => {
-  const currentVersionIndex = versions.value.findIndex(v => deployMap.value.has(`${instanceId}-${v.id}`));
+  if (deployMap.value.has(`${instanceId}-${versionId}`)) return false;
+  const deployedVersions = versions.value.filter(v => deployMap.value.has(`${instanceId}-${v.id}`));
+  if (deployedVersions.length === 0) return false;
+  const latestDeployedIndex = Math.min(...deployedVersions.map(v => versions.value.findIndex(ver => ver.id === v.id)));
   const targetVersionIndex = versions.value.findIndex(v => v.id === versionId);
-  if (currentVersionIndex === -1) {
-    return false;
-  }
-  return targetVersionIndex > currentVersionIndex;
+  return targetVersionIndex > latestDeployedIndex;
 };
 
 const addDeploy = (instanceId: string, versionId: string) => {
