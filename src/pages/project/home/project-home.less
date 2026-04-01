@@ -346,14 +346,20 @@
 }
 
 .cell-current {
-  background: var(--td-success-color);
-  color: var(--td-text-color-anti);
+  background: var(--td-bg-color-component);
+  color: var(--td-text-color-placeholder);
   box-shadow: var(--fluent-elevation-1);
 
-  &:hover {
-    transform: scale(1.02);
-    box-shadow: var(--fluent-elevation-2);
+  &.current {
+    background: var(--td-success-color);
+    color: var(--td-text-color-anti);
+    
+      &:hover {
+        transform: scale(1.01);
+        box-shadow: var(--fluent-elevation-2);
+      }
   }
+
 }
 
 .cell-upgrade {

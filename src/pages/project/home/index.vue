@@ -83,7 +83,7 @@
               <td v-for="instance in instances" :key="`${instance.instance_id}-${version.id}`"
                   class="matrix-td">
                 <div v-if="deployMap.has(`${instance.instance_id}-${version.id}`)"
-                     class="cell-content cell-current">
+                     class="cell-content cell-current" :class="{'current': instance.version_id === version.id}">
                   {{ version.version }}
                 </div>
                 <div v-else class="cell-content cell-empty"></div>
