@@ -6,7 +6,7 @@ import {
   listReleaseAssetMetas,
   listReleaseVersionDeploy, type ReleaseInstanceVersion,
 } from "@/service";
-import {TabPanel, Tabs} from "tdesign-vue-next";
+import {Card, Tag} from "tdesign-vue-next";
 import AssetPreviewPanel from "@/pages/project/table/components/AssetPreviewPanel.vue";
 import VersionLogInfo from "@/pages/project/components/VersionLogInfo.vue";
 
@@ -29,11 +29,13 @@ export async function openReleaseDeployInfo(prop: ReleaseDeployInfoProp) {
   const versionSet = new Set(deployItems
     .filter(e => e.instance_id === deploy.instance_id && e.id !== deploy.id)
     .map(e => e.version_id));
+  let previousVersion: ReleaseVersion | undefined;
   for (let i = versions.length - 1; i >= 0; i--) {
     const v = versions[i];
     if (!v) continue;
     if (versionSet.has(v.id)) {
       startTime = v.publish_time;
+      previousVersion = v;
       break;
     }
   }
@@ -52,46 +54,65 @@ export async function openReleaseDeployInfo(prop: ReleaseDeployInfoProp) {
 
   assetMetaInstances.value = await listReleaseAssetMeta(deploy.project_id, 'instance', instance.instance_id);
 
+  const currentVersion = versionMap.get(deploy.version_id);
+
   DrawerPlugin({
     header: false,
     footer: false,
-    size: '1080px',
+    size: '680px',
     drawerClassName: "release-deploy-info",
     default: () => (
       <div class={'deploy-info'}>
         <div class="deploy-header">
-          <div class="deploy-title">{instance.instance_name} - 部署详情</div>
-          <div class="deploy-meta">
-            <div class="meta-item">
-              <span>版本: {versionMap.get(deploy.version_id)?.version}</span>
+          <div class="header-main">
+            <div class="deploy-title">
+              <span class="title-icon">🚀</span>
+              <span class="title-text">{instance.instance_name}</span>
             </div>
-            <div class="meta-item">
-              <span>部署时间: {new Date(deploy.deploy_time).toLocaleString()}</span>
+            <div class="deploy-path">
+              <Tag variant="light" theme="warning">{previousVersion?.version || '初始'}</Tag>
+              <span class="path-arrow">→</span>
+              <Tag variant="light" theme="success">{currentVersion?.version}</Tag>
             </div>
           </div>
+          <Tag variant="outline" theme="primary">
+            <span class="time-icon">🕐</span>
+            {new Date(deploy.deploy_time).toLocaleString()}
+          </Tag>
         </div>
-        <div class="deploy-content">
-          <Tabs defaultValue={1}>
-            <TabPanel label={'更新日志'} value={1}>
-              <VersionLogInfo versionIds={versionIds}/>
-            </TabPanel>
-            <TabPanel label={'更新物料'} value={2} destroyOnHide>
-              <AssetPreviewPanel
-                assets={Array.from(assetMetaVersionMap.value.values()).flat()}
-                versionAssets={new Map(
-                  Array.from(assetMetaVersionMap.value.entries()).map(([versionId, assets]) => [
-                    versionId,
-                    {version: versionMap.get(versionId)?.version ?? versionId, assets}
-                  ])
-                )}
-              />
-            </TabPanel>
-            <TabPanel label={'实例物料'} value={3} destroyOnHide>
-              <AssetPreviewPanel
-                assets={assetMetaInstances.value}
-              />
-            </TabPanel>
-          </Tabs>
+
+        <div class="deploy-body">
+          <Card title="📝 更新日志" bordered shadow>
+            <VersionLogInfo versionIds={versionIds}/>
+          </Card>
+
+          <Card 
+            title="📦 更新物料" 
+            bordered 
+            shadow
+            subtitle={`${Array.from(assetMetaVersionMap.value.values()).flat().length} 项`}
+          >
+            <AssetPreviewPanel
+              assets={Array.from(assetMetaVersionMap.value.values()).flat()}
+              versionAssets={new Map(
+                Array.from(assetMetaVersionMap.value.entries()).map(([versionId, assets]) => [
+                  versionId,
+                  {version: versionMap.get(versionId)?.version ?? versionId, assets}
+                ])
+              )}
+            />
+          </Card>
+
+          <Card 
+            title="🖥️ 实例物料" 
+            bordered 
+            shadow
+            subtitle={`${assetMetaInstances.value.length} 项`}
+          >
+            <AssetPreviewPanel
+              assets={assetMetaInstances.value}
+            />
+          </Card>
         </div>
       </div>
     )
