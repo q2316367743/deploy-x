@@ -23,7 +23,7 @@ export async function openReleaseInstanceInfo(projectId: string, instanceId: str
     drawerClassName: "release-instance-info",
     default: () => (
       <div class="release-instance-container">
-        <Card title={'实例信息'}>
+        <Card title={'实例信息'} size={'small'}>
           <div class="info-card">
             <div class="info-card-content">
               <div class="info-item">
@@ -43,7 +43,7 @@ export async function openReleaseInstanceInfo(projectId: string, instanceId: str
           </div>
         </Card>
 
-        <Card title={'部署历史'}>
+        <Card title={'部署历史'} size={'small'}>
           <div class="version-history">
             {versions.value.length === 0 ? (
               <div class="empty-history">暂无部署记录</div>
@@ -65,11 +65,9 @@ export async function openReleaseInstanceInfo(projectId: string, instanceId: str
           </div>
         </Card>
 
-        <div class="asset-section-wrapper">
-          <div class="asset-content">
-            <ReleaseAssetList projectId={projectId} scope={'instance'} scopeId={instanceId}/>
-          </div>
-        </div>
+        <Card title={'附件列表'} size={'small'}>
+          <ReleaseAssetList projectId={projectId} scope={'instance'} scopeId={instanceId}/>
+        </Card>
       </div>
     )
   })

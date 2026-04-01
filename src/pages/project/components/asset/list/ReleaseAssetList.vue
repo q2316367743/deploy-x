@@ -1,36 +1,30 @@
 <template>
-  <t-card title="附件列表" class="release-asset-list-container">
-
-    <template #actions>
-      <t-button theme="primary" variant="text" :disabled="items.length === 0">打包下载</t-button>
-    </template>
-
-    <div class="list-content">
-      <t-loading :loading="loading">
-        <div v-if="items.length === 0" class="empty-state">
-          <t-icon name="file" size="48px"/>
-          <p>暂无附件</p>
-        </div>
-        <div v-else class="file-list">
-          <div
-            v-for="item in items"
-            :key="item.path"
-            class="file-item"
-            @click="handleFileClick(item)"
-          >
-            <div class="file-icon">
-              <file-word-icon v-if="item.file_type === 1"/>
-              <file-code-icon v-else-if="item.file_type === 2"/>
-              <file-icon v-else/>
-            </div>
-            <div class="file-name">{{ item.filename }}</div>
-            <t-tag variant="outline" theme="primary" size="small" class="file-meta">{{ ReleaseAssetListItemTypeLabel[item.file_type] || '未知类型' }}</t-tag>
+  <div class="release-asset-list">
+    <t-loading :loading="loading">
+      <div v-if="items.length === 0" class="empty-state">
+        <t-icon name="file" size="48px"/>
+        <p>暂无附件</p>
+      </div>
+      <div v-else class="file-list">
+        <div
+          v-for="item in items"
+          :key="item.path"
+          class="file-item"
+          @click="handleFileClick(item)"
+        >
+          <div class="file-icon">
+            <file-word-icon v-if="item.file_type === 1"/>
+            <file-code-icon v-else-if="item.file_type === 2"/>
+            <file-icon v-else/>
           </div>
+          <div class="file-name">{{ item.filename }}</div>
+          <t-tag variant="outline" theme="primary" size="small" class="file-meta">
+            {{ ReleaseAssetListItemTypeLabel[item.file_type] || '未知类型' }}
+          </t-tag>
         </div>
-      </t-loading>
-    </div>
-
-  </t-card>
+      </div>
+    </t-loading>
+  </div>
 </template>
 
 <script lang="ts" setup>

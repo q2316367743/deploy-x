@@ -19,7 +19,7 @@ export async function openReleaseVersionInfo(projectId: string, versionId: strin
     drawerClassName: "release-version-info",
     default: () => (
       <div class="release-version-container">
-        <Card title={'版本信息'}>
+        <Card title={'版本信息'} size={'small'}>
           <div class="info-card">
             <div class="info-card-content">
               <div class="info-item">
@@ -47,14 +47,12 @@ export async function openReleaseVersionInfo(projectId: string, versionId: strin
         </Card>
 
 
-        <Card title={'版本日志'}>
-          <VersionLogInfo versionIds={[versionId]}/></Card>
-
-        <div class="asset-section-wrapper">
-          <div class="asset-content">
-            <ReleaseAssetList projectId={projectId} scope={'version'} scopeId={versionId}/>
-          </div>
-        </div>
+        <Card title={'版本日志'} size={'small'}>
+          <VersionLogInfo versionIds={[versionId]} showTitle={false}/>
+        </Card>
+        <Card title={'附件列表'} size={'small'}>
+          <ReleaseAssetList projectId={projectId} scope={'version'} scopeId={versionId}/>
+        </Card>
       </div>
     )
   })
