@@ -92,7 +92,7 @@
                   {{ version.version }}
                 </div>
                 <div v-else-if="deployMap.has(`${instance.instance_id}-${version.id}`)"
-                     class="cell-content cell-old">
+                     class="cell-content cell-old-deploy">
                   {{ version.version }}
                 </div>
                 <div v-else-if="canDeploy(instance.instance_id, version.id)"
