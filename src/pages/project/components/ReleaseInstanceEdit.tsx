@@ -1,8 +1,8 @@
-import type {ReleaseInstance, ReleaseInstanceCore} from "@/entity";
+import type {ReleaseInstanceCore} from "@/entity";
 import {DialogPlugin, Form, FormItem, Input, Textarea} from "tdesign-vue-next";
 import {
   addReleaseInstanceService,
-  deleteReleaseInstanceService,
+  deleteReleaseInstanceService, type ReleaseInstanceVersion,
   updateReleaseInstanceService
 } from "@/service";
 import MessageUtil from "@/util/model/MessageUtil.ts";
@@ -10,7 +10,6 @@ import Ctx from '@imengyu/vue3-context-menu';
 import {isDark} from "@/global/Constants.ts";
 import {DeleteIcon, EditIcon} from "tdesign-icons-vue-next";
 import MessageBoxUtil from "@/util/model/MessageBoxUtil.tsx";
-import {cloneDeep} from "es-toolkit";
 
 export function openReleaseInstanceAdd(projectId: string, onUpdate: () => void) {
   const data = ref<ReleaseInstanceCore>({
@@ -44,8 +43,11 @@ export function openReleaseInstanceAdd(projectId: string, onUpdate: () => void) 
   })
 }
 
-export function openReleaseInstanceUpdate(instance: ReleaseInstance, onUpdate: () => void) {
-  const data = ref<ReleaseInstanceCore>(cloneDeep(instance));
+export function openReleaseInstanceUpdate(instance: ReleaseInstanceVersion, onUpdate: () => void) {
+  const data = ref<ReleaseInstanceCore>({
+    name: instance.instance_name,
+    desc: instance.instance_desc
+  });
   const dp = DialogPlugin({
     header: '更新实例',
     confirmBtn: '更新',
@@ -58,7 +60,7 @@ export function openReleaseInstanceUpdate(instance: ReleaseInstance, onUpdate: (
       </FormItem>
     </Form>),
     onConfirm() {
-      updateReleaseInstanceService(instance.id, data.value)
+      updateReleaseInstanceService(instance.instance_id, data.value)
         .then(() => {
           MessageUtil.success("更新成功");
           onUpdate();
@@ -72,7 +74,7 @@ export function openReleaseInstanceUpdate(instance: ReleaseInstance, onUpdate: (
 }
 
 
-export function openReleaseInstanceContextmenu(instance: ReleaseInstance, onUpdate: () => void, e: PointerEvent) {
+export function openReleaseInstanceContextmenu(instance: ReleaseInstanceVersion, onUpdate: () => void, e: PointerEvent) {
   e.stopPropagation();
   e.preventDefault();
   Ctx.showContextMenu({
@@ -92,7 +94,7 @@ export function openReleaseInstanceContextmenu(instance: ReleaseInstance, onUpda
         icon: () => <DeleteIcon class={'color-red'}/>,
         onClick: () => {
           MessageBoxUtil.confirm("是否删除实例？", "删除实例").then(() => {
-            deleteReleaseInstanceService(instance.id)
+            deleteReleaseInstanceService(instance.instance_id)
               .then(() => {
                 MessageUtil.success("删除成功");
                 onUpdate();

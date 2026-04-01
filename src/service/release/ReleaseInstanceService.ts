@@ -13,7 +13,7 @@ export async function addReleaseInstanceService(projectId: string, instance: Par
     updated_at: Date.now()
   });
   // 创建目录
-  await mkdir(joinPath(APP_DATA_ASSET_DIR(), 'instance', id));
+  await mkdir(joinPath(APP_DATA_ASSET_DIR(), projectId, 'instance', id), {recursive: true});
 }
 
 export async function updateReleaseInstanceService(id: string, instance: Partial<ReleaseInstanceCore & {

@@ -52,7 +52,7 @@ export async function openReleaseVersionInfo(projectId: string, versionId: strin
 
         <div class="asset-section-wrapper">
           <div class="asset-content">
-            <ReleaseAssetList scope={'version'} scopeId={versionId}/>
+            <ReleaseAssetList projectId={projectId} scope={'version'} scopeId={versionId}/>
           </div>
         </div>
       </div>

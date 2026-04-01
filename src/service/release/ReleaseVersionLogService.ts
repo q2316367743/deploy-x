@@ -21,6 +21,7 @@ export async function listReleaseVersionLog(ids: Array<string>): Promise<Array<R
       from release_version rv
                left join release_version_log rvl on rv.id = rvl.id
       where rv.id in ('${ids.join("','")}')
+      order by rv.publish_time desc
   `)
   return list.map(e => ({...e, content: JSON.parse(e.content)}));
 }

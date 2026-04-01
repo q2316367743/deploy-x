@@ -8,7 +8,7 @@ export type ReleaseAssetListItemType =
 
 export const ReleaseAssetListItemTypeLabel: Record<ReleaseAssetListItemType, string> = {
   1: '文档',
-  2: 'SQL',
+  2: '代码文件',
   3: '附件'
 };
 

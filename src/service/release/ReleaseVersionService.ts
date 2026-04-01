@@ -19,7 +19,7 @@ export async function addReleaseVersionService(projectId: string, version: Parti
     content: '[]',
   });
   // 创建目录
-  await mkdir(joinPath(APP_DATA_ASSET_DIR(), 'version', id));
+  await mkdir(joinPath(APP_DATA_ASSET_DIR(), projectId, 'version', id), {recursive: true});
 }
 
 export async function listReleaseVersionService(projectId: string, limit?: number) {

@@ -26,7 +26,7 @@
                 <template #prefix-icon>
                   <file-code-icon/>
                 </template>
-                SQL
+                代码文件
               </t-dropdown-item>
             </t-dropdown-menu>
           </t-dropdown>
@@ -222,18 +222,18 @@ const handleDelete = () => {
 
 const loadAssets = async () => {
   try {
-    items.value = await loadAssetList(props.scope, props.scopeId);
+    items.value = await loadAssetList(props.projectId, props.scope, props.scopeId);
   } catch (error) {
     MessageUtil.error("获取物料异常", error);
   }
 };
 
 const handleAddDocument = () => {
-  createAssetItem(props.scope, props.scopeId, 1, loadAssets)
+  createAssetItem(props.projectId, props.scope, props.scopeId, 1, loadAssets)
 };
 
 const handleAddSql = () => {
-  createAssetItem(props.scope, props.scopeId, 2, loadAssets)
+  createAssetItem(props.projectId, props.scope, props.scopeId, 2, loadAssets)
 };
 
 const handleAddOther = () => {

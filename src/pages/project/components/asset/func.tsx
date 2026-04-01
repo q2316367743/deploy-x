@@ -19,13 +19,14 @@ function parseAssetFilename(filename: string): ParseAssetFilenameResult {
   const typeStr = filename.substring(0, typeIndex);
   const name = filename.substring(typeIndex + 1);
   const type = typeStr === '1' ? 1 : typeStr === '2' ? 2 : 3;
+  console.log(filename, name, type)
   return {name: name, type: type};
 }
 
-export const loadAssetList = async (scope: ReleaseAssetScope, scopeId: string) => {
+export const loadAssetList = async (projectId: string, scope: ReleaseAssetScope, scopeId: string) => {
   const items = new Array<ReleaseAssetListItem>();
   // 获取路径
-  const folder = joinPath(APP_DATA_ASSET_DIR(), scope, scopeId);
+  const folder = joinPath(APP_DATA_ASSET_DIR(), projectId, scope, scopeId);
   const list = await readDir(folder, {baseDir: BaseDirectory.AppData});
   for (const item of list) {
     if (!item.isFile) continue;
@@ -43,10 +44,10 @@ export const loadAssetList = async (scope: ReleaseAssetScope, scopeId: string) =
   return items;
 };
 
-export const createAssetItem = async (scope: ReleaseAssetScope, scopeId: string, type: ReleaseAssetListItemType, onUpdate: () => void) => {
+export const createAssetItem = async (projectId: string, scope: ReleaseAssetScope, scopeId: string, type: ReleaseAssetListItemType, onUpdate: () => void) => {
   MessageBoxUtil.prompt("请输入文件名", `新增${ReleaseAssetListItemTypeLabel[type]}文件`)
     .then(name => {
-      const path = joinPath(APP_DATA_ASSET_DIR(), scope, scopeId, `${type}|${name}`);
+      const path = joinPath(APP_DATA_ASSET_DIR(), projectId, scope, scopeId, `${type}|${name}`);
       writeTextFile(path, '', {baseDir: BaseDirectory.AppData})
         .then(() => {
           onUpdate();

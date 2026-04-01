@@ -23,10 +23,8 @@
               <file-code-icon v-else-if="item.file_type === 2"/>
               <file-icon v-else/>
             </div>
-            <div class="file-info">
-              <div class="file-name">{{ item.filename }}</div>
-              <div class="file-meta">{{ ReleaseAssetListItemTypeLabel[item.file_type] || '未知类型' }}</div>
-            </div>
+            <div class="file-name">{{ item.filename }}</div>
+            <t-tag variant="outline" theme="primary" size="small" class="file-meta">{{ ReleaseAssetListItemTypeLabel[item.file_type] || '未知类型' }}</t-tag>
           </div>
         </div>
       </t-loading>
@@ -47,6 +45,10 @@ import {openAssertContentDialog} from "@/pages/project/components/asset/list/Ass
 import {loadAssetList} from "@/pages/project/components/asset/func.tsx";
 
 const props = defineProps({
+  projectId: {
+    type: String,
+    required: true,
+  },
   scopeId: {
     type: String,
     required: true,
@@ -63,7 +65,7 @@ const loading = ref(false);
 const loadAssets = async () => {
   loading.value = true;
   try {
-    items.value = await loadAssetList(props.scope, props.scopeId);
+    items.value = await loadAssetList(props.projectId, props.scope, props.scopeId);
   } catch (error) {
     MessageUtil.error("获取附件列表失败", error);
   } finally {

@@ -9,6 +9,9 @@ import type {
   ReleaseAssetContent,
   ReleaseAssetMeta
 } from "@/entity";
+import {mkdir} from "@tauri-apps/plugin-fs";
+import {joinPath} from "@/util/lang/FileUtil.ts";
+import {APP_DATA_ASSET_DIR} from "@/global/Constants.ts";
 
 export async function listReleaseProject() {
   const query = useSql().query<ReleaseProject>('release_project');
@@ -21,11 +24,13 @@ export async function getReleaseProject(id: string) {
 
 export async function addReleaseProject(project: ReleaseProjectCore) {
   const mapper = useSql().mapper<ReleaseProject>('release_project');
-  return mapper.insert({
+  const {id} = await mapper.insert({
     ...project,
     created_at: Date.now(),
     updated_at: Date.now()
   });
+  await mkdir(joinPath(APP_DATA_ASSET_DIR(), id, "version"), {recursive: true})
+  await mkdir(joinPath(APP_DATA_ASSET_DIR(), id, "instance"), {recursive: true})
 }
 
 export async function updateReleaseProject(id: string, project: Partial<ReleaseProject>) {

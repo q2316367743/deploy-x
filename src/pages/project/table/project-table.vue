@@ -48,18 +48,17 @@
                   <span class="th-label">版本 / 实例</span>
                 </div>
               </th>
-              <th v-for="instance in instances" :key="instance.id"
+              <th v-for="instance in instances" :key="instance.instance_id"
                   class="matrix-th instance-header clickable"
-                  @click="openReleaseInstanceInfo(instance.project_id, instance.id)"
+                  @click="openReleaseInstanceInfo(projectId, instance.instance_id)"
                   @contextmenu="openReleaseInstanceContextmenu(instance, listInstance, $event)">
                 <div class="th-content">
                   <div class="instance-header-info">
                     <div class="instance-indicator"></div>
-                    <span class="instance-name">{{ instance.name }}</span>
+                    <span class="instance-name">{{ instance.instance_name }}</span>
                   </div>
-                  <div v-if="instance.desc" class="instance-desc">{{ instance.desc }}</div>
                   <div class="instance-current-ver">
-                    当前 {{ getInstanceCurrentVersion(instance.id) }}
+                    当前 {{ instance.version_name }}
                   </div>
                 </div>
               </th>
@@ -85,19 +84,19 @@
                   </div>
                 </div>
               </td>
-              <td v-for="instance in instances" :key="`${instance.id}-${version.id}`"
+              <td v-for="instance in instances" :key="`${instance.instance_id}-${version.id}`"
                   class="matrix-td">
-                <div v-if="deployMap.has(`${instance.id}-${version.id}`)"
+                <div v-if="deployMap.has(`${instance.instance_id}-${version.id}`)"
                      class="cell-content cell-current"
-                     @click="openReleaseDeployInfo({deploy: deployMap.get(`${instance.id}-${version.id}`)!, instance, versions, deployItems})">
+                     @click="openReleaseDeployInfo({deploy: deployMap.get(`${instance.instance_id}-${version.id}`)!, instance, versions, deployItems})">
                   {{ version.version }}
                 </div>
-                <div v-else-if="canDeploy(instance.id, version.id)"
+                <div v-else-if="canDeploy(instance.instance_id, version.id)"
                      class="cell-content cell-upgrade"
-                     @click="addDeploy(instance.id, version.id)">
+                     @click="addDeploy(instance.instance_id, version.id)">
                   升级
                 </div>
-                <div v-else-if="isOldVersion(instance.id, version.id)"
+                <div v-else-if="isOldVersion(instance.instance_id, version.id)"
                      class="cell-content cell-old">
                   已过
                 </div>
@@ -112,7 +111,7 @@
   </app-tool-layout>
 </template>
 <script lang="ts" setup>
-import type {ReleaseInstance, ReleaseVersion, ReleaseDeploy} from "@/entity";
+import type {ReleaseVersion, ReleaseDeploy} from "@/entity";
 import {openReleaseInstanceInfo} from "./func/ReleaseInstanceInfo.tsx";
 import {openReleaseVersionInfo} from "./func/ReleaseVersionInfo.tsx";
 import {
@@ -124,9 +123,9 @@ import {
 import {openReleaseDeployInfo} from "./func/ReleaseDeployInfo.tsx";
 import {openReleaseDeployAdd} from "./func/ReleaseDeployEdit.tsx";
 import {
+  groupReleaseInstanceVersion,
   listReleaseDeployService,
-  listReleaseInstanceService,
-  listReleaseVersionService
+  listReleaseVersionService, type ReleaseInstanceVersion
 } from "@/service";
 import {AddIcon} from "tdesign-icons-vue-next";
 import {formatDate} from "@/util/lang/FormatUtil.ts";
@@ -138,7 +137,7 @@ const router = useRouter();
 
 const projectId = route.params.id as string;
 
-const instances = ref(new Array<ReleaseInstance>());
+const instances = ref(new Array<ReleaseInstanceVersion>());
 const versions = ref(new Array<ReleaseVersion>());
 const deployItems = ref(new Array<ReleaseDeploy>());
 const hoveredRow = ref('');
@@ -149,13 +148,6 @@ const getVersionStatus = (index: number) => {
   if (index === 0) return 'latest';
   if (index <= 2) return 'stable';
   return 'old';
-};
-
-const getInstanceCurrentVersion = (instanceId: string) => {
-  const deploy = deployItems.value.find(d => d.instance_id === instanceId);
-  if (!deploy) return '-';
-  const version = versions.value.find(v => v.id === deploy.version_id);
-  return version?.version ?? '-';
 };
 
 const canDeploy = (instanceId: string, versionId: string) => {
@@ -179,7 +171,7 @@ const isOldVersion = (instanceId: string, versionId: string) => {
 const addDeploy = (instanceId: string, versionId: string) => {
   openReleaseDeployAdd({
     instance_id: instanceId,
-    instanceName: instances.value.find(e => e.id === instanceId)?.name || instanceId,
+    instanceName: instances.value.find(e => e.instance_id === instanceId)?.instance_name || instanceId,
     version_id: versionId,
     versionName: versions.value.find(e => e.id === versionId)?.version || versionId,
     project_id: projectId,
@@ -188,7 +180,7 @@ const addDeploy = (instanceId: string, versionId: string) => {
 }
 
 const listInstance = async () => {
-  instances.value = await listReleaseInstanceService(projectId);
+  instances.value = await groupReleaseInstanceVersion(projectId);
 };
 const listVersion = async () => {
   versions.value = await listReleaseVersionService(projectId, 10);

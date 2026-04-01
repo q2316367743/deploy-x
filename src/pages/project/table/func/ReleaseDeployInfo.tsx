@@ -1,10 +1,10 @@
-import type {ReleaseDeploy, ReleaseVersion, ReleaseAssetMeta, ReleaseInstance} from "@/entity";
+import type {ReleaseDeploy, ReleaseVersion, ReleaseAssetMeta} from "@/entity";
 import {group, map} from "@/util";
 import MessageUtil from "@/util/model/MessageUtil.ts";
 import {
   listReleaseAssetMeta,
   listReleaseAssetMetas,
-  listReleaseVersionDeploy,
+  listReleaseVersionDeploy, type ReleaseInstanceVersion,
 } from "@/service";
 import {TabPanel, Tabs} from "tdesign-vue-next";
 import AssetPreviewPanel from "@/pages/project/table/components/AssetPreviewPanel.vue";
@@ -12,7 +12,7 @@ import VersionLogInfo from "@/pages/project/components/VersionLogInfo.vue";
 
 interface ReleaseDeployInfoProp {
   deploy: ReleaseDeploy;
-  instance: ReleaseInstance;
+  instance: ReleaseInstanceVersion;
   versions: Array<ReleaseVersion>;
   deployItems: Array<ReleaseDeploy>;
 }
@@ -50,7 +50,7 @@ export async function openReleaseDeployInfo(prop: ReleaseDeployInfoProp) {
     assetMetaVersionMap.value = group(await listReleaseAssetMetas(deploy.project_id, 'version', versionIds), 'scope_id');
   }
 
-  assetMetaInstances.value = await listReleaseAssetMeta(deploy.project_id, 'instance', instance.id);
+  assetMetaInstances.value = await listReleaseAssetMeta(deploy.project_id, 'instance', instance.instance_id);
 
   DrawerPlugin({
     header: false,
@@ -60,7 +60,7 @@ export async function openReleaseDeployInfo(prop: ReleaseDeployInfoProp) {
     default: () => (
       <div class={'deploy-info'}>
         <div class="deploy-header">
-          <div class="deploy-title">{instance.name} - 部署详情</div>
+          <div class="deploy-title">{instance.instance_name} - 部署详情</div>
           <div class="deploy-meta">
             <div class="meta-item">
               <span>版本: {versionMap.get(deploy.version_id)?.version}</span>
