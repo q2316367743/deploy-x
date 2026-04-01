@@ -8,14 +8,14 @@
     <div class="pvm-content">
       <PvmGeneral v-if="active === '1'" :project-id="projectId" :version-id="versionId"/>
       <PvmLog v-else-if="active === '2'" :project-id="projectId" :version-id="versionId"/>
-      <ReleaseAsset v-else-if="active === '3'" :scope-id="versionId" scope="version" :project-id="projectId"/>
+      <ReleaseAssetEdit v-else-if="active === '3'" :scope-id="versionId" scope="version" :project-id="projectId"/>
     </div>
   </div>
 </template>
 <script lang="ts" setup>
-import ReleaseAsset from "@/pages/project/table/components/ReleaseAsset.vue";
 import PvmLog from "@/pages/project/version/PvMain/components/PvmLog.vue";
 import PvmGeneral from "@/pages/project/version/PvMain/components/PvmGeneral.vue";
+import ReleaseAssetEdit from "@/pages/project/components/asset/edit/ReleaseAssetEdit.vue";
 
 const props = defineProps({
   versionId: {

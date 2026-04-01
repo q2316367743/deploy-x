@@ -1,6 +1,26 @@
 import type {ReleaseVersion, ReleaseVersionCore, ReleaseVersionLog} from "@/entity";
 import {useSql} from "@/lib/sql.ts";
 import dayjs from "dayjs";
+import {mkdir} from "@tauri-apps/plugin-fs";
+import {joinPath} from "@/util/lang/FileUtil.ts";
+import {APP_DATA_ASSET_DIR} from "@/global/Constants.ts";
+
+export async function addReleaseVersionService(projectId: string, version: Partial<ReleaseVersionCore>) {
+  const {id} = await useSql().mapper<ReleaseVersion>('release_version').insert({
+    ...version,
+    project_id: projectId,
+    publish_time: dayjs(version.publish_time).toDate().getTime(),
+    created_at: Date.now(),
+    updated_at: Date.now()
+  });
+  await useSql().mapper<ReleaseVersionLog>('release_version_log').insertSelf({
+    project_id: projectId,
+    id,
+    content: '[]',
+  });
+  // 创建目录
+  await mkdir(joinPath(APP_DATA_ASSET_DIR(), 'version', id));
+}
 
 export async function listReleaseVersionService(projectId: string, limit?: number) {
   const query = useSql().query<ReleaseVersion>('release_version')
@@ -20,21 +40,6 @@ export function countReleaseVersion(projectId: string) {
 
 export async function getReleaseVersionService(id: string, projectId: string) {
   return useSql().query<ReleaseVersion>('release_version').eq('id', id).eq('project_id', projectId).get();
-}
-
-export async function addReleaseVersionService(projectId: string, version: Partial<ReleaseVersionCore>) {
-  const {id} = await useSql().mapper<ReleaseVersion>('release_version').insert({
-    ...version,
-    project_id: projectId,
-    publish_time: dayjs(version.publish_time).toDate().getTime(),
-    created_at: Date.now(),
-    updated_at: Date.now()
-  });
-  await useSql().mapper<ReleaseVersionLog>('release_version_log').insertSelf({
-    project_id: projectId,
-    id,
-    content: '[]',
-  })
 }
 
 export async function updateReleaseVersionService(id: string, version: Partial<ReleaseVersionCore>) {

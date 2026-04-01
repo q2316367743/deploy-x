@@ -7,13 +7,13 @@
     </t-tabs>
     <div class="pi-main-content">
       <pim-general v-show="page === '1'" :instance-id="instanceId"/>
-      <ReleaseAsset v-show="page === '2'" :scope-id="instanceId" scope="instance" :project-id="projectId"/>
+      <ReleaseAssetEdit v-show="page === '2'" :scope-id="instanceId" scope="instance" :project-id="projectId"/>
     </div>
   </div>
 </template>
 <script lang="ts" setup>
 import PimGeneral from "@/pages/project/instance/PiMain/components/PimGeneral.vue";
-import ReleaseAsset from "@/pages/project/table/components/ReleaseAsset.vue";
+import ReleaseAssetEdit from "@/pages/project/components/asset/edit/ReleaseAssetEdit.vue";
 
 defineProps({
   instanceId: {

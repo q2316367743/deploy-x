@@ -3,7 +3,7 @@ import type {ReleaseInstance, ReleaseAssetMeta} from "@/entity";
 import MessageUtil from "@/util/model/MessageUtil.ts";
 import {listReleaseAssetMeta} from "@/service";
 import {Descriptions, DescriptionsItem, TabPanel, Tabs} from "tdesign-vue-next";
-import ReleaseAsset from "@/pages/project/table/components/ReleaseAsset.vue";
+import ReleaseAssetEdit from "@/pages/project/components/asset/edit/ReleaseAssetEdit.vue";
 
 export async function openReleaseInstanceInfo(projectId: string, instanceId: string) {
   // 获取实例信息
@@ -35,7 +35,7 @@ export async function openReleaseInstanceInfo(projectId: string, instanceId: str
         </Descriptions>
       </TabPanel>
       <TabPanel label={'物料'}>
-        <ReleaseAsset projectId={projectId} scope={'instance'} scopeId={instanceId} readOnly={true}/>
+        <ReleaseAssetEdit projectId={projectId} scope={'instance'} scopeId={instanceId}/>
       </TabPanel>
     </Tabs>)
   })

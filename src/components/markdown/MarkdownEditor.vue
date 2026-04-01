@@ -6,21 +6,30 @@
   </div>
 </template>
 <script lang="ts" setup>
-import {MdEditor} from 'md-editor-v3';
+import {MdEditor, type ToolbarNames} from 'md-editor-v3';
 import {isDark} from "@/global/Constants.ts";
 import {markdownImageUploader} from "@/components/markdown/image.ts";
+import type {ReleaseAssetScope} from "@/pages/project/components/asset/types.ts";
 
 const modelValue = defineModel<string>({
   type: String,
   default: '',
 });
-defineProps({
-  placeholder: String
+const props = defineProps({
+  placeholder: String,
+  scopeId: {
+    type: String,
+    required: true,
+  },
+  scope: {
+    type: String as PropType<ReleaseAssetScope>,
+    required: true,
+  }
 });
 
 const theme = computed(() => isDark.value ? "dark" : "light")
 
-const toolbars = [
+const toolbars: Array<ToolbarNames> = [
   'bold',
   'underline',
   'italic',
@@ -56,7 +65,7 @@ const onUploadImg = async (files: File[], callback: (urls: string[] | {
   alt: string;
   title: string
 }[]) => void) => {
-  const result = await Promise.all(files.map(file => markdownImageUploader(file)));
+  const result = await Promise.all(files.map(file => markdownImageUploader(props.scope, props.scopeId, file)));
   callback(result);
 }
 </script>

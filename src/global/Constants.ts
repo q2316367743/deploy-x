@@ -21,11 +21,9 @@ export const APP_DATA_DIR = () => appData;
 export const APP_DATA_ASSET_DIR = () => joinPath(APP_DATA_DIR(), "asset");
 export const APP_DATA_DB_DIR = () => joinPath(APP_DATA_DIR(), "db");
 export const APP_DATA_STORE_DIR = () => joinPath(APP_DATA_DIR(), "store");
-export const APP_DATA_HOLD_DIR = () => joinPath(APP_DATA_DIR(), "hold");
 
 
 export const APP_DATA_DB_PATH = (fileName: string) => joinPath(APP_DATA_DB_DIR(), `${fileName}.sqlite`);
-export const APP_DATA_VAULT_PATH = (vaultName: string) => joinPath(APP_DATA_HOLD_DIR(), `${vaultName}.hold`);
 export const APP_DATA_STORE_PATH = (storeName: string) => joinPath(APP_DATA_STORE_DIR(), `${storeName}.json`);
 
 export const initPath = async () => {
@@ -35,7 +33,6 @@ export const initPath = async () => {
     APP_DATA_ASSET_DIR(),
     APP_DATA_DB_DIR(),
     APP_DATA_STORE_DIR(),
-    APP_DATA_HOLD_DIR(),
   ]
   for (const dir of items) {
     logDebug("初始化目录：" + dir);

@@ -1,15 +1,12 @@
-import {EditIcon, DeleteIcon, InfoCircleIcon} from "tdesign-icons-vue-next";
+import {EditIcon, DeleteIcon} from "tdesign-icons-vue-next";
 import {isDark} from "@/global/Constants.ts";
-import type {ReleaseAssetMeta} from "@/entity";
 import MessageBoxUtil from "@/util/model/MessageBoxUtil.tsx";
 import MessageUtil from "@/util/model/MessageUtil.ts";
-import {deleteReleaseAsset, updateReleaseAsset} from "@/service";
 import Cxt from '@imengyu/vue3-context-menu';
+import type {ReleaseAssetListItem} from "@/pages/project/components/asset/types.ts";
+import {deleteAssetItem, renameAsset} from "@/pages/project/components/asset/func.tsx";
 
-export async function openReleaseAssetContextMenu(asset: ReleaseAssetMeta, event: PointerEvent, callbacks: {
-  onDelete?: () => void;
-  onRename?: (newName: string) => void;
-}) {
+export async function openReleaseAssetContextMenu(asset: ReleaseAssetListItem, event: PointerEvent, onUpdate: () => void) {
   event.preventDefault();
   event.stopPropagation();
 
@@ -19,31 +16,21 @@ export async function openReleaseAssetContextMenu(asset: ReleaseAssetMeta, event
       icon: () => <EditIcon/>,
       onClick: async () => {
         const newName = await MessageBoxUtil.prompt("请输入新文件名：", '重命名文件', {
-          inputValue: asset.file_name
+          inputValue: asset.filename
         });
 
-        if (newName && newName !== asset.file_name) {
+        if (newName && newName !== asset.filename) {
           try {
-            await updateReleaseAsset(asset.id, {
-              file_name: newName,
-              relative_path: asset.relative_path,
-              file_type: asset.file_type
+            await renameAsset({
+              ...asset,
+              filename: newName
             });
-            asset.file_name = newName;
             MessageUtil.success("重命名成功");
-            callbacks.onRename?.(newName);
+            onUpdate();
           } catch (error) {
             MessageUtil.error("重命名失败", error);
           }
         }
-      }
-    },
-    {
-      label: '属性',
-      icon: () => <InfoCircleIcon/>,
-      onClick: async () => {
-        const info = `类型: ${asset.file_type}\n名称: ${asset.file_name}\n路径: ${asset.relative_path}`;
-        MessageBoxUtil.alert(info, '属性');
       }
     },
     {
@@ -52,16 +39,14 @@ export async function openReleaseAssetContextMenu(asset: ReleaseAssetMeta, event
       onClick: async () => {
         try {
           await MessageBoxUtil.confirm(
-            `确定要删除文件 "${asset.file_name}" 吗？`,
+            `确定要删除文件 "${asset.filename}" 吗？`,
             '删除文件',
             {
               confirmButtonText: '删除',
               cancelButtonText: '取消'
             }
           );
-          await deleteReleaseAsset(asset.id);
-          MessageUtil.success("删除成功");
-          callbacks.onDelete?.();
+          deleteAssetItem(asset, () => onUpdate);
         } catch (error) {
           if (error !== 'cancel') {
             MessageUtil.error("删除失败", error);

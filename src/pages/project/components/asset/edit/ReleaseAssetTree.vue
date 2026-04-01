@@ -9,47 +9,31 @@
       <div
         :class="{
           'tree-item': true,
-          'folder-item': !node.isLeaf,
-          'file-item': node.isLeaf,
+          'file-item': true,
           'active': activeValue === node.value
         }"
         @click="handleClick(node)"
         @contextmenu.stop="handleContextMenu(node, $event)"
       >
         <div class="item-content">
-          <template v-if="!node.isLeaf">
-            <folder-open-icon v-if="node.expanded" class="item-icon folder-icon-color"/>
-            <folder-icon v-else class="item-icon folder-icon-color"/>
-            <span class="item-text">{{ node.label }}</span>
-          </template>
-          <template v-else>
-            <file-icon class="item-icon file-icon-color"/>
-            <span class="item-text">{{ node.label }}</span>
-          </template>
+          <textbox-icon v-if="node.type === 1"/>
+          <file-code-icon v-else-if="node.type === 2"/>
+          <file-icon v-else/>
+          <span class="item-text">{{ node.label }}</span>
         </div>
       </div>
-      <release-asset-tree
-        v-if="!node.isLeaf && node.expanded && node.children"
-        :nodes="node.children"
-        :level="level + 1"
-        :active-value="activeValue"
-        @select="$emit('select', $event)"
-        @contextmenu="$emit('contextmenu', $event)"
-      />
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import {FolderIcon, FolderOpenIcon, FileIcon} from "tdesign-icons-vue-next";
+import {FileCodeIcon, FileIcon, TextboxIcon} from "tdesign-icons-vue-next";
+import type {ReleaseAssetListItemType} from "@/pages/project/components/asset/types.ts";
 
 interface TreeNode {
   label: string;
   value: string;
-  isLeaf?: boolean;
-  type?: 'document' | 'sql' | 'other';
-  children?: TreeNode[];
-  expanded?: boolean;
+  type: ReleaseAssetListItemType;
 }
 
 interface Props {
@@ -62,24 +46,13 @@ const {level = 0, activeValue = ''} = defineProps<Props>();
 
 const emit = defineEmits(['select', 'contextmenu']);
 
-const toggleExpand = (node: TreeNode) => {
-  if (!node.isLeaf) {
-    node.expanded = !node.expanded;
-  }
-};
 
 const handleClick = (node: TreeNode) => {
-  if (node.isLeaf) {
-    emit('select', node.value);
-  } else {
-    toggleExpand(node);
-  }
+  emit('select', node.value);
 };
 
 const handleContextMenu = (node: TreeNode, e: PointerEvent) => {
-  if (node.isLeaf) {
-    emit('contextmenu', {node, e});
-  }
+  emit('contextmenu', {node, e});
 };
 </script>
 

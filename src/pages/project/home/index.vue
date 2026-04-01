@@ -20,8 +20,6 @@
     <main class="page-main">
       <PhStatsGrid :project-id="projectId" :latest-version="latestVersion"/>
 
-      <PhInstanceList :project-id="projectId"/>
-
       <div class="table-wrapper">
         <div class="table-header-bar">
           <h2 class="table-title">最近部署</h2>
@@ -49,16 +47,16 @@
                   <span class="th-label">版本 / 实例</span>
                 </div>
               </th>
-              <th v-for="instance in instances" :key="instance.id"
+              <th v-for="instance in instances" :key="instance.instance_id"
                   class="matrix-th instance-header">
                 <div class="th-content">
                   <div class="instance-header-info">
                     <div class="instance-indicator"></div>
-                    <span class="instance-name">{{ instance.name }}</span>
+                    <span class="instance-name">{{ instance.instance_name }}</span>
                   </div>
-                  <div v-if="instance.desc" class="instance-desc">{{ instance.desc }}</div>
+                  <div v-if="instance.instance_desc" class="instance-desc">{{ instance.instance_desc }}</div>
                   <div class="instance-current-ver">
-                    当前 {{ getInstanceCurrentVersion(instance.id) }}
+                    当前 {{ instance.version_name }}
                   </div>
                 </div>
               </th>
@@ -82,9 +80,9 @@
                   </div>
                 </div>
               </td>
-              <td v-for="instance in instances" :key="`${instance.id}-${version.id}`"
+              <td v-for="instance in instances" :key="`${instance.instance_id}-${version.id}`"
                   class="matrix-td">
-                <div v-if="deployMap.has(`${instance.id}-${version.id}`)"
+                <div v-if="deployMap.has(`${instance.instance_id}-${version.id}`)"
                      class="cell-content cell-current">
                   {{ version.version }}
                 </div>
@@ -99,16 +97,15 @@
   </div>
 </template>
 <script lang="ts" setup>
-import type {ReleaseInstance, ReleaseVersion, ReleaseDeploy} from "@/entity";
+import type {ReleaseVersion, ReleaseDeploy} from "@/entity";
 import {
+  groupReleaseInstanceVersion,
   listReleaseDeployService,
-  listReleaseInstanceService,
-  listReleaseVersionService
+  listReleaseVersionService, type ReleaseInstanceVersion
 } from "@/service";
 import {formatDate} from "@/util/lang/FormatUtil.ts";
 import {map} from "@/util";
 import MessageUtil from "@/util/model/MessageUtil.ts";
-import PhInstanceList from "@/pages/project/home/components/PhInstanceList.vue";
 import PhStatsGrid from "@/pages/project/home/components/PhStatsGrid.vue";
 
 const route = useRoute();
@@ -116,7 +113,7 @@ const router = useRouter();
 
 const projectId = route.params.id as string;
 
-const instances = ref(new Array<ReleaseInstance>());
+const instances = ref(new Array<ReleaseInstanceVersion>());
 const versions = ref(new Array<ReleaseVersion>());
 const deployItems = ref(new Array<ReleaseDeploy>());
 const hoveredRow = ref('');
@@ -134,13 +131,6 @@ const getVersionStatus = (index: number) => {
   return 'old';
 };
 
-const getInstanceCurrentVersion = (instanceId: string) => {
-  const deploy = deployItems.value.find(d => d.instance_id === instanceId);
-  if (!deploy) return '-';
-  const version = versions.value.find(v => v.id === deploy.version_id);
-  return version?.version ?? '-';
-};
-
 const listDeploy = async () => {
   deployItems.value = await listReleaseDeployService(projectId, versions.value.map(e => e.id));
 };
@@ -148,7 +138,7 @@ const listDeploy = async () => {
 onMounted(async () => {
   try {
     const [res1, res2] = await Promise.all([
-      listReleaseInstanceService(projectId),
+      groupReleaseInstanceVersion(projectId),
       listReleaseVersionService(projectId, 10),
     ]);
     instances.value = res1;

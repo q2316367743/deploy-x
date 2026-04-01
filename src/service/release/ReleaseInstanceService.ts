@@ -1,14 +1,19 @@
 import {useSql} from "@/lib/sql.ts";
 import type {ReleaseInstance, ReleaseInstanceCore} from "@/entity";
+import {mkdir} from "@tauri-apps/plugin-fs";
+import {joinPath} from "@/util/lang/FileUtil.ts";
+import {APP_DATA_ASSET_DIR} from "@/global/Constants.ts";
 
 export async function addReleaseInstanceService(projectId: string, instance: Partial<ReleaseInstanceCore>) {
-  return useSql().mapper<ReleaseInstance>('release_instance').insert({
+  const {id} = await useSql().mapper<ReleaseInstance>('release_instance').insert({
     ...instance,
     current_version_id: '',
     project_id: projectId,
     created_at: Date.now(),
     updated_at: Date.now()
   });
+  // 创建目录
+  await mkdir(joinPath(APP_DATA_ASSET_DIR(), 'instance', id));
 }
 
 export async function updateReleaseInstanceService(id: string, instance: Partial<ReleaseInstanceCore & {
