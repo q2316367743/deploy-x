@@ -5,6 +5,15 @@
       <main class="page-main">
         <PhStatsGrid :project-id="projectId" :latest-version="latestVersion"/>
 
+        <div class="statistics-cards">
+          <div class="card-item">
+            <PhDeployTrend :project-id="projectId"/>
+          </div>
+          <div class="card-item">
+            <PhRecentDeploy :project-id="projectId"/>
+          </div>
+        </div>
+
         <div class="table-wrapper">
           <div class="table-header-bar">
             <h2 class="table-title">最近部署</h2>
@@ -102,6 +111,8 @@ import {formatDate} from "@/util/lang/FormatUtil.ts";
 import {map} from "@/util";
 import MessageUtil from "@/util/model/MessageUtil.ts";
 import PhStatsGrid from "@/pages/project/home/components/PhStatsGrid.vue";
+import PhDeployTrend from "@/pages/project/home/components/PhDeployTrend.vue";
+import PhRecentDeploy from "@/pages/project/home/components/PhRecentDeploy.vue";
 import {openReleaseInstanceInfo} from "@/pages/project/table/func/ReleaseInstanceInfo.tsx";
 import {openReleaseVersionInfo} from "@/pages/project/table/func/ReleaseVersionInfo.tsx";
 import {openReleaseDeployInfo} from "@/pages/project/table/func/ReleaseDeployInfo.tsx";

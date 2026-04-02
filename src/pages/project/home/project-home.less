@@ -10,6 +10,21 @@
   gap: 8px;
 }
 
+.statistics-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+
+  .card-item {
+    background: var(--fluent-card-bg);
+    backdrop-filter: var(--fluent-acrylic-blur);
+    border-radius: var(--fluent-radius-card);
+    border: 1px solid var(--fluent-border-subtle);
+    box-shadow: var(--fluent-elevation-2);
+    overflow: hidden;
+  }
+}
+
 .table-wrapper {
   background: var(--fluent-card-bg);
   backdrop-filter: var(--fluent-acrylic-blur);
@@ -334,6 +349,10 @@
 @media (max-width: 1024px) {
   .stats-grid {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  .statistics-cards {
+    grid-template-columns: 1fr;
   }
 }
 
