@@ -20,7 +20,7 @@
           <template #icon>
             <home-icon/>
           </template>
-          首页
+          概览
         </t-menu-item>
         <t-menu-item :value="tablePath" :to="tablePath">
           <template #icon>

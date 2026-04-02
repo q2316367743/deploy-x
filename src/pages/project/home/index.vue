@@ -1,21 +1,6 @@
 <template>
+  <app-tool-layout title="概览">
   <div class="release-page">
-    <header class="page-header">
-      <div class="header-content">
-        <div class="header-left">
-          <div class="logo-icon">
-            <svg class="logo-svg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"/>
-            </svg>
-          </div>
-          <div class="header-info">
-            <h1 class="header-title">发版助手</h1>
-            <p class="header-subtitle">项目版本部署管理</p>
-          </div>
-        </div>
-      </div>
-    </header>
 
     <main class="page-main">
       <PhStatsGrid :project-id="projectId" :latest-version="latestVersion"/>
@@ -95,6 +80,7 @@
       </div>
     </main>
   </div>
+  </app-tool-layout>
 </template>
 <script lang="ts" setup>
 import type {ReleaseVersion, ReleaseDeploy} from "@/entity";
