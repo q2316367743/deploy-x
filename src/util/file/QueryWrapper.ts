@@ -48,7 +48,7 @@ export class QueryChain<T extends Record<string, any>, N extends string, K exten
     return this.simpleWhere(k, "!=", v);
   }
 
-  ge(k: K, v: T[K]) {
+  ge(k: K, v?: T[K]) {
     return this.simpleWhere(k, ">=", v);
   }
 

@@ -1,7 +1,8 @@
 <template>
   <div class="release-asset-list">
+    <slot v-if="items.length > 0" name="title" />
     <t-loading :loading="loading">
-      <div v-if="items.length === 0" class="empty-state">
+      <div v-if="items.length === 0 && showEmpty" class="empty-state">
         <t-icon name="file" size="48px"/>
         <p>暂无附件</p>
       </div>
@@ -50,6 +51,10 @@ const props = defineProps({
   scope: {
     type: String as PropType<ReleaseAssetScope>,
     required: true,
+  },
+  showEmpty: {
+    type: Boolean,
+    default: true
   }
 });
 

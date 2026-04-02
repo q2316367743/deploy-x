@@ -4,28 +4,25 @@
       <t-empty title="暂无版本日志"/>
     </div>
     <div v-for="log in logs" :key="log.id" class="version-log-item">
-      <div v-if="showTitle" class="version-log-title">
-        <div class="version-log-title-text">
-          {{ log.version }}
-        </div>
-        <div class="version-log-title-divider">—</div>
-        <div class="version-log-title-date">
-          {{ formatDatetime(log.publish_time) }}
-        </div>
-      </div>
-      <div class="version-log-content">
+      <VersionTitle v-if="showTitle" :version="log"/>
+      <div v-if="log.content.length > 0" class="version-log-content">
         <div v-for="(item, i) in log.content" :key="i" class="version-log-content-item">
           <div class="label" :style="VersionLogTypeColor[item.type]">{{ VersionLogTypeText[item.type] }}</div>
           <div class="ml-8px">{{ item.content }}</div>
         </div>
       </div>
+      <t-divider v-else-if="showTitle">暂无更新日志</t-divider>
     </div>
   </div>
 </template>
 <script lang="ts" setup>
 import {listReleaseVersionLog, type ReleaseVersionWithLog} from "@/service";
-import {formatDatetime} from "@/util/lang/FormatUtil.ts";
 import {VersionLogTypeColor, VersionLogTypeText} from "@/entity";
+import VersionTitle from "@/pages/project/components/VersionTitle.vue";
+import {writeText} from "@tauri-apps/plugin-clipboard-manager";
+import MessageUtil from "@/util/model/MessageUtil.ts";
+import {formatDate} from "@vueuse/core";
+import {formatDatetime} from "@/util/lang/FormatUtil.ts";
 
 const props = defineProps({
   versionIds: {
@@ -42,7 +39,29 @@ const props = defineProps({
 const logs = computedAsync<Array<ReleaseVersionWithLog>>(async () => {
   const list = await listReleaseVersionLog(props.versionIds)
   return list.filter(e => e.content.length > 0);
-}, [])
+}, []);
+
+defineExpose({
+  copyAll: () => {
+    const content = logs.value.map(e => {
+      const l = [
+        `## ${e.version}`,
+        '',
+        `> 部署时间：${formatDatetime(e.publish_time)}`,
+      ];
+      if (e.publish_user) {
+        l.push('> ', `> 部 署 人：${e.publish_user}`);
+      }
+      l.push('', ...e.content.map(l => `- \`${VersionLogTypeText[l.type]}\` ${l.content}`));
+      return l.join('\n');
+    }).join("\n\n\n");
+    writeText(content).then(() => {
+      MessageUtil.success("复制成功");
+    }).catch(e => {
+      MessageUtil.error("复制失败", e);
+    })
+  }
+})
 </script>
 <style scoped lang="less">
 .version-log-list {
@@ -53,20 +72,6 @@ const logs = computedAsync<Array<ReleaseVersionWithLog>>(async () => {
 
     &:last-child {
       margin-bottom: 0;
-    }
-
-    .version-log-title {
-      display: flex;
-      align-items: center;
-      color: var(--td-brand-color);
-      font-weight: 500;
-      border-bottom: 1px double var(--td-border-level-1-color);
-      padding-bottom: 4px;
-      width: fit-content;
-
-      .version-log-title-divider {
-        margin: 0 8px;
-      }
     }
 
     .version-log-content {

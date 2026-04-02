@@ -88,7 +88,7 @@
                   class="matrix-td">
                 <div v-if="isLatestDeployedVersion(instance.instance_id, version.id)"
                      class="cell-content cell-current"
-                     @click="openReleaseDeployInfo({deploy: deployMap.get(`${instance.instance_id}-${version.id}`)!, instance, versions, deployItems})">
+                     @click="openReleaseDeployInfoWrap(instance, version)">
                   {{ version.version }}
                 </div>
                 <div v-else-if="deployMap.has(`${instance.instance_id}-${version.id}`)"
@@ -199,6 +199,15 @@ const listVersion = async () => {
 const listDeploy = async () => {
   deployItems.value = await listReleaseDeployService(projectId, versions.value.map(e => e.id));
 };
+
+const openReleaseDeployInfoWrap = (instance: ReleaseInstanceVersion, version: ReleaseVersion) => {
+  const deploy = deployMap.value.get(`${instance.instance_id}-${version.id}`);
+  if (!deploy) {
+    MessageUtil.error("系统异常，部署数据未找到");
+    return;
+  }
+  openReleaseDeployInfo({deploy, instance, version});
+}
 
 onMounted(async () => {
   try {

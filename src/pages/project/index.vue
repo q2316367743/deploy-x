@@ -26,19 +26,19 @@
           <template #icon>
             <table1-icon/>
           </template>
-          一张表
+          部署
         </t-menu-item>
         <t-menu-item :value="versionPath" :to="versionPath">
           <template #icon>
             <git-branch-icon/>
           </template>
-          版本管理
+          版本
         </t-menu-item>
         <t-menu-item :value="instancePath" :to="instancePath">
           <template #icon>
             <data-base-icon/>
           </template>
-          实例管理
+          实例
         </t-menu-item>
         <t-menu-item :value="settingPath" :to="settingPath">
           <template #icon>

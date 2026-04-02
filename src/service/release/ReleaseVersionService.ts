@@ -86,3 +86,12 @@ export function listReleaseVersionByInstanceId(instanceId: string, projectId: st
       order by rv.publish_time desc
   `);
 }
+
+export async function listReleaseVersionBetween(projectId: string, maxPublishTime: number, minPublishTime?: number) {
+  return useSql().query<ReleaseVersion>('release_version')
+    .eq('project_id', projectId)
+    .le('publish_time', maxPublishTime)
+    .ge('publish_time', minPublishTime)
+    .orderByDesc('publish_time')
+    .list();
+}

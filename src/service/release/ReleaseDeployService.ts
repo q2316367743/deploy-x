@@ -1,5 +1,5 @@
 import {useSql} from "@/lib/sql.ts";
-import type {ReleaseDeploy, ReleaseDeployCore, ReleaseInstance} from "@/entity";
+import type {ReleaseDeploy, ReleaseDeployCore, ReleaseInstance, ReleaseVersion} from "@/entity";
 import dayjs from "dayjs";
 
 export async function addReleaseDeployService(prop: ReleaseDeployCore) {
@@ -61,4 +61,18 @@ export async function listReleaseDeployByVersionId(projectId: string, versionId:
                left join release_instance ri on rd.instance_id = ri.id
       where rd.project_id = '${projectId}'
         and rd.version_id = '${versionId}'`);
+}
+
+export async function last2VersionByDeploy(instanceId: string, publish_time: number): Promise<Array<ReleaseVersion>> {
+  return useSql().select<Array<ReleaseVersion>>(`
+      select rv.*
+      from release_deploy rd
+               left join release_version rv on rd.version_id = rv.id
+
+      where rd.instance_id = '${instanceId}'
+        and rv.publish_time <= ${publish_time}
+
+      order by rv.publish_time desc
+      limit 2
+  `);
 }
