@@ -73,8 +73,8 @@ export async function openReleaseProjectCxt(e: PointerEvent, project: ReleasePro
         }
       },
       {
-        label: '删除',
-        icon: () => <DeleteIcon/>,
+        label: () => <span class={'label'} style={{color: 'var(--td-error-color)'}}>删除</span>,
+        icon: () => <DeleteIcon style={{color: 'var(--td-error-color)'}}/>,
         onClick: () => {
           MessageBoxUtil.confirm("确定要删除吗？", "删除项目")
             .then(() => {

@@ -29,11 +29,12 @@
             <tr>
               <th class="matrix-th version-header instance-header">
                 <div class="th-content">
-                  <span class="th-label">版本 / 实例</span>
+                  <span class="th-label">版本 \ 实例</span>
                 </div>
               </th>
               <th v-for="instance in instances" :key="instance.instance_id"
-                  class="matrix-th instance-header">
+                  class="matrix-th instance-header clickable"
+                  @click="openReleaseInstanceInfo(projectId, instance.instance_id)">
                 <div class="th-content">
                   <div class="instance-header-info">
                     <div class="instance-indicator"></div>
@@ -51,6 +52,7 @@
             <tr v-for="(version, vIndex) in versions" :key="version.id"
                 class="version-row"
                 :class="{ 'row-hover': hoveredRow === version.id }"
+                @click="openReleaseVersionInfo(version.project_id, version.id)"
                 @mouseenter="hoveredRow = version.id"
                 @mouseleave="hoveredRow = ''">
               <td class="matrix-th version-header version-cell">
@@ -68,7 +70,8 @@
               <td v-for="instance in instances" :key="`${instance.instance_id}-${version.id}`"
                   class="matrix-td">
                 <div v-if="deployMap.has(`${instance.instance_id}-${version.id}`)"
-                     class="cell-content cell-current" :class="{'current': instance.version_id === version.id}">
+                     class="cell-content cell-current" :class="{'current': instance.version_id === version.id}"
+                     @click="openReleaseDeployInfoWrap(instance, version)">
                   {{ version.version }}
                 </div>
                 <div v-else class="cell-content cell-empty"></div>
@@ -93,6 +96,9 @@ import {formatDate} from "@/util/lang/FormatUtil.ts";
 import {map} from "@/util";
 import MessageUtil from "@/util/model/MessageUtil.ts";
 import PhStatsGrid from "@/pages/project/home/components/PhStatsGrid.vue";
+import {openReleaseInstanceInfo} from "@/pages/project/table/func/ReleaseInstanceInfo.tsx";
+import {openReleaseVersionInfo} from "@/pages/project/table/func/ReleaseVersionInfo.tsx";
+import {openReleaseDeployInfo} from "@/pages/project/table/func/ReleaseDeployInfo.tsx";
 
 const route = useRoute();
 const router = useRouter();
@@ -119,7 +125,17 @@ const getVersionStatus = (index: number) => {
 
 const listDeploy = async () => {
   deployItems.value = await listReleaseDeployService(projectId, versions.value.map(e => e.id));
-};
+}
+
+
+const openReleaseDeployInfoWrap = (instance: ReleaseInstanceVersion, version: ReleaseVersion) => {
+  const deploy = deployMap.value.get(`${instance.instance_id}-${version.id}`);
+  if (!deploy) {
+    MessageUtil.error("系统异常，部署数据未找到");
+    return;
+  }
+  openReleaseDeployInfo({deploy, instance, version});
+}
 
 onMounted(async () => {
   try {

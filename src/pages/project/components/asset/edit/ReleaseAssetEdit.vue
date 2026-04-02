@@ -66,7 +66,7 @@
                 </template>
               </t-button>
               <t-dropdown-menu>
-                <t-dropdown-item @click="handleDelete">
+                <t-dropdown-item theme="error" @click="handleDelete">
                   <template #prefix-icon>
                     <delete-icon/>
                   </template>
@@ -143,7 +143,7 @@ const selectedId = ref<string>('');
 const selectedAsset = ref<ReleaseAssetListItem>();
 
 const editorContent = ref('');
-const editorLanguage = ref('plaintext');
+const editorLanguage = computed(() => selectedAsset.value ? inferMonacoLanguageByFilename(selectedAsset.value.filename) : 'plaintext');
 
 
 const treeMeta = computed(() => {

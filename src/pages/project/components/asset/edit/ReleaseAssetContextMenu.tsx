@@ -46,7 +46,7 @@ export async function openReleaseAssetContextMenu(asset: ReleaseAssetListItem, e
               cancelButtonText: '取消'
             }
           );
-          deleteAssetItem(asset, () => onUpdate);
+          deleteAssetItem(asset, () => onUpdate());
         } catch (error) {
           if (error !== 'cancel') {
             MessageUtil.error("删除失败", error);

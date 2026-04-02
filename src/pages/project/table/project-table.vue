@@ -1,5 +1,5 @@
 <template>
-  <app-tool-layout title="一张表">
+  <app-tool-layout title="部署">
     <template #action>
       <t-space size="small">
         <t-button theme="default" variant="outline" class="action-btn"
@@ -45,7 +45,7 @@
             <tr>
               <th class="matrix-th version-header instance-header">
                 <div class="th-content">
-                  <span class="th-label">版本 / 实例</span>
+                  <span class="th-label">版本 \ 实例</span>
                 </div>
               </th>
               <th v-for="instance in instances" :key="instance.instance_id"

@@ -1,5 +1,5 @@
 <template>
-  <app-tool-layout title="实例管理">
+  <app-tool-layout title="实例">
     <div class="project-instance">
       <pi-aside v-model="instanceId"></pi-aside>
       <div class="pi-main">

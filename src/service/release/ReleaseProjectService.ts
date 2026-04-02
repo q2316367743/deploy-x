@@ -1,15 +1,15 @@
 import {useSql} from "@/lib/sql.ts";
 import type {
+  ReleaseAssetContent,
+  ReleaseAssetMeta,
+  ReleaseDeploy,
+  ReleaseInstance,
   ReleaseProject,
   ReleaseProjectCore,
   ReleaseVersion,
-  ReleaseInstance,
-  ReleaseDeploy,
-  ReleaseVersionLog,
-  ReleaseAssetContent,
-  ReleaseAssetMeta
+  ReleaseVersionLog
 } from "@/entity";
-import {mkdir} from "@tauri-apps/plugin-fs";
+import {BaseDirectory, mkdir, remove} from "@tauri-apps/plugin-fs";
 import {joinPath} from "@/util/lang/FileUtil.ts";
 import {APP_DATA_ASSET_DIR} from "@/global/Constants.ts";
 
@@ -29,6 +29,7 @@ export async function addReleaseProject(project: ReleaseProjectCore) {
     created_at: Date.now(),
     updated_at: Date.now()
   });
+  // 创建相关目录
   await mkdir(joinPath(APP_DATA_ASSET_DIR(), id, "version"), {recursive: true})
   await mkdir(joinPath(APP_DATA_ASSET_DIR(), id, "instance"), {recursive: true})
 }
@@ -43,15 +44,16 @@ export async function updateReleaseProject(id: string, project: Partial<ReleaseP
 }
 
 export async function deleteReleaseProject(id: string) {
-  await useSql().beginTransaction(async sql => {
-    const mapper = sql.mapper<ReleaseProject>('release_project');
-    // 删除基础信息
-    await mapper.deleteById(id);
-    await sql.query<ReleaseVersion>('release_version').eq('project_id', id).delete();
-    await sql.query<ReleaseInstance>('release_instance').eq('project_id', id).delete();
-    await sql.query<ReleaseDeploy>('release_deploy').eq('project_id', id).delete();
-    await sql.query<ReleaseVersionLog>('release_version_log').eq('project_id', id).delete();
-    await sql.query<ReleaseAssetContent>('release_asset_content').eq('project_id', id).delete();
-    await sql.query<ReleaseAssetMeta>('release_asset_meta').eq('project_id', id).delete();
-  })
+  const mapper = useSql().mapper<ReleaseProject>('release_project');
+  // 删除基础信息
+  await mapper.deleteById(id);
+  await useSql().query<ReleaseVersion>('release_version').eq('project_id', id).delete();
+  await useSql().query<ReleaseInstance>('release_instance').eq('project_id', id).delete();
+  await useSql().query<ReleaseDeploy>('release_deploy').eq('project_id', id).delete();
+  await useSql().query<ReleaseVersionLog>('release_version_log').eq('project_id', id).delete();
+  await useSql().query<ReleaseAssetContent>('release_asset_content').eq('project_id', id).delete();
+  await useSql().query<ReleaseAssetMeta>('release_asset_meta').eq('project_id', id).delete();
+  // 删除附件
+  const folder = joinPath(APP_DATA_ASSET_DIR(), id);
+  await remove(folder, {recursive: true, baseDir: BaseDirectory.AppData});
 }

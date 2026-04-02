@@ -1,5 +1,5 @@
 <template>
-  <app-tool-layout title="版本管理">
+  <app-tool-layout title="版本">
     <div class="project-version">
       <pv-aside v-model="versionId"/>
       <div class="pv-main">
