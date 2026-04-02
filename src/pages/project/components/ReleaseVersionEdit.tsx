@@ -61,7 +61,7 @@ export function openReleaseVersionUpdate(version: ReleaseVersion, onUpdate: () =
         <Input placeholder={'请输入部署人'} v-model={data.value.publish_user}/>
       </FormItem>
       <FormItem label={'部署时间'} labelAlign={'top'}>
-        <t-date-picker placeholder={'请选择部署时间'} v-model={data.value.publish_time}/>
+        <DatePicker v-model={data.value.publish_time} placeholder={'请选择部署时间'} enableTimePicker={true} format={"YYYY-MM-DD HH:mm"} />
       </FormItem>
     </Form>),
     onConfirm() {

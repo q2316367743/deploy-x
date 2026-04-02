@@ -3,10 +3,9 @@
     <t-aside class="app-aside" :width="asideWidth">
       <t-menu v-model="value" :collapsed>
         <template #logo>
-          <div class="flex justify-left items-center" :style="{marginLeft: collapsed ? undefined : '16px'}"
-               @click="goBack">
-            <t-avatar image="/logo.png"/>
-            <div v-if="!collapsed" class="ml-8px">{{ select?.name }}</div>
+          <div class="flex justify-left items-center" :style="{marginLeft: collapsed ? undefined : '16px'}">
+            <chevron-left-icon class="w-32px h-32px font-size-32px cursor-pointer" @click="goBack"/>
+            <div v-if="!collapsed" class="ml-8px font-size-24px font-700">{{ select?.name }}</div>
           </div>
         </template>
         <template #operations>
@@ -59,6 +58,7 @@
 </template>
 <script lang="ts" setup>
 import {
+  ChevronLeftIcon,
   DataBaseIcon, GitBranchIcon,
   HomeIcon, SettingIcon, Table1Icon,
   ViewListIcon

@@ -57,8 +57,11 @@
                     <div class="instance-indicator"></div>
                     <span class="instance-name">{{ instance.instance_name }}</span>
                   </div>
-                  <div class="instance-current-ver">
+                  <div v-if="instance.version_name" class="instance-current-ver">
                     当前 {{ instance.version_name }}
+                  </div>
+                  <div v-else class="instance-not-ver">
+                    暂未部署
                   </div>
                 </div>
               </th>
@@ -73,7 +76,7 @@
               <td class="matrix-th version-header version-cell clickable"
                   @click="openReleaseVersionInfo(version.project_id, version.id)"
                   @contextmenu="openReleaseVersionContextmenu(version, listVersion, $event)">
-                <div class="version-info">
+                <div class="version-info" :title="version.publish_user">
                   <div class="version-badge">
                     <span class="version-dot" :class="getVersionStatus(vIndex)"></span>
                     <span class="version-number">{{ version.version }}</span>
@@ -86,24 +89,29 @@
               </td>
               <td v-for="instance in instances" :key="`${instance.instance_id}-${version.id}`"
                   class="matrix-td">
-                <div v-if="isLatestDeployedVersion(instance.instance_id, version.id)"
+                <!-- 当前部署版本 -->
+                <div v-if="instance.version_id === version.id"
                      class="cell-content cell-current"
                      @click="openReleaseDeployInfoWrap(instance, version)">
                   {{ version.version }}
                 </div>
+                <!-- 已经过的旧版本 -->
                 <div v-else-if="deployMap.has(`${instance.instance_id}-${version.id}`)"
                      class="cell-content cell-old-deploy">
                   {{ version.version }}
                 </div>
-                <div v-else-if="canDeploy(instance.instance_id, version.id)"
+                <!-- 可升级版本（点击部署 -->
+                <div v-else-if="(instance?.publish_time || 0) < version.publish_time"
                      class="cell-content cell-upgrade"
                      @click="addDeploy(instance.instance_id, version.id)">
                   升级
                 </div>
-                <div v-else-if="isOldVersion(instance.instance_id, version.id)"
+                <!-- 未到达版本 -->
+                <div v-else-if="(instance?.publish_time || 0) > version.publish_time"
                      class="cell-content cell-old">
                   已过
                 </div>
+                <!-- 异常情况 -->
                 <div v-else class="cell-content cell-empty"></div>
               </td>
             </tr>
@@ -154,31 +162,6 @@ const getVersionStatus = (index: number) => {
   return 'old';
 };
 
-const isLatestDeployedVersion = (instanceId: string, versionId: string) => {
-  const deployedVersions = versions.value.filter(v => deployMap.value.has(`${instanceId}-${v.id}`));
-  if (deployedVersions.length === 0) return false;
-  const latestDeployedIndex = Math.min(...deployedVersions.map(v => versions.value.findIndex(ver => ver.id === v.id)));
-  return versions.value[latestDeployedIndex]?.id === versionId;
-};
-
-const canDeploy = (instanceId: string, versionId: string) => {
-  if (deployMap.value.has(`${instanceId}-${versionId}`)) return false;
-  const deployedVersions = versions.value.filter(v => deployMap.value.has(`${instanceId}-${v.id}`));
-  if (deployedVersions.length === 0) return true;
-  const latestDeployedIndex = Math.min(...deployedVersions.map(v => versions.value.findIndex(ver => ver.id === v.id)));
-  const targetVersionIndex = versions.value.findIndex(v => v.id === versionId);
-  return targetVersionIndex < latestDeployedIndex;
-};
-
-const isOldVersion = (instanceId: string, versionId: string) => {
-  if (deployMap.value.has(`${instanceId}-${versionId}`)) return false;
-  const deployedVersions = versions.value.filter(v => deployMap.value.has(`${instanceId}-${v.id}`));
-  if (deployedVersions.length === 0) return false;
-  const latestDeployedIndex = Math.min(...deployedVersions.map(v => versions.value.findIndex(ver => ver.id === v.id)));
-  const targetVersionIndex = versions.value.findIndex(v => v.id === versionId);
-  return targetVersionIndex > latestDeployedIndex;
-};
-
 const addDeploy = (instanceId: string, versionId: string) => {
   openReleaseDeployAdd({
     instance_id: instanceId,
@@ -194,7 +177,7 @@ const listInstance = async () => {
   instances.value = await groupReleaseInstanceVersion(projectId);
 };
 const listVersion = async () => {
-  versions.value = await listReleaseVersionService(projectId, 10);
+  versions.value = await listReleaseVersionService(projectId);
 };
 const listDeploy = async () => {
   deployItems.value = await listReleaseDeployService(projectId, versions.value.map(e => e.id));
