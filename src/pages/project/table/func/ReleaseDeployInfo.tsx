@@ -73,7 +73,8 @@ export async function openReleaseDeployInfo(prop: ReleaseDeployInfoProp) {
               {versions.map(version => <div class="version-item">
                 <ReleaseAssetList scope="version" scopeId={version.id} projectId={version.project_id}
                                   showEmpty={false}>{{
-                  title: () => <VersionTitle version={version} style={{marginBottom: '8px'}}/>
+                  title: () => <VersionTitle version={version}
+                                             style={{marginBottom: '8px', marginLeft: '16px', marginTop: '4px'}}/>
                 }}</ReleaseAssetList>
               </div>)}
             </div>

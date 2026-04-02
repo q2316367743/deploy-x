@@ -3,10 +3,19 @@ import type {ReleaseAssetListItem} from "@/pages/project/components/asset/types.
 import MarkdownPreview from "@/components/markdown/MarkdownPreview.vue";
 import MonacoEditor from "@/components/MonacoEditor/MonacoEditor.vue";
 import {inferMonacoLanguageByFilename} from "@/modules/monaco";
+import {readTextFile} from "@tauri-apps/plugin-fs";
+import MessageUtil from "@/util/model/MessageUtil.ts";
 
 export function openAssertContentDialog(asset: ReleaseAssetListItem) {
   const content = ref('');
   const editorLanguage = inferMonacoLanguageByFilename(asset.filename);
+
+  readTextFile(asset.path).then((file) => {
+    content.value = file;
+  }).catch((error) => {
+    MessageUtil.error("获取文件内容失败", error);
+  })
+
   DialogPlugin({
     header: asset.filename,
     width: '80vw',

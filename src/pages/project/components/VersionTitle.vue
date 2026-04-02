@@ -3,8 +3,8 @@
     <div>{{ version.version }}</div>
     <div class="version-log-title-divider">-</div>
     <div>{{ formatDatetime(version.publish_time) }}</div>
-    <div class="version-log-title-divider">-</div>
-    <div>{{ version.publish_user }}</div>
+    <div v-if="version.publish_user" class="version-log-title-divider">-</div>
+    <div v-if="version.publish_user">{{ version.publish_user }}</div>
   </div>
 </template>
 <script lang="ts" setup>
