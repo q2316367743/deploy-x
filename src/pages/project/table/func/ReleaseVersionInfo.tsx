@@ -1,4 +1,4 @@
-import {Card} from "tdesign-vue-next";
+import {Button, Card} from "tdesign-vue-next";
 import {getReleaseVersionService} from "@/service";
 import type {ReleaseVersion} from "@/entity";
 import MessageUtil from "@/util/model/MessageUtil.ts";
@@ -11,6 +11,22 @@ export async function openReleaseVersionInfo(projectId: string, versionId: strin
   getReleaseVersionService(versionId, projectId)
     .then(res => version.value = res)
     .catch(e => MessageUtil.error("获取版本错误", e));
+
+
+  const compressing = ref(false);
+  const compressRef = ref();
+  const handleCompress = () => {
+    if (compressing.value) {
+      return;
+    }
+    (compressRef.value?.compress(version.value?.version || Date.now()) as Promise<void>)
+      .then(() => {
+        MessageUtil.success("压缩完成");
+      }).catch(e => MessageUtil.error("压缩失败", e))
+      .finally(() => {
+        compressing.value = false;
+      });
+  }
 
   DrawerPlugin({
     header: false,
@@ -50,9 +66,11 @@ export async function openReleaseVersionInfo(projectId: string, versionId: strin
         <Card title={'版本日志'} size={'small'}>
           <VersionLogInfo versionIds={[versionId]} showTitle={false}/>
         </Card>
-        <Card title={'附件列表'} size={'small'}>
-          <ReleaseAssetList projectId={projectId} scope={'version'} scopeId={versionId}/>
-        </Card>
+        <Card title={'附件列表'} size={'small'}>{{
+          actions: () => <Button variant={'outline'} size={'small'} loading={compressing.value}
+                                 onClick={handleCompress}>{compressing.value ? '压缩中...' : '下载附件'}</Button>,
+          default: () => <ReleaseAssetList projectId={projectId} scope={'version'} scopeId={versionId} ref={compressRef}/>
+        }}</Card>
       </div>
     )
   })

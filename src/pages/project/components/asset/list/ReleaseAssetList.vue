@@ -1,6 +1,6 @@
 <template>
   <div class="release-asset-list">
-    <slot v-if="items.length > 0" name="title" />
+    <slot v-if="items.length > 0" name="title"/>
     <t-loading :loading="loading">
       <div v-if="items.length === 0 && showEmpty" class="empty-state">
         <t-icon name="file" size="48px"/>
@@ -38,6 +38,7 @@ import {
 } from "@/pages/project/components/asset/types.ts";
 import {openAssertContentDialog} from "@/pages/project/components/asset/list/AssertContentDialog.tsx";
 import {loadAssetList} from "@/pages/project/components/asset/func.tsx";
+import {compressList} from "@/pages/project/components/asset/compress.ts";
 
 const props = defineProps({
   projectId: {
@@ -85,6 +86,15 @@ const handleFileClick = async (asset: ReleaseAssetListItem) => {
 onMounted(() => {
   loadAssets();
 });
+
+defineExpose({
+  compress: (filename: string) => {
+    compressList(filename, items.value).catch(e => MessageUtil.error("无法下载", e));
+  },
+  getItems: () => {
+    return items.value;
+  }
+})
 </script>
 
 <style scoped lang="less">

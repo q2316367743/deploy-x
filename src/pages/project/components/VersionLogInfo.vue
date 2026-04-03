@@ -21,7 +21,6 @@ import {VersionLogTypeColor, VersionLogTypeText} from "@/entity";
 import VersionTitle from "@/pages/project/components/VersionTitle.vue";
 import {writeText} from "@tauri-apps/plugin-clipboard-manager";
 import MessageUtil from "@/util/model/MessageUtil.ts";
-import {formatDate} from "@vueuse/core";
 import {formatDatetime} from "@/util/lang/FormatUtil.ts";
 
 const props = defineProps({

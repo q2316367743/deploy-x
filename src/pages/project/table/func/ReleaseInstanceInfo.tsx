@@ -1,7 +1,7 @@
 import {getReleaseInstanceService, listReleaseVersionByInstanceId, type ReleaseVersionDeploy} from "@/service";
 import type {ReleaseInstance} from "@/entity";
 import MessageUtil from "@/util/model/MessageUtil.ts";
-import {Card} from "tdesign-vue-next";
+import {Button, Card} from "tdesign-vue-next";
 import ReleaseAssetList from "@/pages/project/components/asset/list/ReleaseAssetList.vue";
 
 export async function openReleaseInstanceInfo(projectId: string, instanceId: string) {
@@ -15,6 +15,21 @@ export async function openReleaseInstanceInfo(projectId: string, instanceId: str
   listReleaseVersionByInstanceId(instanceId, projectId)
     .then(res => versions.value = res)
     .catch(e => MessageUtil.error("获取部署历史错误", e));
+
+  const compressing = ref(false);
+  const compressRef = ref();
+  const handleCompress = () => {
+    if (compressing.value) {
+      return;
+    }
+    (compressRef.value?.compress(instance.value?.name || Date.now()) as Promise<void>)
+      .then(() => {
+        MessageUtil.success("压缩完成");
+      }).catch(e => MessageUtil.error("压缩失败", e))
+      .finally(() => {
+        compressing.value = false;
+      });
+  }
 
   DrawerPlugin({
     header: false,
@@ -65,9 +80,12 @@ export async function openReleaseInstanceInfo(projectId: string, instanceId: str
           </div>
         </Card>
 
-        <Card title={'附件列表'} size={'small'}>
-          <ReleaseAssetList projectId={projectId} scope={'instance'} scopeId={instanceId}/>
-        </Card>
+        <Card title={'附件列表'} size={'small'}>{{
+          actions: () => <Button variant={'outline'} size={'small'} loading={compressing.value}
+                                 onClick={handleCompress}>{compressing.value ? '压缩中...' : '下载附件'}</Button>,
+          default: () => <ReleaseAssetList projectId={projectId} scope={'instance'} scopeId={instanceId}
+                                           ref={compressRef}/>
+        }}</Card>
       </div>
     )
   })

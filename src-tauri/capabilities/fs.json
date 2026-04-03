@@ -88,6 +88,14 @@
       ]
     },
     {
+      "identifier": "fs:allow-copy-file",
+      "allow": [
+        {
+          "path": "/**/*"
+        }
+      ]
+    },
+    {
       "identifier": "http:default",
       "allow": [
         {

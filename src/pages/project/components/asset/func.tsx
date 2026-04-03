@@ -1,13 +1,15 @@
-import {joinPath} from "@/util/lang/FileUtil.ts";
-import {APP_DATA_ASSET_DIR} from "@/global/Constants.ts";
-import {BaseDirectory, readDir, readTextFile, remove, rename, writeTextFile} from "@tauri-apps/plugin-fs";
-import {
-  type ReleaseAssetListItem,
-  type ReleaseAssetListItemType, ReleaseAssetListItemTypeLabel,
-  type ReleaseAssetScope
-} from "@/pages/project/components/asset/types.ts";
+import {BaseDirectory, copyFile, readDir, readTextFile, remove, rename, writeTextFile} from "@tauri-apps/plugin-fs";
+import {open} from '@tauri-apps/plugin-dialog';
+import {basename, joinPath} from "@/util/lang/FileUtil.ts";
 import MessageUtil from "@/util/model/MessageUtil.ts";
 import MessageBoxUtil from "@/util/model/MessageBoxUtil.tsx";
+import {APP_DATA_ASSET_DIR} from "@/global/Constants.ts";
+import {
+  type ReleaseAssetListItem,
+  type ReleaseAssetListItemType,
+  ReleaseAssetListItemTypeLabel,
+  type ReleaseAssetScope
+} from "@/pages/project/components/asset/types.ts";
 
 interface ParseAssetFilenameResult {
   name: string,
@@ -23,6 +25,7 @@ function parseAssetFilename(filename: string): ParseAssetFilenameResult {
   return {name: name, type: type};
 }
 
+// 加载附件列表
 export const loadAssetList = async (projectId: string, scope: ReleaseAssetScope, scopeId: string) => {
   const items = new Array<ReleaseAssetListItem>();
   // 获取路径
@@ -44,6 +47,7 @@ export const loadAssetList = async (projectId: string, scope: ReleaseAssetScope,
   return items;
 };
 
+// 创建附件
 export const createAssetItem = async (projectId: string, scope: ReleaseAssetScope, scopeId: string, type: ReleaseAssetListItemType, onUpdate: () => void) => {
   MessageBoxUtil.prompt("请输入文件名", `新增${ReleaseAssetListItemTypeLabel[type]}文件`)
     .then(name => {
@@ -57,6 +61,23 @@ export const createAssetItem = async (projectId: string, scope: ReleaseAssetScop
           MessageUtil.error('新增文件失败', e);
         });
     })
+}
+
+// 上传附件项
+export const uploadAssetItem = async (projectId: string, scope: ReleaseAssetScope, scopeId: string) => {
+  // 选择文件
+  const source = await open({
+    title: "请选择要上传的附件",
+    directory: false,
+    multiple: false,
+  });
+  if (!source) return Promise.reject();
+  // 获取文件名
+  const sourceBasename = basename(source);
+  // 构建目标文件路径
+  const target = joinPath(APP_DATA_ASSET_DIR(), projectId, scope, scopeId, `3|${sourceBasename}`);
+  // 复制文件
+  await copyFile(source, target, {toPathBaseDir: BaseDirectory.AppData});
 }
 
 // 删除文件

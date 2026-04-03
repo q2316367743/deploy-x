@@ -31,25 +31,10 @@ tauri-plugin-os = "2"
 tauri-plugin-shell = "2"
 tauri-plugin-store = "2"
 tauri-plugin-clipboard-manager = "2.3.2"
-tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
-
-axum = "0.7"
-tower-http = { version = "0.5", features = ["trace"] }
-reqwest = { version = "0.11", features = ["json", "stream"] }
-tokio-util = "0.7"
-percent-encoding = "2.3"
-mime_guess = "2.0"
-futures = "0.3"
-
 tauri-plugin-velesdb = "1.1.1"
 tauri-plugin-upload = "2"
-smb = { version = "0.11.1", default-features = false, features = ["async", "sign", "encrypt", "compress", "std-fs-impls", "netbios-transport", "kerberos"] }
-smb-fscc = "=0.11.1"
-futures-util = "0.3"
-lazy_static = "1.4"
-parking_lot = "0.12"
-m3u8-rs = "6.0"
-url = "2.5"
+tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
+zip = "2.2"
 
 [dependencies.tauri-plugin-sql]
 features = ["sqlite"] # or "postgres", or "mysql"

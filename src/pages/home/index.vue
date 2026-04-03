@@ -102,7 +102,6 @@ import {
   AddIcon, 
   ChevronRightIcon, 
   FolderIcon, 
-  MoreIcon,
   TimeIcon,
   FolderOpenIcon,
   LightbulbIcon

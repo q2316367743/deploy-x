@@ -113,7 +113,7 @@ import {
   createAssetItem,
   deleteAssetItem,
   loadAssetList,
-  readAssetContent, renameAsset, saveAssetContent
+  readAssetContent, renameAsset, saveAssetContent, uploadAssetItem
 } from "@/pages/project/components/asset/func.tsx";
 
 const props = defineProps({
@@ -184,7 +184,6 @@ const loadAssetContent = async (asset: ReleaseAssetListItem) => {
     const content = await readAssetContent(asset);
     if (content) {
       editorContent.value = content;
-      editorLanguage.value = inferMonacoLanguageByFilename(asset.filename);
     }
   } catch (error) {
     MessageUtil.error("加载附件内容失败", error);
@@ -238,6 +237,13 @@ const handleAddSql = () => {
 
 const handleAddOther = () => {
   // 文件上传
+  uploadAssetItem(props.projectId, props.scope, props.scopeId)
+    .then(() => loadAssets())
+    .catch(e => {
+      if (e) {
+        MessageUtil.error("上传失败", e);
+      }
+    })
 };
 
 onMounted(() => {

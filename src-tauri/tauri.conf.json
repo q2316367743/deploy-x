@@ -67,7 +67,7 @@
   "plugins": {
     "updater": {
       "dangerousInsecureTransportProtocol": true,
-      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEEwQzhFODk3NkM3NjI5MDUKUldRRktYWnNsK2pJb05aV3BkekJ5cGY5RlNROUo1UGZxdE5URWdqVGZUL1JwNzlzNHkxRFFhdWsK",
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEIxMDdFMjFCRTUzMzNFREIKUldUYlBqUGxHK0lIc2Fsb3A4d1JMMXZFT2laTHNvY3ZDS3M0cy9JQkNoK0RzOUhnT08zVkQ5ZW0K",
       "endpoints": [
         "https://github.com/q2316367743/deploy-x/releases/latest/download/latest.json"
       ],
