@@ -5,7 +5,8 @@
     </div>
     <div class="pva-body">
       <div v-for="version in versions" :class="['pva-item', {active: modelValue === version.id}]" :key="version.id"
-           @click="handleSelect(version)">
+           @click="handleSelect(version)"
+           @contextmenu="openReleaseVersionContextmenu(version, () => handleLoad(version.id), $event)">
         <div class="pva-item-title">{{ version.version }}</div>
         <div class="flex justify-between">
           <div class="pva-item-time">{{ formatDate(version.publish_time) }}</div>
@@ -19,7 +20,7 @@
 import type {ReleaseVersion} from "@/entity";
 import {listReleaseVersionService} from "@/service";
 import {formatDate} from "@/util/lang/FormatUtil.ts"
-import {openReleaseVersionAdd} from "@/pages/project/components/ReleaseVersionEdit.tsx";
+import {openReleaseVersionAdd, openReleaseVersionContextmenu} from "@/pages/project/components/ReleaseVersionEdit.tsx";
 
 const modelValue = defineModel({
   type: String,
@@ -46,6 +47,13 @@ const handleSelect = (version: ReleaseVersion) => {
 
 const handleAdd = () => {
   openReleaseVersionAdd(projectId, init);
+}
+
+const handleLoad = (id: string) => {
+  init();
+  if (modelValue.value === id) {
+    modelValue.value = '';
+  }
 }
 
 onMounted(() => {

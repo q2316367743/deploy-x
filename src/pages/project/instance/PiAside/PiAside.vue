@@ -5,7 +5,15 @@
     </div>
     <div class="pia-body">
       <div v-for="instance in instances" :class="['pia-item', {active: modelValue === instance.id}]" :key="instance.id"
-           @click="handleSelect(instance)">
+           @click="handleSelect(instance)" @contextmenu="openReleaseInstanceContextmenu({
+           instance_id: instance.id,
+           instance_name: instance.name,
+           instance_desc: instance.desc,
+           version_id: instance.current_version_id,
+           version_name: instance.version,
+           publish_user: instance.publish_user,
+           publish_time: instance.publish_time,
+           }, () => handleLoad(instance.id), $event)">
         <div class="pia-item-title">{{ instance.name }}</div>
         <div class="flex justify-between">
           <t-tag v-if="instance.current_version_id" variant="outline" theme="primary" class="pia-item-version">
@@ -19,7 +27,10 @@
 </template>
 <script lang="ts" setup>
 import {listReleaseInstanceWithVersion, type ReleaseInstanceWithVersion} from "@/service";
-import {openReleaseInstanceAdd} from "@/pages/project/components/ReleaseInstanceEdit.tsx";
+import {
+  openReleaseInstanceAdd,
+  openReleaseInstanceContextmenu
+} from "@/pages/project/components/ReleaseInstanceEdit.tsx";
 
 const modelValue = defineModel({
   type: String,
@@ -46,6 +57,13 @@ const handleSelect = (instance: ReleaseInstanceWithVersion) => {
 
 const handleAdd = () => {
   openReleaseInstanceAdd(projectId, init);
+}
+
+const handleLoad = (id: string) => {
+  init();
+  if (modelValue.value === id) {
+    modelValue.value = '';
+  }
 }
 
 onMounted(() => {
