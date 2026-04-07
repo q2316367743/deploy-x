@@ -49,3 +49,10 @@ export async function addReleaseCredential(projectId: string, instanceId: string
     group_id: id
   })));
 }
+
+export async function valueReleaseCredential(itemId: string, value: string) {
+  await useSql().mapper<ReleaseCredentialItem>('release_credential_item').updateById(itemId, {
+    value: value,
+    updated_at: Date.now()
+  })
+}

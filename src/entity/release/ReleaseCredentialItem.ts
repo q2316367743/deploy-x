@@ -3,6 +3,7 @@ import type {BaseEntity} from "@/entity/BaseEntity.ts";
 export interface ReleaseCredentialItemCore {
   key: string;
   value: string;
+  // text/password
   value_type: string;
   desc: string;
 }

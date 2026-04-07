@@ -8,12 +8,14 @@
     <div class="pi-main-content">
       <pim-general v-show="page === '1'" :instance-id="instanceId"/>
       <ReleaseAssetEdit v-show="page === '2'" :scope-id="instanceId" scope="instance" :project-id="projectId"/>
+      <CredentialEdit v-show="page === '3'" :instance-id="instanceId" :project-id="projectId"/>
     </div>
   </div>
 </template>
 <script lang="ts" setup>
 import PimGeneral from "@/pages/project/instance/PiMain/components/PimGeneral.vue";
 import ReleaseAssetEdit from "@/pages/project/components/asset/edit/ReleaseAssetEdit.vue";
+import CredentialEdit from "@/pages/project/components/credential/edit/CredentialEdit.vue";
 
 defineProps({
   instanceId: {

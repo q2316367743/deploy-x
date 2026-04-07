@@ -10,7 +10,8 @@ import VersionLogInfo from "@/pages/project/components/VersionLogInfo.vue";
 import ReleaseAssetList from "@/pages/project/components/asset/list/ReleaseAssetList.vue";
 import VersionTitle from "@/pages/project/components/VersionTitle.vue";
 import {formatDatetime} from "@/util/lang/FormatUtil.ts";
-import {CalendarIcon, TagIcon, UserIcon} from "tdesign-icons-vue-next";
+import {CalendarIcon, UserIcon} from "tdesign-icons-vue-next";
+import CredentialList from "@/pages/project/components/credential/list/CredentialList.vue";
 
 interface ReleaseDeployInfoProp {
   deploy: ReleaseDeploy;
@@ -92,6 +93,14 @@ export async function openReleaseDeployInfo(prop: ReleaseDeployInfoProp) {
             shadow
           >
             <ReleaseAssetList scope="instance" scopeId={instance.instance_id} projectId={deploy.project_id}/>
+          </Card>
+
+          <Card
+            title="🔑 实例凭证"
+            bordered
+            shadow
+          >
+            <CredentialList instanceId={instance.instance_id} projectId={deploy.project_id}/>
           </Card>
         </div>
       </div>

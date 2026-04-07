@@ -17,8 +17,8 @@ export interface DeployStatistics {
  */
 export function deployDateCount(projectId: string) {
   return useSql().select<Array<DeployStatistics>>(`
-      SELECT date(deploy_time, 'unixepoch') AS deploy_date,
-             COUNT(*)                       AS deploy_count
+      SELECT strftime('%Y-%m-%d', deploy_time / 1000, 'unixepoch') AS deploy_date,
+             COUNT(*)                                              AS deploy_count
       FROM release_deploy
       WHERE project_id = '${projectId}'
         -- 建议限制时间范围，例如最近 30 天或 90 天，避免数据量过大

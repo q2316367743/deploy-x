@@ -3,16 +3,11 @@
     <t-list v-if="!loading" split size="small">
       <t-list-item v-for="item in deployList" :key="item.id">
         <t-list-item-meta :title="item.version" :description="item.instance_name">
-          <template #avatar>
-            <div class="deploy-avatar">
-              <span class="avatar-text">{{ item.deploy_user.charAt(0).toUpperCase() }}</span>
-            </div>
-          </template>
         </t-list-item-meta>
         <template #action>
           <div class="deploy-info">
             <span class="deploy-user">{{ item.deploy_user }}</span>
-            <span class="deploy-time">{{ formatTime(item.deploy_time) }}</span>
+            <span class="deploy-time">{{ formatDatetime(item.deploy_time) }}</span>
           </div>
         </template>
       </t-list-item>
@@ -29,7 +24,7 @@
 <script lang="ts" setup>
 import { deployVersionInstance, type DeployVersionInstance } from '@/service/statistics';
 import MessageUtil from '@/util/model/MessageUtil';
-import dayjs from 'dayjs';
+import {formatDatetime} from "@/util/lang/FormatUtil.ts";
 
 const props = defineProps({
   projectId: {
@@ -40,11 +35,6 @@ const props = defineProps({
 
 const loading = ref(true);
 const deployList = ref<Array<DeployVersionInstance>>([]);
-
-const formatTime = (time: string | number) => {
-  if (!time) return '未知';
-  return dayjs(time).format('MM-DD HH:mm');
-};
 
 const loadData = async () => {
   try {
