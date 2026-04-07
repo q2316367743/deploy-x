@@ -50,8 +50,7 @@
               </th>
               <th v-for="instance in instances" :key="instance.instance_id"
                   class="matrix-th instance-header clickable"
-                  @click="openReleaseInstanceInfo(projectId, instance.instance_id)"
-                  @contextmenu="openReleaseInstanceContextmenu(instance, listInstance, $event)">
+                  @click="openReleaseInstanceInfo(projectId, instance.instance_id)">
                 <div class="th-content">
                   <div class="instance-header-info">
                     <div class="instance-indicator"></div>
@@ -74,8 +73,7 @@
                 @mouseenter="hoveredRow = version.id"
                 @mouseleave="hoveredRow = ''">
               <td class="matrix-th version-header version-cell clickable"
-                  @click="openReleaseVersionInfo(version.project_id, version.id)"
-                  @contextmenu="openReleaseVersionContextmenu(version, listVersion, $event)">
+                  @click="openReleaseVersionInfo(version.project_id, version.id)">
                 <div class="version-info" :title="version.publish_user">
                   <div class="version-badge">
                     <span class="version-dot" :class="getVersionStatus(vIndex)"></span>
@@ -124,14 +122,10 @@
 </template>
 <script lang="ts" setup>
 import type {ReleaseVersion, ReleaseDeploy} from "@/entity";
+import {openReleaseInstanceAdd} from "../components/ReleaseInstanceEdit.tsx";
+import {openReleaseVersionAdd} from "../components/ReleaseVersionEdit.tsx";
 import {openReleaseInstanceInfo} from "./func/ReleaseInstanceInfo.tsx";
 import {openReleaseVersionInfo} from "./func/ReleaseVersionInfo.tsx";
-import {
-  openReleaseInstanceAdd, openReleaseInstanceContextmenu,
-} from "../components/ReleaseInstanceEdit.tsx";
-import {
-  openReleaseVersionAdd, openReleaseVersionContextmenu,
-} from "../components/ReleaseVersionEdit.tsx";
 import {openReleaseDeployInfo} from "./func/ReleaseDeployInfo.tsx";
 import {openReleaseDeployAdd} from "./func/ReleaseDeployEdit.tsx";
 import {
@@ -169,7 +163,11 @@ const addDeploy = (instanceId: string, versionId: string) => {
     version_id: versionId,
     versionName: versions.value.find(e => e.id === versionId)?.version || versionId,
     project_id: projectId,
-    onUpdate: listDeploy
+    onUpdate: () => {
+      listVersion();
+      listInstance();
+      listDeploy();
+    }
   })
 }
 

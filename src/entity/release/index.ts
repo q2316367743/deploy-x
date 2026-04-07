@@ -5,3 +5,6 @@ export * from "./ReleaseInstance.ts";
 export * from "./ReleaseProject.ts";
 export * from "./ReleaseVersion.ts";
 export * from "./ReleaseVersionLog.ts"
+
+export * from "./ReleaseCredentialGroup.ts";
+export * from "./ReleaseCredentialItem.ts";

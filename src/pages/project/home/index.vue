@@ -113,9 +113,9 @@ import MessageUtil from "@/util/model/MessageUtil.ts";
 import PhStatsGrid from "@/pages/project/home/components/PhStatsGrid.vue";
 import PhDeployTrend from "@/pages/project/home/components/PhDeployTrend.vue";
 import PhRecentDeploy from "@/pages/project/home/components/PhRecentDeploy.vue";
-import {openReleaseInstanceInfo} from "@/pages/project/table/func/ReleaseInstanceInfo.tsx";
-import {openReleaseVersionInfo} from "@/pages/project/table/func/ReleaseVersionInfo.tsx";
-import {openReleaseDeployInfo} from "@/pages/project/table/func/ReleaseDeployInfo.tsx";
+import {openReleaseInstanceInfo} from "@/pages/project/deploy/func/ReleaseInstanceInfo.tsx";
+import {openReleaseVersionInfo} from "@/pages/project/deploy/func/ReleaseVersionInfo.tsx";
+import {openReleaseDeployInfo} from "@/pages/project/deploy/func/ReleaseDeployInfo.tsx";
 
 const route = useRoute();
 const router = useRouter();

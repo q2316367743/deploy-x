@@ -21,7 +21,7 @@
           </template>
           概览
         </t-menu-item>
-        <t-menu-item :value="tablePath" :to="tablePath">
+        <t-menu-item :value="deployPath" :to="deployPath">
           <template #icon>
             <table1-icon/>
           </template>
@@ -74,7 +74,7 @@ const router = useRouter();
 const projectId = route.params.id;
 
 const homePath = `/release/${projectId}/home`;
-const tablePath = `/release/${projectId}/table`;
+const deployPath = `/release/${projectId}/deploy`;
 const versionPath = `/release/${projectId}/version`;
 const instancePath = `/release/${projectId}/instance`;
 const settingPath = `/release/${projectId}/setting`;

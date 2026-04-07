@@ -9,6 +9,8 @@ import {Button, Card, Tag} from "tdesign-vue-next";
 import VersionLogInfo from "@/pages/project/components/VersionLogInfo.vue";
 import ReleaseAssetList from "@/pages/project/components/asset/list/ReleaseAssetList.vue";
 import VersionTitle from "@/pages/project/components/VersionTitle.vue";
+import {formatDatetime} from "@/util/lang/FormatUtil.ts";
+import {CalendarIcon, TagIcon, UserIcon} from "tdesign-icons-vue-next";
 
 interface ReleaseDeployInfoProp {
   deploy: ReleaseDeploy;
@@ -51,10 +53,14 @@ export async function openReleaseDeployInfo(prop: ReleaseDeployInfoProp) {
               <Tag variant="light" theme="success">{maxVersion.version}</Tag>
             </div>
           </div>
-          <Tag variant="outline" theme="primary">
-            <span class="time-icon">🕐</span>
-            {new Date(deploy.deploy_time).toLocaleString()}
-          </Tag>
+          <Tag variant="light-outline" theme="success">{{
+            icon: () => <UserIcon/>,
+            default: () => <span>{deploy.deploy_user}</span>
+          }}</Tag>
+          <Tag variant="outline" theme="primary">{{
+            icon: () => <CalendarIcon/>,
+            default: () => <span>{formatDatetime(deploy.deploy_time)}</span>
+          }}</Tag>
         </div>
 
         <div class="deploy-body">

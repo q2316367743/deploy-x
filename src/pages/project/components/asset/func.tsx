@@ -104,7 +104,9 @@ export const saveAssetContent = async (asset: ReleaseAssetListItem, content: str
 }
 
 export const renameAsset = async (asset: ReleaseAssetListItem) => {
-  await rename(asset.path, joinPath(asset.folder, asset.filename),
+  await rename(
+    asset.path,
+    joinPath(asset.folder, `${asset.file_type}|${asset.filename}`),
     {oldPathBaseDir: BaseDirectory.AppData, newPathBaseDir: BaseDirectory.AppData})
 }
 

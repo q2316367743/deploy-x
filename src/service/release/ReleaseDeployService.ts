@@ -3,9 +3,10 @@ import type {ReleaseDeploy, ReleaseDeployCore, ReleaseInstance, ReleaseVersion} 
 import dayjs from "dayjs";
 
 export async function addReleaseDeployService(prop: ReleaseDeployCore) {
+  console.log("Adding ReleaseDeployService", prop);
   await useSql().mapper<ReleaseDeploy>('release_deploy').insert({
     ...prop,
-    deploy_time: dayjs(prop.deploy_time + ':00').toDate().getTime(),
+    deploy_time: dayjs(prop.deploy_time).toDate().getTime(),
     created_at: Date.now(),
     updated_at: Date.now(),
   });

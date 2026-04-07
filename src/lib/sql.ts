@@ -16,6 +16,9 @@ type TableName =
   | 'release_deploy'
   | 'release_asset_meta'
   | 'release_asset_content'
+
+  | 'release_credential_group'
+  | 'release_credential_item'
   ;
 
 
