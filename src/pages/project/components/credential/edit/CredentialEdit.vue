@@ -6,6 +6,11 @@
     </div>
     <t-space v-if="list.length > 0" direction="vertical" size="small" class="w-full">
       <wd-cell-group v-for="item in list" :key="item.id" :title="item.name">
+        <template #actions>
+          <t-button theme="primary" size="small"
+                    @click="openUpdateCredentialDrawer(projectId, instanceId, item, listCredential)">更新
+          </t-button>
+        </template>
         <wd-cell v-for="sub in item.items" :key="sub.id" :label="sub.key">
           <div class="w-400px">
             <t-input v-model="sub.value" :type="sub.value_type" @change="valueReleaseCredentialWrap(sub.id, $event)"/>
@@ -22,6 +27,7 @@ import {
   valueReleaseCredential
 } from "@/service/release/ReleaseCredentialService.ts";
 import {openAddCredentialDrawer} from "@/pages/project/components/credential/edit/func/AddCredentialDrawer.tsx";
+import {openUpdateCredentialDrawer} from "@/pages/project/components/credential/edit/func/UpdateCredentialDrawer.tsx";
 import {debounce} from "es-toolkit";
 
 const props = defineProps({

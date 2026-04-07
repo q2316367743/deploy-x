@@ -61,3 +61,25 @@ export async function valueReleaseCredential(itemId: string, value: string) {
     updated_at: Date.now()
   })
 }
+
+export async function updateReleaseCredential(groupId: string, projectId: string, instanceId: string, form: ReleaseCredentialAddFrom): Promise<void> {
+  const now = Date.now();
+  await useSql().mapper<ReleaseCredentialGroup>('release_credential_group').updateById(groupId, {
+    name: form.name,
+    desc: form.desc,
+    updated_at: now,
+  });
+  await useSql().query<ReleaseCredentialItem>('release_credential_item')
+    .eq('group_id', groupId).delete();
+  await Promise.all(form.items.map(item => useSql().mapper<ReleaseCredentialItem>('release_credential_item').insert({
+    key: item.key,
+    value: item.value,
+    value_type: item.value_type,
+    desc: item.desc,
+    created_at: now,
+    updated_at: now,
+    project_id: projectId,
+    instance_id: instanceId,
+    group_id: groupId
+  })));
+}
