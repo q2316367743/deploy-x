@@ -33,17 +33,22 @@ export interface ReleaseCredentialAddFrom extends ReleaseCredentialGroupCore {
 
 export async function addReleaseCredential(projectId: string, instanceId: string, form: ReleaseCredentialAddFrom): Promise<void> {
   // 新增分组
+  const now = Date.now();
   const {id} = await useSql().mapper<ReleaseCredentialGroup>('release_credential_group').insert({
     name: form.name,
     desc: form.desc,
     project_id: projectId,
     instance_id: instanceId,
+    created_at: now,
+    updated_at: now,
   });
   await Promise.all(form.items.map(item => useSql().mapper<ReleaseCredentialItem>('release_credential_item').insert({
     key: item.key,
     value: item.value,
     value_type: item.value_type,
     desc: item.desc,
+    created_at: now,
+    updated_at: now,
     project_id: projectId,
     instance_id: instanceId,
     group_id: id

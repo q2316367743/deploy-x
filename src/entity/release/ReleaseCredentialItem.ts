@@ -4,7 +4,7 @@ export interface ReleaseCredentialItemCore {
   key: string;
   value: string;
   // text/password
-  value_type: string;
+  value_type: "text" | "number" | "url" | "tel" | "password";
   desc: string;
 }
 

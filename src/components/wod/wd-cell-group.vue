@@ -1,15 +1,15 @@
 <template>
-  <div 
-    class="wd-cell-group" 
+  <div
+    class="wd-cell-group"
     :class="{ 
       'wd-cell-group--insert': insert,
       'wd-cell-group--border': border
     }"
   >
-    <div v-if="title || value || useSlot" class="wd-cell-group__header">
+    <div v-if="title || value" class="wd-cell-group__header">
       <div v-if="title" class="wd-cell-group__title">{{ title }}</div>
       <div v-if="value" class="wd-cell-group__value">{{ value }}</div>
-      <slot v-if="useSlot" name="header"></slot>
+      <slot name="actions"></slot>
     </div>
     <div class="wd-cell-group__body">
       <slot></slot>
@@ -33,10 +33,6 @@ const props = defineProps({
     default: false
   },
   insert: {
-    type: Boolean,
-    default: false
-  },
-  useSlot: {
     type: Boolean,
     default: false
   }

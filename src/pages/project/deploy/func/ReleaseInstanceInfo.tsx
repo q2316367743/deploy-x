@@ -3,6 +3,7 @@ import type {ReleaseInstance} from "@/entity";
 import MessageUtil from "@/util/model/MessageUtil.ts";
 import {Button, Card} from "tdesign-vue-next";
 import ReleaseAssetList from "@/pages/project/components/asset/list/ReleaseAssetList.vue";
+import CredentialList from "@/pages/project/components/credential/list/CredentialList.vue";
 
 export async function openReleaseInstanceInfo(projectId: string, instanceId: string) {
   const instance = ref<ReleaseInstance | null>();
@@ -86,6 +87,9 @@ export async function openReleaseInstanceInfo(projectId: string, instanceId: str
           default: () => <ReleaseAssetList projectId={projectId} scope={'instance'} scopeId={instanceId}
                                            ref={compressRef}/>
         }}</Card>
+        <Card title={'凭证信息'} size={'small'}>
+          <CredentialList projectId={projectId} instanceId={instanceId}/>
+        </Card>
       </div>
     )
   })
