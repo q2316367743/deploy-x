@@ -4,7 +4,7 @@
       <template #actions>
         <t-button theme="primary" size="small" @click="copyAll(item)">复制全部</t-button>
       </template>
-      <wd-cell v-for="sub in item.items" :key="sub.id" :label="sub.key">
+      <wd-cell v-for="sub in item.items" :key="sub.id" :label="sub.key" :help="sub.desc">
         <div class="flex gap-4px">
           <div v-if="sub.value_type === 'password'">********</div>
           <div v-else>{{ sub.value }}</div>

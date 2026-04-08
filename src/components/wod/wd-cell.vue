@@ -23,6 +23,9 @@
           {{ title }}
         </div>
         <div v-if="label" class="wd-cell__label">{{ label }}</div>
+        <t-tooltip v-if="help" :content="help">
+          <help-circle-filled-icon />
+        </t-tooltip>
       </div>
     </div>
     <div class="wd-cell__right">
@@ -40,8 +43,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, inject } from 'vue'
-import { useRouter } from 'vue-router'
+import {HelpCircleFilledIcon} from "tdesign-icons-vue-next";
 
 const props = defineProps({
   title: {
@@ -101,6 +103,10 @@ const props = defineProps({
     default: false
   },
   icon: {
+    type: String,
+    default: ''
+  },
+  help: {
     type: String,
     default: ''
   }
@@ -192,8 +198,8 @@ const handleClick = (e: Event) => {
 
   &__title-wrapper {
     display: flex;
-    flex-direction: column;
-    gap: 2px;
+    gap: 8px;
+    align-items: center;
   }
 
   &__title {
