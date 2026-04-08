@@ -11,7 +11,7 @@
                     @click="openUpdateCredentialDrawer(projectId, instanceId, item, listCredential)">更新
           </t-button>
         </template>
-        <wd-cell v-for="sub in item.items" :key="sub.id" :label="sub.key">
+        <wd-cell v-for="sub in item.items" :key="sub.id" :label="sub.key" :help="sub.desc">
           <div class="w-400px">
             <t-input v-model="sub.value" :type="sub.value_type" @change="valueReleaseCredentialWrap(sub.id, $event)"/>
           </div>
