@@ -9,6 +9,9 @@
           <h1 class="app-title">发版助手</h1>
           <p class="app-subtitle">高效管理您的项目发布流程</p>
         </div>
+        <div class="mr-24px">
+          <ShangZanBtn @click="openSz()"/>
+        </div>
       </div>
     </div>
 
@@ -113,6 +116,8 @@ import {
   openReleaseProjectDialog 
 } from "./func/ReleaseProjectEdit.tsx";
 import dayjs from 'dayjs';
+import ShangZanBtn from "@/pages/home/ShangZanBtn.vue";
+import {openSz} from "@/pages/home/func/OpenSz.tsx";
 
 const router = useRouter();
 

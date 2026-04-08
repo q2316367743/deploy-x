@@ -39,12 +39,12 @@
           </template>
           实例
         </t-menu-item>
-        <t-menu-item :value="settingPath" :to="settingPath">
-          <template #icon>
-            <setting-icon/>
-          </template>
-          设置
-        </t-menu-item>
+<!--        <t-menu-item :value="settingPath" :to="settingPath">-->
+<!--          <template #icon>-->
+<!--            <setting-icon/>-->
+<!--          </template>-->
+<!--          设置-->
+<!--        </t-menu-item>-->
       </t-menu>
     </t-aside>
     <t-content class="h-100vh overflow-hidden app-content">
@@ -77,7 +77,7 @@ const homePath = `/release/${projectId}/home`;
 const deployPath = `/release/${projectId}/deploy`;
 const versionPath = `/release/${projectId}/version`;
 const instancePath = `/release/${projectId}/instance`;
-const settingPath = `/release/${projectId}/setting`;
+// const settingPath = `/release/${projectId}/setting`;
 
 const select = ref<ReleaseProject>();
 
