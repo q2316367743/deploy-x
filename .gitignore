@@ -2,7 +2,7 @@
 /src-tauri/target/
 /src-tauri/binaries/*
 !/src-tauri/binaries/.gitkeep
-/src-tauri/deploy-x.provisionprofile
+/src-tauri/deployx.provisionprofile
 /src-utools/node_modules
 /src-utools/dist
 .idea

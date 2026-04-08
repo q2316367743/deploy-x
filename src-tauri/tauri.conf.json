@@ -50,12 +50,13 @@
     "resources": [
       "lib/**/*"
     ],
-    "category": "Entertainment",
+    "category": "DeveloperTool",
     "macOS": {
       "entitlements": "./Entitlements.plist",
       "files": {
-        "embedded.provisionprofile": "./deploy-x.provisionprofile"
-      }
+        "embedded.provisionprofile": "deployx.provisionprofile"
+      },
+      "minimumSystemVersion": "12"
     },
     "windows": {
       "wix": null,
