@@ -1,13 +1,22 @@
 <template>
-  <t-card title="最近部署" subtitle="最近 10 条记录" :bordered="false">
-    <t-list v-if="!loading" split size="small">
+  <t-card title="最近部署" subtitle="最近 10 条记录" :bordered="false" size="small">
+    <t-list v-if="!loading" split size="small" class="h-300px overflow-auto">
       <t-list-item v-for="item in deployList" :key="item.id">
-        <t-list-item-meta :title="item.version" :description="item.instance_name">
-        </t-list-item-meta>
+        <div class="deploy-source">
+          <div class="version-name">{{item.version}}</div>
+          <t-tag class="instance-name" theme="primary" variant="outline" size="small">
+            <template #icon>
+              <location-icon />
+            </template>
+            {{item.instance_name}}
+          </t-tag>
+        </div>
         <template #action>
           <div class="deploy-info">
             <span class="deploy-user">{{ item.deploy_user }}</span>
-            <span class="deploy-time">{{ formatDatetime(item.deploy_time) }}</span>
+            <t-tag class="deploy-time" theme="warning" variant="outline" size="small">
+              <calendar-icon />
+              {{ formatDatetime(item.deploy_time) }}</t-tag>
           </div>
         </template>
       </t-list-item>
@@ -25,6 +34,7 @@
 import { deployVersionInstance, type DeployVersionInstance } from '@/service/statistics';
 import MessageUtil from '@/util/model/MessageUtil';
 import {formatDatetime} from "@/util/lang/FormatUtil.ts";
+import {CalendarIcon, LocationIcon} from "tdesign-icons-vue-next";
 
 const props = defineProps({
   projectId: {
@@ -68,6 +78,16 @@ onMounted(loadData);
   }
 }
 
+.deploy-source {
+  .version-name {
+    color: var(--td-text-color-primary);
+    font-weight: 700;
+  }
+  .instance-name {
+    font-size: 11px;
+  }
+}
+
 .deploy-info {
   display: flex;
   flex-direction: column;
@@ -82,7 +102,6 @@ onMounted(loadData);
 
   .deploy-time {
     font-size: 11px;
-    color: var(--td-text-color-secondary);
   }
 }
 

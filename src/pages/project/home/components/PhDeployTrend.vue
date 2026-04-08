@@ -1,5 +1,5 @@
 <template>
-  <t-card title="部署频率趋势" subtitle="最近 90 天" :bordered="false">
+  <t-card title="部署频率趋势" subtitle="最近 90 天" :bordered="false" size="small">
     <div class="chart-container">
       <v-chart v-if="!loading" :option="chartOption" autoresize />
       <div v-else class="loading-placeholder">

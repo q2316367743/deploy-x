@@ -56,7 +56,7 @@ export class QueryChain<T extends Record<string, any>, N extends string, K exten
     return this.simpleWhere(k, "<=", v);
   }
 
-  gt(k: K, v: T[K]) {
+  gt(k: K, v?: T[K]) {
     return this.simpleWhere(k, ">", v);
   }
 

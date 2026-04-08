@@ -91,7 +91,7 @@ export async function listReleaseVersionBetween(projectId: string, maxPublishTim
   return useSql().query<ReleaseVersion>('release_version')
     .eq('project_id', projectId)
     .le('publish_time', maxPublishTime)
-    .ge('publish_time', minPublishTime)
+    .gt('publish_time', minPublishTime)
     .orderByDesc('publish_time')
     .list();
 }

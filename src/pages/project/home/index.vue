@@ -146,6 +146,7 @@ const listDeploy = async () => {
 
 
 const openReleaseDeployInfoWrap = (instance: ReleaseInstanceVersion, version: ReleaseVersion) => {
+  if (instance.version_id !== version.id) return;
   const deploy = deployMap.value.get(`${instance.instance_id}-${version.id}`);
   if (!deploy) {
     MessageUtil.error("系统异常，部署数据未找到");
