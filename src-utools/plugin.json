@@ -9,7 +9,7 @@
     "linux"
   ],
   "development": {
-    "main": "http://localhost:5124/"
+    "main": "http://localhost:5125/"
   },
   "pluginSetting": {
     "single": true,
@@ -26,7 +26,8 @@
         "linux"
       ],
       "cmds": [
-        "DeployX"
+        "DeployX",
+        "发版助手"
       ]
     }
   ]

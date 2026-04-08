@@ -1,13 +1,10 @@
 <template>
   <div v-if="init" class="pvm-log">
-    <wd-cell-group :use-slot="true">
-      <template #header>
-        <div class="log-header">
-          <div class="log-title">版本日志</div>
-          <t-button theme="primary" size="small" @click="handleAdd">
-            添加日志
-          </t-button>
-        </div>
+    <wd-cell-group title="版本日志">
+      <template #actions>
+        <t-button theme="primary" size="small" @click="handleAdd">
+          添加日志
+        </t-button>
       </template>
 
       <div v-if="content.length === 0" class="empty-log">
@@ -118,20 +115,6 @@ onMounted(async () => {
   display: flex;
   flex-direction: column;
   gap: 16px;
-}
-
-.log-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  padding: 0 8px;
-
-  .log-title {
-    font: var(--td-font-title-medium);
-    color: var(--td-text-color-primary);
-    font-weight: 600;
-  }
 }
 
 .empty-log {

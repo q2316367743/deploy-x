@@ -54,10 +54,10 @@ export async function openReleaseDeployInfo(prop: ReleaseDeployInfoProp) {
               <Tag variant="light" theme="success">{maxVersion.version}</Tag>
             </div>
           </div>
-          <Tag variant="light-outline" theme="success">{{
+          {deploy.deploy_user && <Tag variant="light-outline" theme="success">{{
             icon: () => <UserIcon/>,
             default: () => <span>{deploy.deploy_user}</span>
-          }}</Tag>
+          }}</Tag>}
           <Tag variant="outline" theme="primary">{{
             icon: () => <CalendarIcon/>,
             default: () => <span>{formatDatetime(deploy.deploy_time)}</span>

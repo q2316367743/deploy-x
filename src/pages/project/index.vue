@@ -60,7 +60,7 @@
 import {
   ChevronLeftIcon,
   DataBaseIcon, GitBranchIcon,
-  HomeIcon, SettingIcon, Table1Icon,
+  HomeIcon, Table1Icon,
   ViewListIcon
 } from "tdesign-icons-vue-next";
 import {collapsed, toggleCollapsed} from "@/global/Constants.ts";

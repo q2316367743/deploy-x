@@ -10,7 +10,7 @@
         <div class="pva-item-title">{{ version.version }}</div>
         <div class="flex justify-between">
           <div class="pva-item-time">{{ formatDate(version.publish_time) }}</div>
-          <t-tag variant="outline" theme="primary" class="pva-item-user">{{ version.publish_user }}</t-tag>
+          <t-tag v-if="version.publish_user" variant="outline" theme="primary" class="pva-item-user">{{ version.publish_user }}</t-tag>
         </div>
       </div>
     </div>

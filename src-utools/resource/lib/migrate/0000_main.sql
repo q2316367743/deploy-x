@@ -1,152 +1,182 @@
-CREATE TABLE IF NOT EXISTS video
+
+-- 发版项目（ReleaseProject）
+CREATE TABLE release_project
 (
-    id               TEXT PRIMARY KEY,                   -- 视频文件内容的 SHA-256 Hash (例如: "a1b2c3...")
-    created_at       INTEGER NOT NULL DEFAULT 0,
-    updated_at       INTEGER NOT NULL DEFAULT 0,
+    id         TEXT PRIMARY KEY,
+    created_at INTEGER NOT NULL,
+    updated_at INTEGER NOT NULL,
 
-    library_id       TEXT    NOT NULL DEFAULT '',        -- 所属媒体库
-
-    file_path        TEXT    NOT NULL DEFAULT '',        -- 当前绝对文件路径 (UNIQUE 约束防止同一路径重复插入，但允许 Hash 相同路径不同？需业务逻辑控制)
-    screenshot_path  TEXT    NOT NULL DEFAULT '',
-    sprite_path      TEXT    NOT NULL DEFAULT '',
-    vtt_path         TEXT    NOT NULL DEFAULT '',
-    cover_path       TEXT    NOT NULL DEFAULT '',        -- 封面图片
-    file_name        TEXT    NOT NULL DEFAULT '',        -- 文件名 (带扩展名)
-    file_size        INTEGER NOT NULL DEFAULT 0,         -- 文件大小 (字节)
-    file_birthtime   INTEGER NOT NULL DEFAULT 0,         -- 文件创建时间
-    hidden           INTEGER NOT NULL DEFAULT 0,         -- 隐藏标记 (0:正常, 1:已隐藏)
-
-    -- 视频信息
-    duration_ms      INTEGER NOT NULL DEFAULT 0,         -- 视频时长 (毫秒)
-    width            INTEGER NOT NULL DEFAULT 0,         -- 分辨率宽
-    height           INTEGER NOT NULL DEFAULT 0,         -- 分辨率高
-    fps              INTEGER NOT NULL DEFAULT 0,
-    bit_rate         INTEGER NOT NULL DEFAULT 0,
-    container_format TEXT    NOT NULL DEFAULT '',        -- 容器格式 (mp4, mkv, avi...)
-    video_codec      TEXT    NOT NULL DEFAULT '',        -- 视频编码 (h264, hevc...)
-    audio_codec      TEXT    NOT NULL DEFAULT '',        -- 音频编码 (aac, mp3...)
-
-    -- 用户可编辑的元数据
-    title            TEXT    NOT NULL DEFAULT '',        -- 视频标题 (可手动覆盖)
-    description      TEXT    NOT NULL DEFAULT '',        -- 描述
-    link             TEXT    NOT NULL DEFAULT '',
-    release_date     TEXT    NOT NULL DEFAULT '',        -- 发行日期
-    director         TEXT    NOT NULL DEFAULT '',
-    studio_id        TEXT    NOT NULL DEFAULT '',
-
-    -- 播放信息
-    last_played_at   INTEGER NOT NULL DEFAULT 0,         -- 最后播放时间
-    play_count       INTEGER          DEFAULT 0,         -- 播放次数
-    resume_time      INTEGER NOT NULL DEFAULT 0,         -- 续播位置
-
-    -- 状态标记
-    is_deleted       TEXT    NOT NULL DEFAULT '0',       -- 软删除标记 (0:正常, 1:已删除)
-    is_liked         INTEGER NOT NULL DEFAULT 0          -- 是否点赞 (0:正常, 1:已点赞)
-
-    -- 索引优化
+    name       TEXT    NOT NULL,
+    `desc`     TEXT    NOT NULL
 );
 
--- 创建常用查询索引
-CREATE INDEX IF NOT EXISTS idx_video_library ON video (library_id);
-CREATE INDEX IF NOT EXISTS idx_video_title ON video (title);
-CREATE INDEX IF NOT EXISTS idx_video_last_played ON video (last_played_at DESC);
-CREATE UNIQUE INDEX IF NOT EXISTS idx_video_file_path ON video (file_path, is_deleted);
+CREATE UNIQUE INDEX idx_release_project_name_uindex ON release_project (name);
 
--- 演员
-CREATE TABLE IF NOT EXISTS actor
-(
-    id            TEXT PRIMARY KEY,
-    created_at    INTEGER NOT NULL DEFAULT 0,
-    updated_at    INTEGER NOT NULL DEFAULT 0,
-
-    library_id    TEXT    NOT NULL DEFAULT '',        -- 所属媒体库
-
-    name          TEXT    NOT NULL DEFAULT '' UNIQUE, -- 演员姓名 (如: "张彪")
-    original_name TEXT    NOT NULL DEFAULT '',        -- 原名/英文名
-    gender        TEXT    NOT NULL DEFAULT '',        -- 性别: 'male', 'female', 'other'
-    birth_date    TEXT    NOT NULL DEFAULT '',        -- 出生日期
-    death_date    TEXT    NOT NULL DEFAULT '',        -- 逝世日期 (可选)
-    biography     TEXT    NOT NULL DEFAULT '',        -- 简介
-    photo_path    TEXT    NOT NULL DEFAULT ''         -- 头像本地路径
-);
-
-CREATE INDEX IF NOT EXISTS idx_actor_name ON actor (name);
-CREATE INDEX IF NOT EXISTS idx_actor_library ON actor (library_id);
-
--- 工作室
-CREATE TABLE IF NOT EXISTS studio
+-- 版本表（ReleaseVersion）
+CREATE TABLE release_version
 (
     id           TEXT PRIMARY KEY,
-    created_at   INTEGER NOT NULL DEFAULT 0,
-    updated_at   INTEGER NOT NULL DEFAULT 0,
+    created_at   INTEGER NOT NULL,
+    updated_at   INTEGER NOT NULL,
 
-    library_id   TEXT    NOT NULL DEFAULT '',        -- 所属媒体库
-
-    name         TEXT    NOT NULL DEFAULT '' UNIQUE, -- 工作室名称
-    country      TEXT    NOT NULL DEFAULT '',        -- 所属国家
-    founded_year INTEGER NOT NULL DEFAULT 0,         -- 成立年份
-    website      TEXT    NOT NULL DEFAULT '',        -- 官网
-    logo_path    TEXT    NOT NULL DEFAULT ''         -- Logo 本地路径
+    project_id   TEXT    NOT NULL,
+    version      TEXT    NOT NULL,
+    publish_time INTEGER NOT NULL,
+    publish_user TEXT    NOT NULL,
+    FOREIGN KEY (project_id) REFERENCES release_project (id) ON DELETE CASCADE
 );
 
-CREATE INDEX IF NOT EXISTS idx_studio_name ON studio (name);
-CREATE INDEX IF NOT EXISTS idx_studio_library ON studio (library_id);
+CREATE INDEX idx_release_version_project_id ON release_version (project_id);
+CREATE UNIQUE INDEX idx_release_version_project_id_version_uindex ON release_version (project_id, version);
+CREATE INDEX idx_release_version_project_id_deploy_time ON release_version (project_id, publish_time);
 
-CREATE TABLE IF NOT EXISTS video_actor
-(
-    id          TEXT PRIMARY KEY,
-    created_at  INTEGER NOT NULL DEFAULT 0,
-    updated_at  INTEGER NOT NULL DEFAULT 0,
-    video_id    TEXT    NOT NULL DEFAULT '', -- 对应 videos.id (Hash)
-    actor_id    TEXT    NOT NULL DEFAULT '', -- 对应 actors.id
-    role_name   TEXT    NOT NULL DEFAULT '', -- 在该视频中饰演的角色名
-    order_index INTEGER NOT NULL DEFAULT 0   -- 演员排序 (主演在前)
-);
-
-CREATE INDEX IF NOT EXISTS idx_video_actors_actor ON video_actor (actor_id);
-CREATE INDEX IF NOT EXISTS idx_video_actors_video ON video_actor (video_id);
-
-
--- 标签
-CREATE TABLE IF NOT EXISTS tag
+-- 版本日志（ReleaseVersionLog）
+CREATE TABLE release_version_log
 (
     id         TEXT PRIMARY KEY,
-    created_at INTEGER NOT NULL DEFAULT 0,
-    updated_at INTEGER NOT NULL DEFAULT 0,
-
-    library_id TEXT    NOT NULL DEFAULT '', -- 所属媒体库
-
-    name       TEXT    NOT NULL DEFAULT '' UNIQUE,
-    color      TEXT    NOT NULL DEFAULT ''-- 标签显示颜色 (hex)
+    project_id TEXT NOT NULL,
+    content    TEXT NOT NULL,
+    FOREIGN KEY (id) REFERENCES release_version (id) ON DELETE CASCADE,
+    FOREIGN KEY (project_id) REFERENCES release_project (id) ON DELETE CASCADE
 );
 
-CREATE INDEX IF NOT EXISTS idx_tag_library ON tag (library_id);
+CREATE INDEX idx_release_version_log_project_id ON release_version_log (project_id);
 
-CREATE TABLE IF NOT EXISTS video_tag
+-- 部署实例（ReleaseInstance）
+CREATE TABLE release_instance
 (
-    id         TEXT PRIMARY KEY,
-    created_at INTEGER NOT NULL DEFAULT 0,
-    updated_at INTEGER NOT NULL DEFAULT 0,
-    video_id   TEXT    NOT NULL DEFAULT '',
-    tag_id     TEXT    NOT NULL DEFAULT ''
+    id                 TEXT PRIMARY KEY,
+    created_at         INTEGER NOT NULL,
+    updated_at         INTEGER NOT NULL,
+
+    project_id         TEXT    NOT NULL,
+    name               TEXT    NOT NULL,
+    `desc`             TEXT    NOT NULL,
+    current_version_id TEXT,
+    FOREIGN KEY (project_id) REFERENCES release_project (id) ON DELETE CASCADE
 );
 
-CREATE INDEX IF NOT EXISTS idx_video_tags_tag ON video_tag (tag_id);
+CREATE INDEX idx_release_instance_project_id ON release_instance (project_id);
+CREATE UNIQUE INDEX idx_release_instance_project_id_name_uindex ON release_instance (project_id, name);
+CREATE INDEX idx_release_instance_current_version_id ON release_instance (current_version_id);
 
-CREATE TABLE IF NOT EXISTS marker
+-- 发版部署记录（ReleaseDeploy）
+CREATE TABLE release_deploy
 (
     id          TEXT PRIMARY KEY,
-    created_at  INTEGER NOT NULL DEFAULT 0,
-    updated_at  INTEGER NOT NULL DEFAULT 0,
-    library_id  TEXT    NOT NULL DEFAULT '',
-    video_id    TEXT    NOT NULL DEFAULT '',
+    created_at  INTEGER NOT NULL,
+    updated_at  INTEGER NOT NULL,
 
-    name        TEXT    NOT NULL DEFAULT '',
-    time        INTEGER NOT NULL DEFAULT 0,
-    description TEXT    NOT NULL DEFAULT '',
-    image       TEXT    NOT NULL DEFAULT ''
+    project_id  TEXT    NOT NULL,
+    version_id  TEXT    NOT NULL,
+    instance_id TEXT    NOT NULL,
+
+    deploy_time INTEGER NOT NULL,
+    deploy_user TEXT    NOT NULL,
+
+    FOREIGN KEY (project_id) REFERENCES release_project (id) ON DELETE CASCADE,
+    FOREIGN KEY (version_id) REFERENCES release_version (id) ON DELETE CASCADE,
+    FOREIGN KEY (instance_id) REFERENCES release_instance (id) ON DELETE CASCADE
 );
 
-CREATE INDEX IF NOT EXISTS idx_marker_video ON marker (video_id);
-CREATE INDEX IF NOT EXISTS idx_marker_library ON marker (library_id);
+CREATE INDEX idx_release_deploy_project_id ON release_deploy (project_id);
+CREATE INDEX idx_release_deploy_version_id ON release_deploy (version_id);
+CREATE INDEX idx_release_deploy_instance_id ON release_deploy (instance_id);
+CREATE UNIQUE INDEX idx_release_deploy_instance_id_version_id_uindex ON release_deploy (instance_id, version_id);
+
+-- 发版资产元数据（ReleaseAssetMeta）
+CREATE TABLE release_asset_meta
+(
+    id            TEXT PRIMARY KEY,
+    created_at    INTEGER NOT NULL,
+    updated_at    INTEGER NOT NULL,
+
+    project_id    TEXT    NOT NULL,
+    scope         TEXT    NOT NULL CHECK ( scope IN ('version', 'instance') ),
+    scope_id      TEXT    NOT NULL,
+    relative_path TEXT    NOT NULL,
+    file_name     TEXT    NOT NULL,
+    file_type     TEXT    NOT NULL CHECK ( file_type IN ('document', 'sql', 'other') ),
+    FOREIGN KEY (project_id) REFERENCES release_project (id) ON DELETE CASCADE
+);
+
+CREATE INDEX idx_release_asset_meta_project_scope_scope_id
+    ON release_asset_meta (project_id, scope, scope_id);
+CREATE INDEX idx_release_asset_meta_project_file_type
+    ON release_asset_meta (project_id, file_type);
+
+-- 发版资产内容（ReleaseAssetContent）
+CREATE TABLE release_asset_content
+(
+    id         TEXT PRIMARY KEY,
+    created_at INTEGER NOT NULL,
+    updated_at INTEGER NOT NULL,
+
+    project_id TEXT    NOT NULL,
+    language   TEXT    NOT NULL,
+    content    TEXT    NOT NULL,
+    FOREIGN KEY (project_id) REFERENCES release_project (id) ON DELETE CASCADE
+);
+
+CREATE INDEX idx_release_asset_content_project_id ON release_asset_content (project_id);
+CREATE INDEX idx_release_asset_content_project_id_language ON release_asset_content (project_id, language);
+
+
+-- 凭证分组表（定义"这是什么东西"）
+CREATE TABLE release_credential_group
+(
+    id           TEXT PRIMARY KEY,
+    created_at   INTEGER NOT NULL,
+    updated_at   INTEGER NOT NULL,
+
+    project_id   TEXT    NOT NULL,
+    instance_id  TEXT    NOT NULL,
+
+    -- 分组名称，例如 "MySQL主库", "OSS配置", "支付渠道密钥"
+    name         TEXT    NOT NULL,
+    -- 分组描述
+    `desc`       TEXT,
+
+    FOREIGN KEY (project_id) REFERENCES release_project (id) ON DELETE CASCADE,
+    FOREIGN KEY (instance_id) REFERENCES release_instance (id) ON DELETE CASCADE
+);
+
+-- 确保同一个实例下分组名称不重复
+CREATE UNIQUE INDEX idx_cred_group_instance_name_uindex
+    ON release_credential_group (instance_id, name);
+CREATE INDEX idx_cred_group_instance_id ON release_credential_group (instance_id);
+
+-- 凭证键值对表（存储"具体的加密内容"）
+CREATE TABLE release_credential_item
+(
+    id         TEXT PRIMARY KEY,
+    created_at INTEGER NOT NULL,
+    updated_at INTEGER NOT NULL,
+
+    project_id   TEXT    NOT NULL,
+    instance_id  TEXT    NOT NULL,
+    group_id   TEXT    NOT NULL,
+
+    -- 键名，例如 "host", "api_key", "password"
+    `key`        TEXT    NOT NULL,
+    -- 值：这里存储加密后的密文
+    -- 注意：即使原始值是明文配置（如端口号），为了统一处理和安全规范，建议也加密存储，或者应用层判断
+    value      TEXT    NOT NULL,
+
+    -- 辅助字段：值的类型提示（方便前端渲染解密后的展示形式）
+    -- 'text'(普通文本), 'password'(密码,展示用***), 'json'(JSON对象), 'private_key'(大段文本)
+    value_type TEXT    NOT NULL DEFAULT 'text',
+
+    `desc`     TEXT, -- 备注说明
+
+    FOREIGN KEY (project_id) REFERENCES release_project (id) ON DELETE CASCADE,
+    FOREIGN KEY (instance_id) REFERENCES release_instance (id) ON DELETE CASCADE,
+    FOREIGN KEY (group_id) REFERENCES release_credential_group (id) ON DELETE CASCADE
+);
+
+-- 确保同一个分组下 Key 不重复
+CREATE UNIQUE INDEX idx_cred_item_group_key_uindex
+    ON release_credential_item (group_id, key);
+CREATE INDEX idx_cred_item_group_id ON release_credential_item (group_id);
+
 
