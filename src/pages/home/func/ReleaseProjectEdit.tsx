@@ -58,7 +58,7 @@ export function openReleaseProjectUpdate(project: ReleaseProject, onUpdate: () =
   })
 }
 
-export async function openReleaseProjectCxt(e: PointerEvent, project: ReleaseProject, onUpdate: () => void) {
+export async function openReleaseProjectCxt(e: MouseEvent, project: ReleaseProject, onUpdate: () => void) {
   e.preventDefault();
   e.stopPropagation();
   Cxt.showContextMenu({

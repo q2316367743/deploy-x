@@ -16,15 +16,15 @@ export interface DeployStatistics {
  * - 可以帮助团队评估研发效能和版本迭代速度。
  */
 export function deployDateCount(projectId: string) {
+  // 建议限制时间范围，例如最近 7 天，避免数据量过大
   return useSql().select<Array<DeployStatistics>>(`
       SELECT strftime('%Y-%m-%d', deploy_time / 1000, 'unixepoch') AS deploy_date,
              COUNT(*)                                              AS deploy_count
       FROM release_deploy
       WHERE project_id = '${projectId}'
-        -- 建议限制时间范围，例如最近 30 天或 90 天，避免数据量过大
-        AND deploy_time >= strftime('%s', 'now', '-90 days')
+        AND deploy_time >= strftime('%s', 'now', '-7 days')
       GROUP BY deploy_date
-      ORDER BY deploy_date ASC;
+      ORDER BY deploy_date;
   `);
 }
 

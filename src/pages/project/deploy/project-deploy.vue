@@ -144,7 +144,6 @@ const addDeploy = (instanceId: string, versionId: string) => {
     versionName: versions.value.find(e => e.id === versionId)?.version || versionId,
     project_id: projectId,
     onUpdate: () => {
-      listVersion();
       listInstance();
       listDeploy();
     }
@@ -154,10 +153,8 @@ const addDeploy = (instanceId: string, versionId: string) => {
 const listInstance = async () => {
   instances.value = await groupReleaseInstanceVersion(projectId);
 };
-const listVersion = async () => {
-  versions.value = await listReleaseVersionService(projectId);
-};
 const listDeploy = async () => {
+  versions.value = await listReleaseVersionService(projectId);
   deployItems.value = await listReleaseDeployService(projectId, versions.value.map(e => e.id));
 };
 
@@ -172,7 +169,7 @@ const openReleaseDeployInfoWrap = (instance: ReleaseInstanceVersion, version: Re
 
 onMounted(async () => {
   try {
-    await Promise.all([listInstance(), listVersion()]);
+    await listInstance();
     await listDeploy();
   } catch (e) {
     MessageUtil.error("获取项目失败", e);
