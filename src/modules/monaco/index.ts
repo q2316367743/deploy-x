@@ -3,6 +3,7 @@ import * as monaco from 'monaco-editor';
 import { registerBatLanguage } from '@/modules/monaco/bat';
 import { registerNginxLanguage } from '@/modules/monaco/nginx';
 import { registerPowerShellLanguage } from '@/modules/monaco/ps1';
+import { registerShLanguage } from '@/modules/monaco/bash';
 
 export type MonacoLanguage = string;
 
@@ -51,6 +52,7 @@ export function registerMonacoLanguages() {
   registerBatLanguage();
   registerNginxLanguage();
   registerPowerShellLanguage();
+  registerShLanguage();
 }
 
 export const inferMonacoLanguageByFilename = (filename: string): MonacoLanguage => {

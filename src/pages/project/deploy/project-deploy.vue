@@ -1,22 +1,5 @@
 <template>
   <app-tool-layout title="部署">
-    <template #action>
-      <t-space size="small">
-        <t-button theme="default" variant="outline" class="action-btn"
-                  @click="openReleaseVersionAdd(projectId, listVersion)">
-          <template #icon>
-            <add-icon/>
-          </template>
-          新建版本
-        </t-button>
-        <t-button theme="primary" class="action-btn primary" @click="openReleaseInstanceAdd(projectId, listInstance)">
-          <template #icon>
-            <add-icon/>
-          </template>
-          添加实例
-        </t-button>
-      </t-space>
-    </template>
     <main class="page-main">
       <div class="table-wrapper">
         <div class="legend-bar">
@@ -122,8 +105,6 @@
 </template>
 <script lang="ts" setup>
 import type {ReleaseVersion, ReleaseDeploy} from "@/entity";
-import {openReleaseInstanceAdd} from "../components/ReleaseInstanceEdit.tsx";
-import {openReleaseVersionAdd} from "../components/ReleaseVersionEdit.tsx";
 import {openReleaseInstanceInfo} from "./func/ReleaseInstanceInfo.tsx";
 import {openReleaseVersionInfo} from "./func/ReleaseVersionInfo.tsx";
 import {openReleaseDeployInfo} from "./func/ReleaseDeployInfo.tsx";
@@ -133,7 +114,6 @@ import {
   listReleaseDeployService,
   listReleaseVersionService, type ReleaseInstanceVersion
 } from "@/service";
-import {AddIcon} from "tdesign-icons-vue-next";
 import {formatDate} from "@/util/lang/FormatUtil.ts";
 import {map} from "@/util";
 import MessageUtil from "@/util/model/MessageUtil.ts";

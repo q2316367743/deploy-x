@@ -60,7 +60,7 @@
               保存
             </t-button>
             <t-dropdown trigger="click">
-              <t-button theme="default" variant="text" size="small">
+              <t-button theme="default" variant="text" size="small" shape="square">
                 <template #icon>
                   <more-icon/>
                 </template>
