@@ -49,7 +49,7 @@
     </t-aside>
     <t-content class="h-100vh overflow-hidden app-content">
       <router-view v-slot="{ Component, route }">
-        <keep-alive :include="[]">
+        <keep-alive :max="20">
           <component :is="Component" :key="route.fullPath"/>
         </keep-alive>
       </router-view>

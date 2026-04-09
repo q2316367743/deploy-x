@@ -35,6 +35,19 @@
               <chevron-right-icon/>
             </div>
           </div>
+
+          <div class="action-card primary-action" @click="router.push('/host')">
+            <div class="card-icon">
+              <desktop-icon/>
+            </div>
+            <div class="card-content">
+              <h3 class="card-title">主机管理</h3>
+              <p class="card-desc">管理您的服务器主机，配置部署环境</p>
+            </div>
+            <div class="card-arrow">
+              <chevron-right-icon/>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -99,7 +112,8 @@ import {
   FolderIcon,
   TimeIcon,
   FolderOpenIcon,
-  MoreIcon
+  MoreIcon,
+  DesktopIcon
 } from "tdesign-icons-vue-next";
 import type {ReleaseProject} from "@/entity";
 import {listReleaseProject} from "@/service";
