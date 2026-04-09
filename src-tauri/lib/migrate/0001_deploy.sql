@@ -23,6 +23,7 @@ CREATE TABLE host_credential
     created_at INTEGER NOT NULL,
     updated_at INTEGER NOT NULL,
 
+    name       TEXT    NOT NULL DEFAULT '',
     -- 类型 password/secret
     type       TEXT    NOT NULL DEFAULT 'password',
 

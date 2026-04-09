@@ -9,9 +9,7 @@
     {
       "identifier": "fs:default",
       "allow": [
-        {
-          "path": "$APPDATA/*"
-        }
+        "$APPDATA/**/*"
       ]
     },
     "fs:allow-resource-read-recursive",
@@ -44,7 +42,8 @@
       "allow": [
         {
           "path": "$APPDATA/**/*"
-        }
+        },
+        "$HOME/.ssh/id_rsa"
       ]
     },
     {
@@ -68,7 +67,8 @@
       "allow": [
         {
           "path": "$APPDATA/**/*"
-        }
+        },
+        "$HOME/.ssh/id_rsa"
       ]
     },
     {

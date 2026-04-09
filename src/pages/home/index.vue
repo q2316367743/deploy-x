@@ -36,7 +36,7 @@
             </div>
           </div>
 
-          <div class="action-card primary-action" @click="router.push('/host')">
+          <div class="action-card primary-action" @click="handleHostClick()">
             <div class="card-icon">
               <desktop-icon/>
             </div>
@@ -62,7 +62,7 @@
             v-for="item in list"
             :key="item.id"
             class="project-card"
-            @click="handleSelect(item)"
+            @click="handleProjectSelect(item)"
             @contextmenu="openReleaseProjectCxt($event, item, onUpdate)"
           >
             <div class="project-header">
@@ -133,9 +133,12 @@ const handleList = async () => {
   list.value = await listReleaseProject();
 };
 
-const handleSelect = (item: ReleaseProject) => {
+const handleProjectSelect = (item: ReleaseProject) => {
   router.push(`/release/${item.id}/home`);
 };
+const handleHostClick = () => {
+  router.push('/host/home');
+}
 
 const onUpdate = () => {
   handleList();
