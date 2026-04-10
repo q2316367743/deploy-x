@@ -5,6 +5,7 @@
         <template #logo>
           <div class="flex justify-left items-center" :style="{marginLeft: collapsed ? undefined : '16px'}">
             <chevron-left-icon class="w-32px h-32px font-size-32px cursor-pointer" @click="goBack"/>
+            <div v-if="!collapsed" class="ml-8px font-size-24px font-700">主机管理</div>
           </div>
         </template>
         <template #operations>
