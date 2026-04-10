@@ -124,23 +124,25 @@
 
 .matrix-th {
   position: sticky;
+  top: 0;
   z-index: 10;
   padding: 0;
   background: var(--td-bg-color-container);
   border-bottom: 1px solid var(--td-border-level-2-color);
 
   &.version-header {
+    position: sticky;
     left: 0;
-    z-index: 20;
+    z-index: 30 !important;
     width: 180px;
     min-width: 180px;
     max-width: 180px;
+    border-right: 1px solid var(--td-border-level-2-color);
   }
 
   &.instance-header {
-    top: 0;
     z-index: 15;
-    min-width: 140px;
+    min-width: 200px;
   }
 
   &.clickable {
@@ -148,7 +150,7 @@
     transition: background var(--fluent-transition-fast);
 
     &:hover {
-      background: var(--fluent-item-hover);
+      background: var(--td-bg-color-container-hover);
     }
   }
 }
@@ -209,12 +211,17 @@
   text-align: center;
   border-bottom: 1px solid var(--fluent-border-subtle);
   vertical-align: middle;
+  min-width: 200px;
 }
 
 .version-row {
+  .version-cell {
+    background: var(--td-bg-color-container);
+  }
+
   &:hover {
     .version-cell {
-      background: var(--fluent-item-hover);
+      background: var(--td-bg-color-container-hover);
     }
   }
 }
@@ -226,6 +233,10 @@
   min-width: 180px;
   max-width: 180px;
   border-bottom: 1px solid var(--fluent-border-subtle);
+  position: sticky;
+  left: 0;
+  z-index: 20;
+  background: var(--td-bg-color-container);
 }
 
 .version-info {
@@ -307,20 +318,15 @@
 }
 
 .cell-current {
-  background: var(--td-bg-color-component);
-  color: var(--td-text-color-placeholder);
+  background: var(--td-success-color);
+  color: var(--td-text-color-anti);
   box-shadow: var(--fluent-elevation-1);
+  cursor: pointer;
 
-  &.current {
-    background: var(--td-success-color);
-    color: var(--td-text-color-anti);
-    
-      &:hover {
-        transform: scale(1.01);
-        box-shadow: var(--fluent-elevation-2);
-      }
+  &:hover {
+    transform: scale(1.01);
+    box-shadow: var(--fluent-elevation-2);
   }
-
 }
 
 .cell-upgrade {
@@ -336,7 +342,6 @@
 }
 
 .cell-old {
-  background: var(--td-bg-color-component);
   color: var(--td-text-color-secondary);
 }
 
