@@ -29,6 +29,17 @@ import NFileSelect from "@/components/native/NFileSelect.vue";
 function buildDefault(data: Ref<DeployScriptForm>, hosts: Ref<{ label: string; value: string }[]>) {
   const activeTab = ref('basic');
   const localLanguage = ref(platform() === 'windows' ? 'ps1' : 'bash');
+  const matchRulesInput = ref('');
+
+  // 同步 match_rules 数组到输入框字符串
+  watch(() => data.value.match_rules, (rules) => {
+    matchRulesInput.value = Array.isArray(rules) ? rules.join('\n') : rules;
+  }, {immediate: true});
+
+  // 同步输入框字符串到 match_rules 数组
+  const onMatchRulesChange = (val: string | number) => {
+    data.value.match_rules = `${val}`.split('\n').filter(r => r.trim());
+  };
 
   return () => {
     const tabs = [
@@ -71,13 +82,14 @@ function buildDefault(data: Ref<DeployScriptForm>, hosts: Ref<{ label: string; v
           </FormItem>
           <FormItem label={'文件过滤'}>
             <div style="display: flex; flex-direction: column; gap: 8px">
-              <RadioGroup v-model={data.value.file_filter_type} class="w-full">
-                <Radio value="none">不过滤</Radio>
+              <RadioGroup v-model={data.value.match_mode} class="w-full">
+                <Radio value="all">不过滤</Radio>
                 <Radio value="include">包含规则</Radio>
                 <Radio value="exclude">排除规则</Radio>
               </RadioGroup>
-              {data.value.file_filter_type !== 'none' && (
-                <Input v-model={data.value.file_filter_rules} placeholder="请输入过滤规则，支持正则表达式"/>
+              {data.value.match_mode !== 'all' && (
+                <Input v-model={matchRulesInput.value} onChange={onMatchRulesChange}
+                       placeholder="请输入过滤规则，每行一条，支持正则表达式"/>
               )}
             </div>
           </FormItem>
