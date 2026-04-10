@@ -111,7 +111,7 @@ function buildDefault(data: Ref<DeployScriptForm>, hosts: Ref<{ label: string; v
           <FormItem label={'目标目录'} name={'target_dir'}>
             {data.value.script_type === 'remote' ?
               (<Input v-model={data.value.target_dir} placeholder="请输入远程部署目录路径"/>) :
-              (<NFileSelect v-model={data.value.target_dir} placeholder="请输入远程部署目录路径" directory={true}/>)}
+              (<NFileSelect v-model={data.value.target_dir} placeholder="请输入本地部署目录路径" directory={true}/>)}
           </FormItem>
         </Form>
       </TabPanel>,
@@ -155,7 +155,7 @@ function buildDefault(data: Ref<DeployScriptForm>, hosts: Ref<{ label: string; v
 export function addScript(projectId: string, instanceId: string, onUpdate: () => void) {
   const data = ref<DeployScriptForm>({
     name: '',
-    script_type: 'local',
+    script_type: 'remote',
     description: '',
     local_work_dir: '',
     local_commands: '',
@@ -181,6 +181,7 @@ export function addScript(projectId: string, instanceId: string, onUpdate: () =>
     size: '700px',
     default: buildDefault(data, hosts),
     closeOnEscKeydown: false,
+    drawerClassName: 'pim-script-drawer',
     onConfirm: () => {
       addDeployScript(projectId, instanceId, data.value)
         .then(() => {
@@ -209,6 +210,7 @@ export async function updateScript(old: DeployScriptList, onUpdate: () => void) 
     size: '700px',
     default: buildDefault(data, hosts),
     closeOnEscKeydown: false,
+    drawerClassName: 'pim-script-drawer',
     onConfirm: () => {
       updateDeployScript(old.id, data.value)
         .then(() => {
