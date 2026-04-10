@@ -21,6 +21,8 @@ type TableName =
 
   | 'host'
   | 'host_credential'
+
+  | 'deploy_script'
   ;
 
 

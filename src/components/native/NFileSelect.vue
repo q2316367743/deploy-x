@@ -1,11 +1,12 @@
 <template>
   <div class="flex gap-8px w-full">
     <t-input v-model="data" class="w-full" :placeholder/>
-    <t-button variant="outline" theme="primary" @click="handleSelect">{{label}}</t-button>
+    <t-button variant="outline" theme="primary" @click="handleSelect">{{ btn }}</t-button>
   </div>
 </template>
 <script lang="ts" setup>
 import {open} from '@tauri-apps/plugin-dialog';
+
 interface DialogFilter {
   /** Filter name. */
   name: string;
@@ -34,9 +35,15 @@ const props = defineProps({
   canCreateDirectories: Boolean,
   label: {
     type: String,
-    default: '选择文件'
+    default: ''
   }
 });
+
+const btn = computed(() => {
+  if (props.label) return props.label;
+  if (props.directory) return '选择文件夹';
+  return '选择文件'
+})
 
 const handleSelect = () => {
   open({

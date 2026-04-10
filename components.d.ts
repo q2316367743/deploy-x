@@ -19,6 +19,8 @@ declare module 'vue' {
     MarkdownEditor: typeof import('./src/components/markdown/MarkdownEditor.vue')['default']
     MarkdownPreview: typeof import('./src/components/markdown/MarkdownPreview.vue')['default']
     MonacoEditor: typeof import('./src/components/MonacoEditor/MonacoEditor.vue')['default']
+    NAvatar: typeof import('./src/components/native/NAvatar.vue')['default']
+    NFileSelect: typeof import('./src/components/native/NFileSelect.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SubPageLayout: typeof import('./src/components/PageLayout/SubPageLayout.vue')['default']
@@ -52,8 +54,8 @@ declare module 'vue' {
     TTooltip: typeof import('tdesign-vue-next')['Tooltip']
     WdCell: typeof import('./src/components/wod/wd-cell.vue')['default']
     WdCellGroup: typeof import('./src/components/wod/wd-cell-group.vue')['default']
-    XhAvatar: typeof import('./src/components/xiaohei/XhAvatar.vue')['default']
-    XhFileSelect: typeof import('./src/components/xiaohei/XhFileSelect.vue')['default']
+    XhAvatar: typeof import('./src/components/native/XhAvatar.vue')['default']
+    XhFileSelect: typeof import('./src/components/native/XhFileSelect.vue')['default']
   }
 }
 
@@ -66,6 +68,8 @@ declare global {
   const MarkdownEditor: typeof import('./src/components/markdown/MarkdownEditor.vue')['default']
   const MarkdownPreview: typeof import('./src/components/markdown/MarkdownPreview.vue')['default']
   const MonacoEditor: typeof import('./src/components/MonacoEditor/MonacoEditor.vue')['default']
+  const NAvatar: typeof import('./src/components/native/NAvatar.vue')['default']
+  const NFileSelect: typeof import('./src/components/native/NFileSelect.vue')['default']
   const RouterLink: typeof import('vue-router')['RouterLink']
   const RouterView: typeof import('vue-router')['RouterView']
   const SubPageLayout: typeof import('./src/components/PageLayout/SubPageLayout.vue')['default']
@@ -99,6 +103,6 @@ declare global {
   const TTooltip: typeof import('tdesign-vue-next')['Tooltip']
   const WdCell: typeof import('./src/components/wod/wd-cell.vue')['default']
   const WdCellGroup: typeof import('./src/components/wod/wd-cell-group.vue')['default']
-  const XhAvatar: typeof import('./src/components/xiaohei/XhAvatar.vue')['default']
-  const XhFileSelect: typeof import('./src/components/xiaohei/XhFileSelect.vue')['default']
+  const XhAvatar: typeof import('./src/components/native/XhAvatar.vue')['default']
+  const XhFileSelect: typeof import('./src/components/native/XhFileSelect.vue')['default']
 }

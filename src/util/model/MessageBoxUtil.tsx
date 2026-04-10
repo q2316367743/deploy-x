@@ -1,5 +1,5 @@
 import {DialogPlugin, FormItem, Input, Paragraph, TagInput} from "tdesign-vue-next";
-import XhFileSelect from "@/components/xiaohei/XhFileSelect.vue";
+import NFileSelect from "@/components/native/NFileSelect.vue";
 
 export default {
   confirm(
@@ -194,7 +194,7 @@ export default {
         confirmBtn: confirmButtonText,
         cancelBtn: cancelButtonText,
         default: () => <FormItem labelAlign={'top'} help={content}>
-          <XhFileSelect v-model={value.value}/>
+          <NFileSelect v-model={value.value}/>
         </FormItem>,
         onConfirm: () => {
           dp.destroy();
@@ -224,7 +224,7 @@ export default {
         cancelBtn: cancelButtonText,
         default: () => <div>
           {content && <div>{content}</div>}
-          <XhFileSelect v-model={value.value} directory label={'选择文件夹'}/>
+          <NFileSelect v-model={value.value} directory label={'选择文件夹'}/>
         </div>,
         onConfirm: () => {
           dp.destroy();

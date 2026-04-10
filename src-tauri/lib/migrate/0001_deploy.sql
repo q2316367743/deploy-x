@@ -48,22 +48,22 @@ CREATE TABLE deploy_script
     script_type          TEXT    NOT NULL DEFAULT 'remote', -- 'remote' 或 'local'
     description          TEXT,
 
-    -- 构建
+    local_work_dir       TEXT    NOT NULL DEFAULT '',
     local_commands       TEXT    NOT NULL DEFAULT '[]',
     build_output_dir     TEXT    NOT NULL DEFAULT '',
-    file_filter_type     TEXT    NOT NULL DEFAULT 'none',
-    file_filter_rules    TEXT    NOT NULL DEFAULT '[]',
+
+    scan_depth           TEXT    NOT NULL DEFAULT 'deep',
+    match_mode           TEXT    NOT NULL DEFAULT 'none',
+    match_rules          TEXT    NOT NULL DEFAULT '[]',
 
     -- 传输（决定了后续能力边界）
     target_host_id       TEXT    NOT NULL,
     target_dir           TEXT    NOT NULL DEFAULT '',
-    versioning_enabled   INTEGER NOT NULL DEFAULT 0,
     keep_versions        INTEGER NOT NULL DEFAULT 0,
 
     -- 执行（前端根据 target_host_id 的类型决定是否渲染这些配置）
+    deploy_path          TEXT    NOT NULL DEFAULT '',
     pre_deploy_commands  TEXT    NOT NULL DEFAULT '[]',
-    switch_enabled       INTEGER NOT NULL DEFAULT 0,
-    switch_target_dir    TEXT    NOT NULL DEFAULT '',
     post_deploy_commands TEXT    NOT NULL DEFAULT '[]',
 
     FOREIGN KEY (instance_id) REFERENCES release_instance (id) ON DELETE CASCADE,

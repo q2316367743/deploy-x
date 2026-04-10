@@ -1,51 +1,96 @@
 import type {BaseEntity} from "@/entity/BaseEntity.ts";
 
-export interface DeployScript extends BaseEntity {
-  project_id: string;
-  instance_id: string;
+export type DeployScriptScanDepth = 'shallow' | 'deep';
+export type DeployScriptMatchMode = 'all' | 'include' | 'exclude';
+export type DeployScriptType = 'remote' | 'local';
 
+export interface DeployScriptCore {
   name: string;
-  script_type: 'remote' | 'local';
+  script_type: DeployScriptType;
   description: string;
 
-  local_commands: string;
-  build_output_dir: string;
-  file_filter_type: string;
-  file_filter_rules: string;
 
+
+  // ------------------------------ 本地 ------------------------------
+
+  /**
+   * 本地工作目录
+   */
+  local_work_dir: string;
+  /**
+   * 本地命令
+   */
+  local_commands: string;
+  /**
+   * 构建输出目录
+   */
+  build_output_dir: string;
+
+  // ------------------------------ 过滤配置 ------------------------------
+
+  /**
+   * 扫描深度
+   */
+  scan_depth: DeployScriptScanDepth;
+
+  /**
+   * 匹配模式
+   */
+  match_mode: DeployScriptMatchMode;
+
+  /**
+   * 佩佩规则
+   */
+  match_rules: string;
+
+  // ------------------------------ 传输配置 ------------------------------
+
+  /**
+   * 目标主机 ID，为空代表本地
+   */
   target_host_id: string;
+  /**
+   * 目标目录
+   */
   target_dir: string;
-  versioning_enabled: boolean;
+
+  // ------------------------------ remote 有效 ------------------------------
+
+  /**
+   * 启用版本管理后的保留数量，0 代表无限制
+   */
   keep_versions: number;
 
+  /**
+   * 部署目录
+   */
+  deploy_path: string;
+
+  /**
+   * 发行前执行
+   */
   pre_deploy_commands: string;
-  switch_enabled: boolean;
-  switch_target_dir: string;
+
+  /**
+   * 部署后执行
+   */
   post_deploy_commands: string;
 }
 
-
-export interface DeployScriptView extends BaseEntity {
+export interface DeployScript extends BaseEntity, DeployScriptCore {
   project_id: string;
   instance_id: string;
-
-  name: string;
-  script_type: 'remote' | 'local';
-  description: string;
-
-  local_commands: string[];
-  build_output_dir: string;
-  file_filter_type: string;
-  file_filter_rules: string[];
-
-  target_host_id: string;
-  target_dir: string;
-  versioning_enabled: boolean;
-  keep_versions: number;
-
-  pre_deploy_commands: string[];
-  switch_enabled: boolean;
-  switch_target_dir: string;
-  post_deploy_commands: string[];
 }
 
+export interface DeployScriptList extends BaseEntity {
+  name: string;
+  script_type: DeployScriptType;
+  description: string;
+  local_work_dir: string;
+}
+
+export interface DeployScriptForm extends Omit<DeployScriptCore, 'match_rules'> {
+  match_rules: Array<string>
+}
+
+export interface DeployScriptView extends BaseEntity, DeployScriptForm {}

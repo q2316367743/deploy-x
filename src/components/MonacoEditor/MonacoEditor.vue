@@ -7,8 +7,12 @@ import * as monaco from 'monaco-editor';
 import {isDark} from "@/global/Constants.ts"
 import type {MonacoLanguage} from "@/modules/monaco"
 
+const modelValue = defineModel({
+  type: String,
+  default: ''
+})
+
 interface Props {
-  modelValue: string;
   language: MonacoLanguage;
   readonly?: boolean;
   height?: string;
@@ -19,9 +23,6 @@ const props = withDefaults(defineProps<Props>(), {
   height: '100%',
 });
 
-const emit = defineEmits<{
-  'update:modelValue': [value: string]
-}>();
 
 const containerRef = ref<HTMLElement>();
 let editor: monaco.editor.IStandaloneCodeEditor | null = null;
@@ -31,7 +32,7 @@ const initEditor = async () => {
   if (!containerRef.value) return;
 
   editor = monaco.editor.create(containerRef.value, {
-    value: props.modelValue,
+    value: modelValue.value,
     language: props.language,
     readOnly: props.readonly,
     theme: isDark.value ? 'vs-dark' : 'vs',
@@ -46,7 +47,7 @@ const initEditor = async () => {
 
   editor.onDidChangeModelContent(() => {
     const value = editor?.getValue() ?? '';
-    emit('update:modelValue', value);
+    modelValue.value = value;
   });
 
   watch(isDark, value => {
@@ -66,7 +67,7 @@ onUnmounted(() => {
 });
 
 watch(
-  () => props.modelValue,
+  modelValue,
   (newValue) => {
     if (editor && newValue !== editor.getValue()) {
       editor.setValue(newValue);
