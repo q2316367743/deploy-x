@@ -1,8 +1,15 @@
 import type {BaseEntity} from "@/entity/BaseEntity.ts";
 
-export type DeployScriptScanDepth = 'shallow' | 'deep';
-export type DeployScriptMatchMode = 'all' | 'include' | 'exclude';
-export type DeployScriptType = 'remote' | 'local';
+export type DeployScriptScanDepth =
+  | 'shallow'      // 当前目录
+  | 'deep';        // 深度目录
+export type DeployScriptMatchMode =
+  | 'all'         // 全部
+  | 'include'     // 包含
+  | 'exclude';    // 排除
+export type DeployScriptType =
+  | 'remote'      // 远程
+  | 'local';      // 本地
 
 export interface DeployScriptCore {
   name: string;
@@ -39,7 +46,7 @@ export interface DeployScriptCore {
   match_mode: DeployScriptMatchMode;
 
   /**
-   * 佩佩规则
+   * 匹配规则
    */
   match_rules: string;
 

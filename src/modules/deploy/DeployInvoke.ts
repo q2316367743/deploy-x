@@ -4,8 +4,12 @@ import {getDeployScript, getHost, getHostCredential} from "@/service";
 import {buildHostCore, type DeployScriptView, type HostCore} from "@/entity";
 
 export interface DeployInvokeProp extends Record<string, unknown>{
+  // 执行的脚本
   script: DeployScriptView;
-  host: HostCore
+  // 主机信息，只有脚本是远程脚本才有效
+  host: HostCore;
+  // 此时的版本 ID
+  version_id: string;
 }
 
 export async function deployInvoke(scriptId: string) {
