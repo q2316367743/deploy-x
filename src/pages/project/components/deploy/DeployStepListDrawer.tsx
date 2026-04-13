@@ -1,8 +1,9 @@
-import {listDeployStep, listDeployLog} from "@/service";
-import type {DeployStep, DeployLog} from "@/entity";
+import type {DeployLog, DeployStep} from "@/entity";
 import MessageUtil from "@/util/model/MessageUtil.ts";
-import {Steps, Descriptions, Table, Tag} from "tdesign-vue-next";
+import {Descriptions, DescriptionsItem, type PrimaryTableCol, Steps, Table, Tag} from "tdesign-vue-next";
 import {onBeforeUnmount} from "vue";
+import {deployLogList, deployStepList} from "@/modules/deploy";
+import type {TdStepItemProps} from "tdesign-vue-next/es/steps/type";
 
 const stepTypeLabel: Record<string, string> = {
   local_build: '本地构建',
@@ -31,7 +32,7 @@ const statusLabel: Record<string, string> = {
 export const openDeployStepListDrawer = (recordId: string) => {
   const list = ref(new Array<DeployStep>());
   const loading = ref(false);
-  const currentStep = ref<DeployStep | null>(null);
+  const currentStep = ref<DeployStep>();
   const logs = ref(new Array<DeployLog>());
   const logLoading = ref(false);
   const pollingTimer = ref<number | null>(null);
@@ -39,7 +40,7 @@ export const openDeployStepListDrawer = (recordId: string) => {
   const loadList = () => {
     if (loading.value) return;
     loading.value = true;
-    listDeployStep(recordId)
+    deployStepList(recordId)
       .then(res => {
         list.value = res;
         // 默认选中最新的非 pending 步骤，如果都是 pending 则选第一个
@@ -60,7 +61,7 @@ export const openDeployStepListDrawer = (recordId: string) => {
   const loadLogs = (stepId: string) => {
     stopPolling();
     logLoading.value = true;
-    listDeployLog(stepId)
+    deployLogList(stepId)
       .then(res => {
         logs.value = res;
       })
@@ -82,21 +83,19 @@ export const openDeployStepListDrawer = (recordId: string) => {
     pollingTimer.value = window.setInterval(async () => {
       try {
         // 先刷新步骤列表
-        const steps = await listDeployStep(recordId);
+        const steps = await deployStepList(recordId);
         list.value = steps;
         const current = steps.find(s => s.id === stepId);
-        currentStep.value = current || null;
+        currentStep.value = current || undefined;
 
         // 如果不再是 running，停止轮询
         if (current?.status !== 'running') {
           stopPolling();
           // 刷新日志
-          const res = await listDeployLog(stepId);
-          logs.value = res;
+          logs.value = await deployLogList(stepId);
         } else {
           // 继续轮询日志
-          const res = await listDeployLog(stepId);
-          logs.value = res;
+          logs.value = await deployLogList(stepId);
         }
       } catch (e) {
         stopPolling();
@@ -121,11 +120,13 @@ export const openDeployStepListDrawer = (recordId: string) => {
 
   loadList();
 
-  const logColumns = [
+  const logColumns: Array<PrimaryTableCol<DeployLog>> = [
     {colKey: 'line_num', title: '行号', width: 80},
-    {colKey: 'stream', title: '流', width: 80, cell: ({row}: {row: DeployLog}) => (
-      <Tag theme={row.stream === 'stderr' ? 'danger' : 'default'} variant="light">{row.stream}</Tag>
-    )},
+    {
+      colKey: 'stream', title: '流', width: 80, cell: (_h, {row}) => (
+        <Tag theme={row.stream === 'stderr' ? 'danger' : 'default'} variant="light">{row.stream}</Tag>
+      )
+    },
     {colKey: 'content', title: '内容', ellipsis: true, minWidth: 300},
     {colKey: 'created_at', title: '时间', width: 180},
   ];
@@ -137,18 +138,20 @@ export const openDeployStepListDrawer = (recordId: string) => {
       <div class="deploy-step-drawer">
         {/* 步骤条 */}
         <Steps
-          options={list.value.map((step, index) => ({
+          options={list.value.map((step) => ({
             title: stepTypeLabel[step.step_type] || step.step_type,
-            icon: <Tag theme={statusThemeMap[step.status]} variant="light" size="small">{statusLabel[step.status]}</Tag>,
+            value: step.step_type,
+            icon: () => <Tag theme={statusThemeMap[step.status]} variant="light"
+                             size="small">{statusLabel[step.status]}</Tag>,
             content: step.started_at ? (
               <div style="font-size: 12px; color: #999;">
                 {step.started_at} {step.finished_at ? `→ ${step.finished_at}` : ''}
               </div>
             ) : undefined,
-          }))}
+          } as TdStepItemProps))}
           current={currentStep.value ? list.value.findIndex(s => s.id === currentStep.value?.id) : 0}
-          onCurrentChange={(index: number) => {
-            if (list.value[index]) selectStep(list.value[index]);
+          onChange={(index: string | number) => {
+            if (list.value[Number(index)]) selectStep(list.value[Number(index)]!);
           }}
           theme="dot"
           readonly
@@ -158,22 +161,28 @@ export const openDeployStepListDrawer = (recordId: string) => {
         {/* 当前步骤详情 */}
         {currentStep.value && (
           <Descriptions
-            data={[
-              {label: '步骤名称', content: stepTypeLabel[currentStep.value.step_type] || currentStep.value.step_name},
-              {label: '状态', content: <Tag theme={statusThemeMap[currentStep.value.status]} variant="light">{statusLabel[currentStep.value.status]}</Tag>},
-              {label: '开始时间', content: currentStep.value.started_at || '-'},
-              {label: '结束时间', content: currentStep.value.finished_at || '-'},
-              ...(currentStep.value.error ? [{label: '错误信息', content: currentStep.value.error}] : []),
-            ]}
             bordered
             column={3}
             style="margin-bottom: 16px;"
-          />
+          >
+            {[
+              {label: '步骤名称', content: stepTypeLabel[currentStep.value.step_type] || currentStep.value.step_name},
+              {
+                label: '状态',
+                content: () => <Tag
+                  theme={currentStep.value?.status ? statusThemeMap[currentStep.value.status] : undefined}
+                  variant="light">{currentStep.value?.status ? statusLabel[currentStep.value.status] : ''}</Tag>
+              },
+              {label: '开始时间', content: currentStep.value.started_at || '-'},
+              {label: '结束时间', content: currentStep.value.finished_at || '-'},
+              ...(currentStep.value.error ? [{label: '错误信息', content: currentStep.value.error}] : []),
+            ].map(e => <DescriptionsItem label={e.label} key={e.label} content={e.content}/>)}
+          </Descriptions>
         )}
 
         {/* 日志表格 */}
         <Table
-          columns={logColumns}
+          columns={logColumns as any}
           data={logs.value}
           loading={logLoading.value}
           rowKey="id"

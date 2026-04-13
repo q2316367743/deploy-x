@@ -61,7 +61,7 @@
         <div class="card-footer">
           <span class="card-time">{{ formatTime(script.updated_at) }}</span>
           <div class="card-actions">
-            <t-link theme="success">执行</t-link>
+            <t-link theme="success" @click.stop="handleExecute(script)">执行</t-link>
             <t-link theme="warning" @click.stop="openDeployRecordDrawer(script.id)">记录</t-link>
             <t-link theme="primary" @click.stop="handleEdit(script)">编辑</t-link>
             <t-link theme="danger" @click.stop="handleDelete(script)">删除</t-link>
@@ -86,6 +86,8 @@ import MessageUtil from "@/util/model/MessageUtil.ts";
 import {AddIcon, Folder1Icon, LinkUnlinkIcon, PlayCircleIcon, SearchIcon} from "tdesign-icons-vue-next";
 import {formatDatetime} from "@/util/lang/FormatUtil.ts";
 import {openDeployRecordDrawer} from "@/pages/project/components/deploy/DeployRecordDrawer.tsx";
+import MessageBoxUtil from "@/util/model/MessageBoxUtil.tsx";
+import {deployInvoke} from "@/modules/deploy";
 
 const props = defineProps({
   projectId: {
@@ -134,6 +136,12 @@ const handleEdit = (row: DeployScriptList) => {
 const handleDelete = (row: DeployScriptList) => {
   deleteScript(row.id, loadData);
 };
+
+const handleExecute = (row: DeployScriptList) => {
+  MessageBoxUtil.confirm("是否执行脚本", "执行脚本").then(() => {
+    deployInvoke(row.id);
+  })
+}
 
 onMounted(() => {
   loadData();

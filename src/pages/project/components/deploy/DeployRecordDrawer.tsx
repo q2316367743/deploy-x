@@ -1,8 +1,8 @@
 import type {DeployRecord} from "@/entity";
-import {listDeployRecord} from "@/service";
 import {openDeployStepListDrawer} from "./DeployStepListDrawer.tsx";
 import MessageUtil from "@/util/model/MessageUtil.ts";
 import {Pagination, Table, Button, Tag, type PrimaryTableCol} from "tdesign-vue-next";
+import {deployRecordPage} from "@/modules/deploy";
 
 const statusThemeMap: Record<string, 'default' | 'success' | 'warning' | 'danger'> = {
   pending: 'default',
@@ -22,7 +22,7 @@ export const openDeployRecordDrawer = (scriptId: string) => {
     if (loading.value) return;
     loading.value = true;
     try {
-      const res = await listDeployRecord(pageNum.value, pageSize.value, scriptId);
+      const res = await deployRecordPage(pageNum.value, pageSize.value, scriptId);
       list.value = res.records;
       total.value = res.total;
     } catch (e) {
@@ -32,14 +32,13 @@ export const openDeployRecordDrawer = (scriptId: string) => {
     }
   }
 
-  loadData();
 
-  const columns: Array<PrimaryTableCol> = [
+  const columns: Array<PrimaryTableCol<DeployRecord>> = [
     {colKey: 'id', title: '记录ID', width: 100},
     {colKey: 'instance_id', title: '实例ID', width: 120},
     {colKey: 'deploy_id', title: '部署ID', width: 100},
     {
-      colKey: 'status', title: '状态', width: 80, cell: (_h, {row}: { row: DeployRecord }) => (
+      colKey: 'status', title: '状态', width: 80, cell: (_h, {row}) => (
         <Tag theme={statusThemeMap[row.status]} variant="light">{row.status}</Tag>
       )
     },
@@ -47,7 +46,7 @@ export const openDeployRecordDrawer = (scriptId: string) => {
     {colKey: 'finished_at', title: '结束时间', width: 180},
     {colKey: 'error_summary', title: '错误摘要', ellipsis: true, minWidth: 150},
     {
-      colKey: 'action', title: '操作', width: 100, fixed: 'right', cell: (_h, {row}: { row: DeployRecord }) => (
+      colKey: 'action', title: '操作', width: 100, fixed: 'right', cell: (_h, {row}) => (
         <Button theme="primary" variant="text" onClick={() => openDeployStepListDrawer(row.id)}>
           查看步骤
         </Button>
@@ -55,16 +54,20 @@ export const openDeployRecordDrawer = (scriptId: string) => {
     },
   ];
 
-  DrawerPlugin({
+  const dp = DrawerPlugin({
     header: "部署记录",
     footer: false,
     size: '800px',
     default: () => <div>
-      <Table columns={columns} data={list.value} loading={loading.value} rowKey="id"/>
+      <Table columns={columns as any} data={list.value} loading={loading.value} rowKey="id"/>
       <div class={'mt-8px'}>
         <Pagination v-model:current={pageNum.value} pageSize={pageSize.value} total={total.value}
                     onCurrentChange={loadData} onPageSizeChange={loadData}/>
       </div>
     </div>
   })
+  loadData().catch(e => {
+    MessageUtil.error("数据加载失败", e);
+    dp.destroy?.();
+  });
 }
