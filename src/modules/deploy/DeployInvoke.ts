@@ -39,7 +39,8 @@ export async function deployInvoke(scriptId: string) {
 
   const props: DeployInvokeProp = {
     script,
-    host
+    host,
+    version_id: script.version_id
   }
 
   const recordId = await invoke<string>('deploy_execute', props);

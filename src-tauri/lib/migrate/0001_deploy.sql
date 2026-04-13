@@ -43,6 +43,7 @@ CREATE TABLE deploy_script
 
     project_id           TEXT    NOT NULL,
     instance_id          TEXT    NOT NULL,
+    version_id           TEXT    NOT NULL,
 
     name                 TEXT    NOT NULL,
     script_type          TEXT    NOT NULL DEFAULT 'remote', -- 'remote' 或 'local'

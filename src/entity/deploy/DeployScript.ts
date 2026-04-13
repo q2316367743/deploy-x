@@ -87,6 +87,7 @@ export interface DeployScriptCore {
 export interface DeployScript extends BaseEntity, DeployScriptCore {
   project_id: string;
   instance_id: string;
+  version_id: string;
 }
 
 export interface DeployScriptList extends BaseEntity {
@@ -101,4 +102,8 @@ export interface DeployScriptForm extends Omit<DeployScriptCore, 'match_rules'> 
   match_rules: Array<string>
 }
 
-export interface DeployScriptView extends BaseEntity, DeployScriptForm {}
+export interface DeployScriptView extends BaseEntity, DeployScriptForm {
+  project_id: string;
+  instance_id: string;
+  version_id: string;
+}

@@ -4,7 +4,7 @@ use crate::commands::deploy::db::get_pool;
 
 #[derive(Debug, Serialize, Deserialize, FromRow)]
 pub struct DeployLog {
-    pub id: String,
+    pub id: i64,
     pub created_at: i64,
     pub updated_at: i64,
     pub project_id: String,

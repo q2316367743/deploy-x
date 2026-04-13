@@ -4,13 +4,14 @@ import {Descriptions, DescriptionsItem, type PrimaryTableCol, Steps, Table, Tag}
 import {onBeforeUnmount} from "vue";
 import {deployLogList, deployStepList} from "@/modules/deploy";
 import type {TdStepItemProps} from "tdesign-vue-next/es/steps/type";
+import {formatDatetime} from "@/util/lang/FormatUtil.ts";
 
 const stepTypeLabel: Record<string, string> = {
   local_build: '本地构建',
-  local_post: '本地后置',
-  remote_pre: '远程前置',
-  sftp_upload: '文件上传',
-  remote_post: '远程后置',
+  local_post: '本地推送',
+  remote_pre: '部署前执行',
+  remote_deploy: '远程部署',
+  remote_post: '部署后执行',
 };
 
 const statusThemeMap: Record<string, 'default' | 'success' | 'warning' | 'danger'> = {
@@ -128,19 +129,35 @@ export const openDeployStepListDrawer = (recordId: string) => {
       )
     },
     {colKey: 'content', title: '内容', ellipsis: true, minWidth: 300},
-    {colKey: 'created_at', title: '时间', width: 180},
+    {colKey: 'created_at', title: '时间', width: 180, cell: (_h, {row}) => (
+      <span>{formatDatetime(row.created_at)}</span>
+      )},
   ];
+
+  const currentStepId = computed({
+    get: () => {
+      return currentStep.value?.id || ''
+    },
+    set: (res) => {
+      const t = list.value.find(s => s.id === res);
+      if (t) {
+        selectStep(t);
+      }
+    }
+  })
 
   DrawerPlugin({
     header: '部署步骤',
     footer: false,
+    closeBtn: true,
+    size: '100vw',
     default: () => (
       <div class="deploy-step-drawer">
         {/* 步骤条 */}
         <Steps
           options={list.value.map((step) => ({
             title: stepTypeLabel[step.step_type] || step.step_type,
-            value: step.step_type,
+            value: step.id,
             icon: () => <Tag theme={statusThemeMap[step.status]} variant="light"
                              size="small">{statusLabel[step.status]}</Tag>,
             content: step.started_at ? (
@@ -149,12 +166,8 @@ export const openDeployStepListDrawer = (recordId: string) => {
               </div>
             ) : undefined,
           } as TdStepItemProps))}
-          current={currentStep.value ? list.value.findIndex(s => s.id === currentStep.value?.id) : 0}
-          onChange={(index: string | number) => {
-            if (list.value[Number(index)]) selectStep(list.value[Number(index)]!);
-          }}
+          v-model={currentStepId.value}
           theme="dot"
-          readonly
           style="margin-bottom: 16px;"
         />
 
@@ -176,7 +189,7 @@ export const openDeployStepListDrawer = (recordId: string) => {
               {label: '开始时间', content: currentStep.value.started_at || '-'},
               {label: '结束时间', content: currentStep.value.finished_at || '-'},
               ...(currentStep.value.error ? [{label: '错误信息', content: currentStep.value.error}] : []),
-            ].map(e => <DescriptionsItem label={e.label} key={e.label} content={e.content}/>)}
+            ].map(e => <DescriptionsItem label={e.label} key={e.label} content={(typeof e.content === 'string' ? e.content : e.content()) as any}/>)}
           </Descriptions>
         )}
 
@@ -186,7 +199,13 @@ export const openDeployStepListDrawer = (recordId: string) => {
           data={logs.value}
           loading={logLoading.value}
           rowKey="id"
-          maxHeight={300}
+          scroll={{
+            type: 'virtual',
+            isFixedRowHeight: true,
+            rowHeight: 49
+          }}
+          bordered={true}
+          maxHeight={'calc(100vh - 300px)'}
         />
       </div>
     )

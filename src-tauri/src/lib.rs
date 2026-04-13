@@ -32,6 +32,8 @@ pub fn run() {
             commands::deploy::deploy_record_page::deploy_record_page,
             commands::deploy::deploy_step_list::deploy_step_list,
             commands::deploy::deploy_log_list::deploy_log_list,
+            commands::deploy::deploy_execute::deploy_execute,
+            commands::deploy::deploy_execute::deploy_record_stop,
         ])
         .setup(|app| {
             // 初始化数据库连接池并执行迁移

@@ -1,8 +1,35 @@
 use sqlx::sqlite::{SqlitePool, SqlitePoolOptions};
 use std::sync::OnceLock;
+use std::sync::atomic::{AtomicBool, Ordering};
 use tauri::{AppHandle, Manager};
 
 static POOL: OnceLock<SqlitePool> = OnceLock::new();
+static RUNNING_TASKS: OnceLock<std::sync::Mutex<std::collections::HashMap<String, std::sync::Arc<AtomicBool>>>> = OnceLock::new();
+
+pub fn running_tasks() -> &'static std::sync::Mutex<std::collections::HashMap<String, std::sync::Arc<AtomicBool>>> {
+    RUNNING_TASKS.get().expect("Running tasks map not initialized")
+}
+
+pub fn init_running_tasks() -> Result<(), String> {
+    RUNNING_TASKS.set(std::sync::Mutex::new(std::collections::HashMap::new()))
+        .map_err(|_| "Running tasks map already initialized".to_string())
+}
+
+pub fn register_running_task(record_id: String, cancel_flag: std::sync::Arc<AtomicBool>) {
+    let mut tasks = running_tasks().lock().unwrap();
+    tasks.insert(record_id, cancel_flag);
+}
+
+pub fn unregister_running_task(record_id: &str) {
+    let mut tasks = running_tasks().lock().unwrap();
+    tasks.remove(record_id);
+}
+
+#[allow(dead_code)]
+pub fn is_task_running(record_id: &str) -> bool {
+    let tasks = running_tasks().lock().unwrap();
+    tasks.get(record_id).map(|f| !f.load(Ordering::Relaxed)).unwrap_or(false)
+}
 
 /// 迁移文件描述
 struct MigrateFile {
@@ -50,6 +77,8 @@ pub fn init_pool(app: &AppHandle) -> Result<(), String> {
 
     POOL.set(pool)
         .map_err(|_| "数据库池已初始化".to_string())?;
+
+    init_running_tasks()?;
 
     Ok(())
 }

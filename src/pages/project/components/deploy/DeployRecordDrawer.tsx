@@ -57,7 +57,7 @@ export const openDeployRecordDrawer = (scriptId: string) => {
   const dp = DrawerPlugin({
     header: "部署记录",
     footer: false,
-    size: '800px',
+    size: '1000px',
     default: () => <div>
       <Table columns={columns as any} data={list.value} loading={loading.value} rowKey="id"/>
       <div class={'mt-8px'}>
