@@ -27,8 +27,15 @@ pub fn run() {
         .plugin(tauri_plugin_http::init())
         .plugin(tauri_plugin_fs::init())
         .plugin(tauri_plugin_dialog::init())
-        .invoke_handler(tauri::generate_handler![commands::compress::compress_to])
+        .invoke_handler(tauri::generate_handler![
+            commands::compress::compress_to,
+            commands::deploy::deploy_record_page::deploy_record_page,
+            commands::deploy::deploy_step_list::deploy_step_list,
+            commands::deploy::deploy_log_list::deploy_log_list,
+        ])
         .setup(|app| {
+            // 初始化数据库连接池并执行迁移
+            commands::deploy::db::init_pool(app.handle())?;
 
             // 注册更新插件
             #[cfg(desktop)]
