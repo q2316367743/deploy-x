@@ -2,7 +2,7 @@ import Database, {type QueryResult} from '@tauri-apps/plugin-sql';
 import {resolveResource} from '@tauri-apps/api/path';
 import {readTextFile} from '@tauri-apps/plugin-fs';
 import {
-  APP_DATA_DB_PATH, MAIN_MIGRATE_FILES,
+  APP_DATA_DB_PATH, LOG_MIGRATE_FILES, MAIN_MIGRATE_FILES,
 } from "@/global/Constants.ts";
 import {logDebug, logError, logInfo} from "@/lib/log.ts";
 import {QueryChain} from "@/util/file/QueryWrapper.ts";
@@ -24,6 +24,8 @@ type TableName =
 
   | 'deploy_script'
   ;
+
+type LogTableName = 'deploy_record' | 'deploy_step' | 'deploy_log';
 
 
 export class SqlBase<N extends string> {
@@ -182,5 +184,7 @@ export class SqlWrapper<N extends string> extends SqlBase<N> {
 }
 
 const sql = new SqlWrapper<TableName>('main', MAIN_MIGRATE_FILES);
+const logSql = new SqlWrapper<LogTableName>('log', LOG_MIGRATE_FILES);
 
 export const useSql = () => sql;
+export const useLogSql = () => logSql;

@@ -6,7 +6,7 @@ import 'virtual:uno.css';
 import {createPinia} from "pinia";
 import {router} from "@/router";
 import {initPath} from "@/global/Constants.ts";
-import {useSql} from "@/lib/sql.ts";
+import {useLogSql, useSql} from "@/lib/sql.ts";
 import {registerMonacoLanguages} from "@/modules/monaco";
 
 // 注册语言
@@ -42,11 +42,16 @@ self.MonacoEnvironment = {
 Promise.all([
   initPath(),
 ]).finally(() => {
-  useSql().migrate().finally(() => {
-    document.getElementById("init")?.remove();
-    createApp(App)
-      .use(createPinia())
-      .use(router)
-      .mount('#app')
-  });
+  // 两个数据库一起合并
+  Promise.all([
+    useSql().migrate(),
+    useLogSql().migrate(),
+  ])
+    .finally(() => {
+      document.getElementById("init")?.remove();
+      createApp(App)
+        .use(createPinia())
+        .use(router)
+        .mount('#app')
+    });
 });

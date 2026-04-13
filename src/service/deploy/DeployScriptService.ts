@@ -5,7 +5,7 @@ export function listDeployScript(projectId: string, instanceId: string): Promise
   return useSql().query<DeployScript>('deploy_script')
     .eq('project_id', projectId)
     .eq('instance_id', instanceId)
-    .select('id', 'created_at', 'updated_at', 'name', "script_type", "description", "local_work_dir")
+    .select('id', 'created_at', 'updated_at', 'name', "script_type", "description", "local_work_dir", "target_dir")
     .list();
 }
 

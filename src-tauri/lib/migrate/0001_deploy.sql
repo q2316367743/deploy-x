@@ -69,21 +69,3 @@ CREATE TABLE deploy_script
     FOREIGN KEY (instance_id) REFERENCES release_instance (id) ON DELETE CASCADE,
     FOREIGN KEY (target_host_id) REFERENCES host (id)
 );
-
--- 部署记录
-CREATE TABLE deploy_record
-(
-    id            TEXT PRIMARY KEY,
-    created_at    INTEGER NOT NULL,
-    updated_at    INTEGER NOT NULL,
-
-    project_id    TEXT    NOT NULL,
-    instance_id   TEXT    NOT NULL,
-    deploy_id     TEXT    NOT NULL,
-    script_id     TEXT    NOT NULL,
-
-    status        TEXT    NOT NULL DEFAULT 'pending',
-    error_summary TEXT,
-    started_at    TEXT    NOT NULL,
-    finished_at   TEXT
-);

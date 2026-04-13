@@ -53,6 +53,10 @@ export const MAIN_MIGRATE_FILES = [{
   file: 'lib/migrate/0001_deploy.sql',
   version: 1
 }];
+export const LOG_MIGRATE_FILES = [{
+  file: 'lib/migrate/1000.sql',
+  version: 0
+}];
 
 export const {colorMode, isDark} = useColorMode();
 

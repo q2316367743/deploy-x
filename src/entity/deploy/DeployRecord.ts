@@ -6,7 +6,7 @@ export interface DeployRecord extends BaseEntity {
   deploy_id: string;
   script_id: string;
 
-  status: string;
+  status: 'pending' | 'running' | 'success' | 'failed';
   error_summary: string;
   started_at: string;
   finished_at: string;

@@ -52,9 +52,9 @@
             <folder-1-icon class="meta-icon"/>
             <span class="meta-text">{{ script.local_work_dir }}</span>
           </div>
-          <div class="card-meta" v-if="script.deploy_path">
+          <div class="card-meta" v-if="script.target_dir">
             <link-unlink-icon class="meta-icon"/>
-            <span class="meta-text">{{ script.deploy_path }}</span>
+            <span class="meta-text">{{ script.target_dir }}</span>
           </div>
         </div>
 
@@ -62,7 +62,7 @@
           <span class="card-time">{{ formatTime(script.updated_at) }}</span>
           <div class="card-actions">
             <t-link theme="success">执行</t-link>
-            <t-link theme="warning">记录</t-link>
+            <t-link theme="warning" @click.stop="openDeployRecordDrawer(script.id)">记录</t-link>
             <t-link theme="primary" @click.stop="handleEdit(script)">编辑</t-link>
             <t-link theme="danger" @click.stop="handleDelete(script)">删除</t-link>
           </div>
@@ -85,6 +85,7 @@ import {addScript, deleteScript, updateScript} from "./PimScriptFunc.tsx";
 import MessageUtil from "@/util/model/MessageUtil.ts";
 import {AddIcon, Folder1Icon, LinkUnlinkIcon, PlayCircleIcon, SearchIcon} from "tdesign-icons-vue-next";
 import {formatDatetime} from "@/util/lang/FormatUtil.ts";
+import {openDeployRecordDrawer} from "@/pages/project/components/deploy/DeployRecordDrawer.tsx";
 
 const props = defineProps({
   projectId: {

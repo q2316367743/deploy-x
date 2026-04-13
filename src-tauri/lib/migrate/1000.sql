@@ -1,3 +1,22 @@
+-- 部署记录
+CREATE TABLE deploy_record
+(
+    id            TEXT PRIMARY KEY,
+    created_at    INTEGER NOT NULL,
+    updated_at    INTEGER NOT NULL,
+
+    project_id    TEXT    NOT NULL,
+    instance_id   TEXT    NOT NULL,
+    deploy_id     TEXT    NOT NULL,
+    script_id     TEXT    NOT NULL,
+
+    status        TEXT    NOT NULL DEFAULT 'pending',
+    error_summary TEXT,
+    started_at    TEXT    NOT NULL,
+    finished_at   TEXT
+);
+
+
 -- 部署步骤
 CREATE TABLE deploy_step
 (
@@ -8,6 +27,7 @@ CREATE TABLE deploy_step
     project_id  TEXT    NOT NULL,
     instance_id TEXT    NOT NULL,
     deploy_id   TEXT    NOT NULL,
+    script_id   TEXT    NOT NULL,
     record_id   TEXT    NOT NULL,
 
     step_type   TEXT    NOT NULL,

@@ -87,6 +87,7 @@ export interface DeployScriptList extends BaseEntity {
   script_type: DeployScriptType;
   description: string;
   local_work_dir: string;
+  target_dir: string;
 }
 
 export interface DeployScriptForm extends Omit<DeployScriptCore, 'match_rules'> {
