@@ -5,8 +5,11 @@ export interface HostCore {
   host: string;
   port: number;
   auth_type: 'password' | 'secret' | 'credential';
+  // 用户名
   auth_user: string;
+  // 密码，如果认证类型是密钥，那么这个就是密钥的密码
   auth_password: string;
+  // 密钥
   auth_secret: string;
   credential_id: string;
   remark: string

@@ -7,6 +7,10 @@ export function listHost(name?: string) {
     .list();
 }
 
+export function getHost(id: string) {
+  return useSql().query<Host>('host').eq('id',id).get();
+}
+
 export function addHost(form: HostCore) {
   const now = Date.now();
   return useSql().mapper<Host>('host')

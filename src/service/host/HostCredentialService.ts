@@ -7,6 +7,12 @@ export function listHostCredential(name?: string) {
     .list();
 }
 
+export function getHostCredential(id: string) {
+  return useSql().query<HostCredential>('host_credential')
+    .eq('id', id)
+    .get();
+}
+
 export function addHostCredential(form: HostCredentialCore) {
   const now = Date.now();
   return useSql().mapper<HostCredential>('host_credential')

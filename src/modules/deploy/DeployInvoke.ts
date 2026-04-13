@@ -1,28 +1,41 @@
 import {invoke} from "@tauri-apps/api/core";
 import {openDeployStepListDrawer} from "@/pages/project/components/deploy/DeployStepListDrawer.tsx";
-import {APP_DATA_DB_PATH} from "@/global/Constants.ts";
-import {getDeployScript} from "@/service";
-import type {DeployScriptView} from "@/entity";
+import {getDeployScript, getHost, getHostCredential} from "@/service";
+import {buildHostCore, type DeployScriptView, type HostCore} from "@/entity";
 
 export interface DeployInvokeProp extends Record<string, unknown>{
-  /**
-   * 数据库路径
-   */
-  database: string;
-  /**
-   * 执行的脚本
-   */
   script: DeployScriptView;
+  host: HostCore
 }
 
 export async function deployInvoke(scriptId: string) {
   const script = await getDeployScript(scriptId);
   if (!script) {
-    return Promise.reject("Could not find deployScript");
+    return Promise.reject("无法找到部署脚本");
   }
+  let host = buildHostCore();
+
+  if (script.script_type === 'remote') {
+    const res = await getHost(script.target_host_id);
+    if (!res) {
+      return Promise.reject("远程部署脚本无法找到远程服务器");
+    }
+    host = res;
+    if (host.auth_type === 'credential') {
+      const hc = await getHostCredential(host.credential_id);
+      if (!hc) {
+        return Promise.reject("远程服务器凭证未找到")
+      }
+      host.auth_type = hc.type;
+      host.auth_user = hc.username;
+      host.auth_password = hc.password;
+      host.auth_secret = hc.secret;
+    }
+  }
+
   const props: DeployInvokeProp = {
-    database: APP_DATA_DB_PATH('log'),
-    script
+    script,
+    host
   }
 
   const recordId = await invoke<string>('deploy_execute', props);
