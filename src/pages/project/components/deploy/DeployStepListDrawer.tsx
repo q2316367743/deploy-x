@@ -115,6 +115,7 @@ export const openDeployStepListDrawer = (recordId: string) => {
   }
 
   const scrollToBottom = () => {
+    if (logs.value.length === 0) return;
     nextTick(() => {
       tableRef.value?.scrollToElement({rowIndex: logs.value.length - 1});
     });

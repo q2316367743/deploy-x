@@ -178,50 +178,54 @@ async fn execute_local_commands(
     work_dir: &str, commands: &str, cancel_flag: &Arc<AtomicBool>,
 ) -> Result<(), String> {
     let cmd_lines = parse_commands(commands);
+    if cmd_lines.is_empty() {
+        return Ok(());
+    }
+
+    // 将所有命令合并为一个脚本执行，使环境变量在命令间共享
+    let script = cmd_lines.join("\n");
+
+    // 记录要执行的命令
     let mut line_counter: i64 = 0;
-
-    for cmd in cmd_lines {
-        if cancel_flag.load(Ordering::Relaxed) {
-            return Err("用户取消执行".to_string());
-        }
-
-        let log_line = format!("$ {}\n", cmd);
+    for cmd in &cmd_lines {
         line_counter += 1;
-        insert_log(pool, project_id, instance_id, deploy_id, record_id, step_id, line_counter, "stdout", &log_line).await?;
+        insert_log(pool, project_id, instance_id, deploy_id, record_id, step_id, line_counter, "stdout", &format!("$ {}\n", cmd)).await?;
+    }
 
-        let mut child = Command::new("sh")
-            .arg("-c")
-            .arg(&cmd)
-            .current_dir(work_dir)
-            .stdout(std::process::Stdio::piped())
-            .stderr(std::process::Stdio::piped())
-            .spawn()
-            .map_err(|e| format!("执行命令失败 '{}': {}", cmd, e))?;
+    let mut child = Command::new("sh")
+        .arg("-c")
+        .arg(&script)
+        .current_dir(work_dir)
+        .stdout(std::process::Stdio::piped())
+        .stderr(std::process::Stdio::piped())
+        .spawn()
+        .map_err(|e| format!("执行命令失败: {}", e))?;
 
-        if let Some(stdout) = child.stdout.take() {
-            let mut reader = tokio::io::BufReader::new(stdout).lines();
-            while let Ok(Some(line)) = reader.next_line().await {
-                if cancel_flag.load(Ordering::Relaxed) {
-                    let _ = child.kill().await;
-                    return Err("用户取消执行".to_string());
-                }
-                line_counter += 1;
-                insert_log(pool, project_id, instance_id, deploy_id, record_id, step_id, line_counter, "stdout", &line).await?;
+    // 读取 stdout
+    if let Some(stdout) = child.stdout.take() {
+        let mut reader = tokio::io::BufReader::new(stdout).lines();
+        while let Ok(Some(line)) = reader.next_line().await {
+            if cancel_flag.load(Ordering::Relaxed) {
+                let _ = child.kill().await;
+                return Err("用户取消执行".to_string());
             }
+            line_counter += 1;
+            insert_log(pool, project_id, instance_id, deploy_id, record_id, step_id, line_counter, "stdout", &line).await?;
         }
+    }
 
-        if let Some(stderr) = child.stderr.take() {
-            let mut reader = tokio::io::BufReader::new(stderr).lines();
-            while let Ok(Some(line)) = reader.next_line().await {
-                line_counter += 1;
-                insert_log(pool, project_id, instance_id, deploy_id, record_id, step_id, line_counter, "stderr", &line).await?;
-            }
+    // 读取 stderr
+    if let Some(stderr) = child.stderr.take() {
+        let mut reader = tokio::io::BufReader::new(stderr).lines();
+        while let Ok(Some(line)) = reader.next_line().await {
+            line_counter += 1;
+            insert_log(pool, project_id, instance_id, deploy_id, record_id, step_id, line_counter, "stderr", &line).await?;
         }
+    }
 
-        let status = child.wait().await.map_err(|e| format!("等待命令完成失败 '{}': {}", cmd, e))?;
-        if !status.success() {
-            return Err(format!("命令执行失败 '{}', 退出码: {:?}", cmd, status.code()));
-        }
+    let status = child.wait().await.map_err(|e| format!("等待命令完成失败: {}", e))?;
+    if !status.success() {
+        return Err(format!("命令执行失败, 退出码: {:?}", status.code()));
     }
     Ok(())
 }
@@ -337,36 +341,38 @@ fn ssh_exec_remote(
     sess: &ssh2::Session,
     commands: &[String],
     mut log_callback: impl FnMut(i64, &str, &str) -> Result<(), String>,
-    cancel_flag: &Arc<AtomicBool>,
+    _cancel_flag: &Arc<AtomicBool>,
 ) -> Result<(), String> {
+    if commands.is_empty() {
+        return Ok(());
+    }
+
+    // 将所有命令合并为一个脚本执行，使环境变量在命令间共享
+    let script = commands.join("\n");
+
+    // 记录要执行的命令
     let mut line_counter: i64 = 0;
-
     for cmd in commands {
-        if cancel_flag.load(Ordering::Relaxed) {
-            return Err("用户取消执行".to_string());
-        }
-
-        let log_line = format!("$ {}\n", cmd);
         line_counter += 1;
-        log_callback(line_counter, "stdout", &log_line)?;
+        log_callback(line_counter, "stdout", &format!("$ {}\n", cmd))?;
+    }
 
-        let mut channel = sess.channel_session().map_err(|e| format!("创建 SSH 通道失败: {}", e))?;
-        channel.exec(cmd).map_err(|e| format!("执行 SSH 命令失败 '{}': {}", cmd, e))?;
+    let mut channel = sess.channel_session().map_err(|e| format!("创建 SSH 通道失败: {}", e))?;
+    channel.exec(&script).map_err(|e| format!("执行 SSH 命令失败: {}", e))?;
 
-        let mut stdout = String::new();
-        channel.read_to_string(&mut stdout).map_err(|e| format!("读取 SSH 输出失败: {}", e))?;
+    let mut stdout = String::new();
+    channel.read_to_string(&mut stdout).map_err(|e| format!("读取 SSH 输出失败: {}", e))?;
 
-        for line in stdout.lines() {
-            line_counter += 1;
-            log_callback(line_counter, "stdout", line)?;
-        }
+    for line in stdout.lines() {
+        line_counter += 1;
+        log_callback(line_counter, "stdout", line)?;
+    }
 
-        channel.wait_close().map_err(|e| format!("等待 SSH 命令完成失败: {}", e))?;
-        let exit_status = channel.exit_status().map_err(|e| format!("获取退出码失败: {}", e))?;
+    channel.wait_close().map_err(|e| format!("等待 SSH 命令完成失败: {}", e))?;
+    let exit_status = channel.exit_status().map_err(|e| format!("获取退出码失败: {}", e))?;
 
-        if exit_status != 0 {
-            return Err(format!("远程命令执行失败 '{}', 退出码: {}", cmd, exit_status));
-        }
+    if exit_status != 0 {
+        return Err(format!("远程命令执行失败, 退出码: {}", exit_status));
     }
 
     Ok(())
