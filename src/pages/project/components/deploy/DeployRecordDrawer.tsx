@@ -1,4 +1,4 @@
-import type {DeployRecord} from "@/entity";
+import {type DeployRecord, DeployRecordStatusMap} from "@/entity";
 import {openDeployStepListDrawer} from "./DeployStepListDrawer.tsx";
 import MessageUtil from "@/util/model/MessageUtil.ts";
 import {Pagination, Table, Button, Tag, type PrimaryTableCol} from "tdesign-vue-next";
@@ -34,12 +34,9 @@ export const openDeployRecordDrawer = (scriptId: string) => {
 
 
   const columns: Array<PrimaryTableCol<DeployRecord>> = [
-    {colKey: 'id', title: '记录ID', width: 100},
-    {colKey: 'instance_id', title: '实例ID', width: 120},
-    {colKey: 'deploy_id', title: '部署ID', width: 100},
     {
       colKey: 'status', title: '状态', width: 80, cell: (_h, {row}) => (
-        <Tag theme={statusThemeMap[row.status]} variant="light">{row.status}</Tag>
+        <Tag theme={statusThemeMap[row.status]} variant="light">{DeployRecordStatusMap[row.status]}</Tag>
       )
     },
     {colKey: 'started_at', title: '开始时间', width: 180},

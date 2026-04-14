@@ -1,5 +1,7 @@
 <template>
-  <div ref="containerRef" class="monaco-editor-container"></div>
+  <div class="monaco-editor">
+    <div ref="containerRef" class="monaco-editor-container"></div>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -89,9 +91,17 @@ watch(
 </script>
 
 <style scoped lang="less">
-.monaco-editor-container {
+.monaco-editor {
   width: 100%;
   height: v-bind(height);
   overflow: hidden;
+  border: 1px solid var(--td-border-level-1-color);
+  border-radius: var(--td-radius-medium);
+
+  .monaco-editor-container {
+    width: 100%;
+    height: v-bind(height);
+    overflow: hidden;
+  }
 }
 </style>

@@ -81,15 +81,35 @@ function buildDefault(data: Ref<DeployScriptForm>, hosts: Ref<{ label: string; v
             <NFileSelect v-model={data.value.build_output_dir} placeholder="请输入构建输出目录路径" directory={true}/>
           </FormItem>
           <FormItem label={'文件过滤'}>
-            <div style="display: flex; flex-direction: column; gap: 8px">
-              <RadioGroup v-model={data.value.match_mode} class="w-full">
-                <Radio value="all">不过滤</Radio>
-                <Radio value="include">包含规则</Radio>
-                <Radio value="exclude">排除规则</Radio>
-              </RadioGroup>
+            <div style="display: flex; flex-direction: column; gap: 12px">
+              {/* 扫描深度 */}
+              <div>
+                <div style="font-size: 12px; color: var(--td-text-color-secondary); margin-bottom: 8px;">扫描深度</div>
+                <RadioGroup v-model={data.value.scan_depth} class="w-full">
+                  <Radio value="shallow">当前目录</Radio>
+                  <Radio value="deep">递归子目录</Radio>
+                </RadioGroup>
+              </div>
+              {/* 匹配模式 */}
+              <div>
+                <div style="font-size: 12px; color: var(--td-text-color-secondary); margin-bottom: 8px;">匹配模式</div>
+                <RadioGroup v-model={data.value.match_mode} class="w-full">
+                  <Radio value="all">全部文件</Radio>
+                  <Radio value="include">仅包含</Radio>
+                  <Radio value="exclude">排除指定</Radio>
+                </RadioGroup>
+              </div>
+              {/* 匹配规则 */}
               {data.value.match_mode !== 'all' && (
-                <Input v-model={matchRulesInput.value} onChange={onMatchRulesChange}
-                       placeholder="请输入过滤规则，每行一条，支持正则表达式"/>
+                <div>
+                  <div style="font-size: 12px; color: var(--td-text-color-secondary); margin-bottom: 8px;">
+                    {data.value.match_mode === 'include' ? '包含规则' : '排除规则'}
+                    <span style="margin-left: 4px; color: var(--td-text-color-placeholder);">（每行一条，支持 glob 模式）</span>
+                  </div>
+                  <Textarea v-model={matchRulesInput.value} onChange={onMatchRulesChange}
+                         placeholder="例如: *.js"
+                         autosize={{minRows: 3, maxRows: 6}}/>
+                </div>
               )}
             </div>
           </FormItem>
@@ -160,7 +180,7 @@ export function addScript(projectId: string, instanceId: string, onUpdate: () =>
     local_work_dir: '',
     local_commands: '',
     build_output_dir: '',
-    scan_depth: 'deep',
+    scan_depth: 'shallow',
     match_mode: 'all',
     match_rules: [],
     target_host_id: '',
