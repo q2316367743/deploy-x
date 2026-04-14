@@ -1,7 +1,7 @@
 import type {DeployLog, DeployStep} from "@/entity";
 import MessageUtil from "@/util/model/MessageUtil.ts";
 import {Descriptions, DescriptionsItem, type PrimaryTableCol, Steps, Table, Tag} from "tdesign-vue-next";
-import {onBeforeUnmount} from "vue";
+import {nextTick, onBeforeUnmount} from "vue";
 import {deployLogList, deployStepList} from "@/modules/deploy";
 import type {TdStepItemProps} from "tdesign-vue-next/es/steps/type";
 import {formatDatetime} from "@/util/lang/FormatUtil.ts";
@@ -37,6 +37,7 @@ export const openDeployStepListDrawer = (recordId: string) => {
   const logs = ref(new Array<DeployLog>());
   const logLoading = ref(false);
   const pollingTimer = ref<number | null>(null);
+  const tableRef = ref();
 
   const loadList = () => {
     if (loading.value) return;
@@ -65,15 +66,16 @@ export const openDeployStepListDrawer = (recordId: string) => {
     deployLogList(stepId)
       .then(res => {
         logs.value = res;
+        scrollToBottom();
       })
       .catch(e => {
         MessageUtil.error("获取日志失败", e);
       })
       .finally(() => {
         logLoading.value = false;
-        // 如果当前选中步骤是 running，开始轮询
+        // 如果当前选中步骤是 pending 或 running，开始轮询
         const step = list.value.find(s => s.id === stepId);
-        if (step?.status === 'running') {
+        if (step?.status === 'pending' || step?.status === 'running') {
           startPolling(stepId);
         }
       })
@@ -89,14 +91,14 @@ export const openDeployStepListDrawer = (recordId: string) => {
         const current = steps.find(s => s.id === stepId);
         currentStep.value = current || undefined;
 
-        // 如果不再是 running，停止轮询
-        if (current?.status !== 'running') {
+        // 如果没有任何步骤是 pending 或 running，停止轮询
+        const hasActiveStep = steps.some(s => s.status === 'pending' || s.status === 'running');
+        // 始终刷新日志
+        logs.value = await deployLogList(stepId);
+        scrollToBottom();
+
+        if (!hasActiveStep) {
           stopPolling();
-          // 刷新日志
-          logs.value = await deployLogList(stepId);
-        } else {
-          // 继续轮询日志
-          logs.value = await deployLogList(stepId);
         }
       } catch (e) {
         stopPolling();
@@ -110,6 +112,12 @@ export const openDeployStepListDrawer = (recordId: string) => {
       clearInterval(pollingTimer.value);
       pollingTimer.value = null;
     }
+  }
+
+  const scrollToBottom = () => {
+    nextTick(() => {
+      tableRef.value?.scrollToElement({rowIndex: logs.value.length - 1});
+    });
   }
 
   onBeforeUnmount(stopPolling);
@@ -195,6 +203,7 @@ export const openDeployStepListDrawer = (recordId: string) => {
 
         {/* 日志表格 */}
         <Table
+          ref={tableRef}
           columns={logColumns as any}
           data={logs.value}
           loading={logLoading.value}

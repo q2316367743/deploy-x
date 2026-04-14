@@ -54,8 +54,6 @@ declare module 'vue' {
     TTooltip: typeof import('tdesign-vue-next')['Tooltip']
     WdCell: typeof import('./src/components/wod/wd-cell.vue')['default']
     WdCellGroup: typeof import('./src/components/wod/wd-cell-group.vue')['default']
-    XhAvatar: typeof import('./src/components/native/XhAvatar.vue')['default']
-    XhFileSelect: typeof import('./src/components/native/XhFileSelect.vue')['default']
   }
 }
 
@@ -103,6 +101,4 @@ declare global {
   const TTooltip: typeof import('tdesign-vue-next')['Tooltip']
   const WdCell: typeof import('./src/components/wod/wd-cell.vue')['default']
   const WdCellGroup: typeof import('./src/components/wod/wd-cell-group.vue')['default']
-  const XhAvatar: typeof import('./src/components/native/XhAvatar.vue')['default']
-  const XhFileSelect: typeof import('./src/components/native/XhFileSelect.vue')['default']
 }

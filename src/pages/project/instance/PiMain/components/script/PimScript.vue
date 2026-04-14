@@ -79,7 +79,7 @@
 </template>
 
 <script lang="ts" setup>
-import {type DeployScript, type DeployScriptList} from "@/entity/deploy/DeployScript.ts";
+import {type DeployScriptList} from "@/entity/deploy/DeployScript.ts";
 import {listDeployScript} from "@/service/deploy/DeployScriptService.ts";
 import {addScript, deleteScript, updateScript} from "./PimScriptFunc.tsx";
 import MessageUtil from "@/util/model/MessageUtil.ts";
