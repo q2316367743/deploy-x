@@ -26,7 +26,7 @@
                 <template #prefix-icon>
                   <file-code-icon/>
                 </template>
-                代码文件
+                代码
               </t-dropdown-item>
             </t-dropdown-menu>
           </t-dropdown>

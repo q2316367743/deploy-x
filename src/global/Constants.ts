@@ -11,9 +11,9 @@ export const APP_NAME = "DeployX";
 export const APP_DESC = "DeployX是一个强大的发版软件";
 export const APP_AUTHOR = "Esion";
 export const APP_GITHUB = 'https://github.com/q2316367743/deploy-x'
-export const APP_VERSION = "1.2.0";
+export const APP_VERSION = "1.1.0";
 
-export const APP_PASSWORD = "6NU74Lx3gqKO5t"
+export const APP_PASSWORD = "FmH24q7!*DDUcd"
 
 let appData = '';
 
