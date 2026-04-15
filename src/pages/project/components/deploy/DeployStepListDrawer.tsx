@@ -215,7 +215,7 @@ export const openDeployStepListDrawer = (recordId: string) => {
             rowHeight: 49
           }}
           bordered={true}
-          maxHeight={'calc(100vh - 300px)'}
+          maxHeight={'calc(100vh - 310px)'}
         />
       </div>
     )

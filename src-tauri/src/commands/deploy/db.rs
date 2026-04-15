@@ -42,7 +42,7 @@ const LOG_MIGRATE_FILES: &[MigrateFile] = &[
     MigrateFile { file: "lib/migrate/1000.sql", version: 0 },
 ];
 
-pub fn init_pool(app: &AppHandle) -> Result<(), String> {
+pub async fn init_pool(app: &AppHandle) -> Result<(), String> {
     let db_path = app
         .path()
         .app_data_dir()
@@ -58,22 +58,14 @@ pub fn init_pool(app: &AppHandle) -> Result<(), String> {
 
     let db_url = format!("sqlite://{}", db_path.display());
 
-    // 创建 tokio runtime 用于执行异步操作
-    let rt = tokio::runtime::Runtime::new()
-        .map_err(|e| format!("创建 tokio runtime 失败: {}", e))?;
+    let pool = SqlitePoolOptions::new()
+        .max_connections(1)
+        .connect(&db_url)
+        .await
+        .map_err(|e| format!("连接数据库失败: {}", e))?;
 
-    let pool = rt.block_on(async {
-        let pool = SqlitePoolOptions::new()
-            .max_connections(1)
-            .connect(&db_url)
-            .await
-            .map_err(|e| format!("连接数据库失败: {}", e))?;
-
-        // 执行数据库迁移
-        migrate(&pool).await?;
-
-        Ok::<_, String>(pool)
-    })?;
+    // 执行数据库迁移
+    migrate(&pool).await?;
 
     POOL.set(pool)
         .map_err(|_| "数据库池已初始化".to_string())?;

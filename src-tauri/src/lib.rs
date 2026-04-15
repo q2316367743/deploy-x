@@ -36,8 +36,13 @@ pub fn run() {
             commands::deploy::deploy_execute::deploy_record_stop,
         ])
         .setup(|app| {
-            // 初始化数据库连接池并执行迁移
-            commands::deploy::db::init_pool(app.handle())?;
+            // 异步初始化数据库连接池，不阻塞应用启动
+            let app_handle = app.handle().clone();
+            tauri::async_runtime::spawn(async move {
+                if let Err(e) = commands::deploy::db::init_pool(&app_handle).await {
+                    log::error!("数据库初始化失败: {}", e);
+                }
+            });
 
             // 注册更新插件
             #[cfg(desktop)]
