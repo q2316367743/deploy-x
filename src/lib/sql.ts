@@ -1,6 +1,4 @@
 import Database, {type QueryResult} from '@tauri-apps/plugin-sql';
-import {resolveResource} from '@tauri-apps/api/path';
-import {readTextFile} from '@tauri-apps/plugin-fs';
 import {
   APP_DATA_DB_PATH, LOG_MIGRATE_FILES, MAIN_MIGRATE_FILES,
 } from "@/global/Constants.ts";
@@ -160,8 +158,7 @@ export class SqlWrapper<N extends string> extends SqlBase<N> {
       .sort((a, b) => a.version - b.version);
 
     for (const {file, version} of pending) {
-      const resourcePath = await resolveResource(file);
-      const sql = await readTextFile(resourcePath);
+      const sql = await (await fetch(file)).text();
       logInfo("[sql] 开始处理文件：", file, ",版本：", version);
       await this.execute("BEGIN");
       try {

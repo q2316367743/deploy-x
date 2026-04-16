@@ -5,6 +5,9 @@ import {useColorMode} from "@/hooks/ColorMode.ts";
 import {useBoolState} from "@/hooks";
 import {logDebug} from "@/lib/log.ts";
 import {LocalName} from "@/global/LocalName.ts";
+import s0000 from '@/assets/migrate/0000_main.sql?url&no-inline';
+import s0001 from '@/assets/migrate/0001_deploy.sql?url&no-inline';
+import s1000 from '@/assets/migrate/1000.sql?url&no-inline';
 
 export const APP_ID = 'xyz.esion.deploy-x';
 export const APP_NAME = "DeployX";
@@ -47,14 +50,14 @@ export const initPath = async () => {
 
 // 主要
 export const MAIN_MIGRATE_FILES = [{
-  file: 'lib/migrate/0000_main.sql',
+  file: s0000,
   version: 0
 }, {
-  file: 'lib/migrate/0001_deploy.sql',
+  file: s0001,
   version: 1
 }];
 export const LOG_MIGRATE_FILES = [{
-  file: 'lib/migrate/1000.sql',
+  file: s1000,
   version: 0
 }];
 
