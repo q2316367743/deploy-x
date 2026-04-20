@@ -2,7 +2,7 @@
   <app-tool-layout title="实例">
     <div class="project-instance">
       <pi-aside v-model="instanceId"></pi-aside>
-      <div class="pi-main">
+      <div class="pi-content">
         <pi-main v-if="instanceId && show" :instance-id="instanceId"/>
         <empty-result v-else title="请在左侧选择实例"/>
       </div>
@@ -36,8 +36,9 @@ watch(instanceId, (n, o) => {
   display: flex;
   overflow: hidden;
 
-  .pi-main {
-    width: 100%;
+
+  .pi-content {
+    width: calc(100% - 232px);
   }
 }
 </style>

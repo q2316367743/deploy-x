@@ -2,7 +2,7 @@
   <app-tool-layout title="版本">
     <div class="project-version">
       <pv-aside v-model="versionId"/>
-      <div class="pv-main">
+      <div class="pv-content">
         <pv-main v-if="versionId && show" :version-id="versionId" :project-id="projectId"/>
         <empty-result v-else title="请在左侧选择版本"/>
       </div>
@@ -41,8 +41,8 @@ watch(versionId, (n, o) => {
   display: flex;
   overflow: hidden;
 
-  .pv-main {
-    width: 100%;
+  .pv-content {
+    width: calc(100% - 232px);
   }
 }
 </style>
