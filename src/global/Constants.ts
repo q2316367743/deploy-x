@@ -11,8 +11,9 @@ import s1000 from '@/assets/migrate/1000.sql?url&no-inline';
 
 export const APP_ID = 'xyz.esion.deploy-x';
 export const APP_NAME = "DeployX";
-export const APP_DESC = "DeployX是一个强大的发版软件";
-export const APP_AUTHOR = "Esion";
+export const APP_DESC = "高效管理您的项目发布流程";
+export const APP_AUTHOR = "落雨不悔";
+export const APP_HOMEPAGE = 'https://blog.esion.xyz'
 export const APP_GITHUB = 'https://github.com/q2316367743/deploy-x'
 export const APP_VERSION = "1.1.0";
 

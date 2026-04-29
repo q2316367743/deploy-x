@@ -1,6 +1,6 @@
 .home-container {
-  width: 100%;
-  min-height: 100vh;
+  width: 100vw;
+  height: 100vh;
   display: flex;
   flex-direction: column;
   background: var(--td-bg-color-page);
@@ -72,15 +72,51 @@
   .app-subtitle {
     font-size: 14px;
     color: rgba(255, 255, 255, 0.9);
-    margin: 0;
+    margin: 8px 0 0;
     font-weight: 400;
+  }
+
+
+
+}
+.welcome-tag {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  z-index: 100;
+
+  .github-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    background: rgba(255, 255, 255, 0.15);
+    white-space: nowrap;
+    color: var(--td-text-color-secondary);
+    text-decoration: none;
+    padding: 8px 14px;
+    border-radius: 16px;
+    background: var(--fluent-card-bg);
+    border: 1px solid var(--fluent-card-border);
+    box-shadow: var(--fluent-card-shadow);
+    transition: all 0.2s ease;
+    font-family: 'JetBrains Mono', Menlo, Monaco, Consolas, 'Courier New', monospace;
+
+    &:hover {
+      background: var(--fluent-card-bg-hover);
+      color: var(--fluent-accent-color);
+      box-shadow: var(--fluent-card-shadow-hover);
+      transform: translateY(-2px);
+    }
   }
 }
 
 .main-content {
   flex: 1;
-  max-width: 1200px;
-  width: calc(100% - 48px);
+  width: 100vw;
   margin: 0 auto;
   padding: 24px;
   display: flex;

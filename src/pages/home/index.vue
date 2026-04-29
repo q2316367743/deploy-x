@@ -3,11 +3,16 @@
     <div class="welcome-section">
       <div class="welcome-content">
         <div class="logo-wrapper">
-          <img src="/logo.png" alt="发版助手" class="logo"/>
+          <img src="/logo.png" :alt="APP_NAME" class="logo"/>
         </div>
         <div class="title-group">
-          <h1 class="app-title">发版助手</h1>
-          <p class="app-subtitle">高效管理您的项目发布流程</p>
+          <h1 class="app-title">
+            <span>{{ APP_NAME }}</span>
+            <span class="font-size-16px ml-16px">
+            <t-tag theme="warning" >v{{ APP_VERSION }}</t-tag>
+            </span>
+          </h1>
+          <p class="app-subtitle">{{ APP_DESC }}</p>
         </div>
         <div class="mr-24px">
           <ShangZanBtn @click="openSz()"/>
@@ -81,9 +86,10 @@
               </span>
             </div>
             <div class="project-action">
-              <t-button theme="primary" shape="square" variant="text" @click="openReleaseProjectCxt($event, item, onUpdate)">
+              <t-button theme="primary" shape="square" variant="text"
+                        @click="openReleaseProjectCxt($event, item, onUpdate)">
                 <template #icon>
-                  <more-icon />
+                  <more-icon/>
                 </template>
               </t-button>
             </div>
@@ -102,6 +108,16 @@
       </div>
     </div>
 
+    <div class="welcome-tag">
+      <div class="github-link">
+        <user-icon/>
+        {{ APP_AUTHOR }}
+      </div>
+      <a :href="APP_GITHUB" target="_blank" class="github-link">
+        <logo-github-icon/>
+        GitHub
+      </a>
+    </div>
   </div>
 </template>
 
@@ -113,7 +129,8 @@ import {
   TimeIcon,
   FolderOpenIcon,
   MoreIcon,
-  DesktopIcon
+  DesktopIcon,
+  LogoGithubIcon, UserIcon
 } from "tdesign-icons-vue-next";
 import type {ReleaseProject} from "@/entity";
 import {listReleaseProject} from "@/service";
@@ -124,6 +141,7 @@ import {
 import dayjs from 'dayjs';
 import ShangZanBtn from "@/pages/home/components/ShangZanBtn.vue";
 import {openSz} from "@/pages/home/func/OpenSz.tsx";
+import {APP_AUTHOR, APP_DESC, APP_GITHUB, APP_NAME, APP_VERSION} from "@/global/Constants.ts";
 
 const router = useRouter();
 
