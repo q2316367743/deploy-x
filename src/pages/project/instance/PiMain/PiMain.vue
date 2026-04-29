@@ -39,6 +39,7 @@ const page = ref('1');
 
   .pi-main-content {
     height: calc(100% - 48px);
+    overflow: auto;
   }
 }
 </style>
